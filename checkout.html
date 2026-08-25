@@ -103,7 +103,7 @@ function buildOrderSummary(cart, subtotal, frete, total) {
   return text;
 }
 
-async function saveOrderToSupabase(orderCode, nome, total, cart) {
+async function saveOrderToSupabase(orderCode, nome, total, cart, endereco, cidade, estado, cep) {
   const itensSummary = cart.map(item => ({
     tipo: item.tipo,
     preco: item.preco,
@@ -123,7 +123,11 @@ async function saveOrderToSupabase(orderCode, nome, total, cart) {
       envio: "Pedido confirmado",
       rastreio: "",
       itens: itensSummary,
-      data: new Date().toLocaleDateString('pt-BR')
+      data: new Date().toLocaleDateString('pt-BR'),
+      endereco: endereco,
+      cidade: cidade,
+      estado: estado,
+      cep: cep
     })
   });
 
@@ -207,7 +211,11 @@ function render() {
       });
 
       if (res.ok) {
-        await saveOrderToSupabase(orderCode, nomeCliente, total, cart);
+        const enderecoVal = document.getElementById("endereco").value;
+        const cidadeVal = document.getElementById("cidade").value;
+        const estadoVal = document.getElementById("estado").value;
+        const cepVal = document.getElementById("cep").value;
+        await saveOrderToSupabase(orderCode, nomeCliente, total, cart, enderecoVal, cidadeVal, estadoVal, cepVal);
         localStorage.removeItem("sagradoCart");
         document.getElementById("content").innerHTML =
           '<div class="success">' +

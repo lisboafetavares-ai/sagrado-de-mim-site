@@ -142,15 +142,22 @@ function renderMainPanel(codigo) {
     const imgHtml = item.etiquetaImg
       ? '<img src="' + item.etiquetaImg + '" class="label-img" alt="Etiqueta">'
       : '';
+    const detalhesHtml = Object.entries(item.detalhes || {}).map(([k,v]) =>
+      '<p style="margin:2px 0; font-size:13px;"><strong>' + k + ':</strong> ' + v + '</p>'
+    ).join('');
     return '<div class="item-block">' +
       '<p class="item-title">' + item.tipo + ' — R$ ' + Number(item.preco).toFixed(2).replace('.',',') + '</p>' +
+      detalhesHtml +
       imgHtml +
     '</div>';
   }).join('');
 
+  const enderecoCompleto = [data.endereco, data.cidade, data.estado, data.cep].filter(Boolean).join(' · ');
+
   main.innerHTML =
     '<p class="order-title">' + codigo + '</p>' +
     '<p class="order-meta">Cliente: ' + (data.cliente || "—") + ' · E-mail: ' + (data.email || "—") + ' · Total: R$ ' + (data.total ? Number(data.total).toFixed(2).replace('.',',') : "—") + '</p>' +
+    (enderecoCompleto ? '<p class="order-meta" style="margin-top:-14px;">Endereço: ' + enderecoCompleto + '</p>' : '') +
     itensHtml +
     '<div class="row" style="margin-top:20px;">' +
       '<div>' +
