@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sagrado de Mim — Finalizar Pedido</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    font-family: Georgia, 'Liberation Serif', serif;
+    color: #332f28;
+    min-height: 100vh;
+  }
+  .card {
+    background: #fbf7f0;
+    border: 1px solid rgba(61,58,52,0.25);
+    border-radius: 18px;
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 36px 32px;
+    box-shadow: 0 10px 30px rgba(61,58,52,0.08);
+  }
+  h1 { font-size: 22px; letter-spacing: 2px; margin: 0 0 6px; font-weight: normal; text-align:center; }
+  .back-link { display:block; text-align:center; font-family:Arial,sans-serif; font-size:12px; color:#8a8676; text-decoration:none; margin-bottom:14px; }
+  .section-title {
+    font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    color: #8a8676; margin: 24px 0 12px;
+  }
+  label { font-family: Arial, sans-serif; font-size: 13px; font-weight: 700; display: block; margin-bottom: 4px; margin-top: 12px; }
+  input[type="text"], input[type="file"] {
+    width: 100%; font-family: Arial, sans-serif; font-size: 14px; padding: 10px 12px;
+    border-radius: 8px; border: 1px solid rgba(61,58,52,0.3);
+  }
+  .row { display: flex; gap: 10px; }
+  .row > div { flex: 1; }
+  .pix-box {
+    background: #eef1e6; border-radius: 12px; padding: 16px 18px; font-family: Arial, sans-serif;
+    text-align: center; margin-bottom: 6px;
+  }
+  .pix-key { font-size: 18px; font-weight: 700; color: #556238; margin: 6px 0; word-break: break-all; }
+  .total-box {
+    font-family: Arial, sans-serif; text-align: center; font-size: 18px; font-weight: 700; margin: 14px 0 20px;
+  }
+  .submit-btn {
+    width: 100%; font-family: Arial, sans-serif; font-weight: 700; font-size: 15px;
+    background: #556238; color: #fff; padding: 14px; border-radius: 10px; border: none; margin-top: 22px; cursor: pointer;
+  }
+  .submit-btn:disabled { opacity: 0.6; cursor: default; }
+  .note {
+    font-family: Arial, sans-serif; font-size: 12px; color: #8a8676; text-align: center; margin-top: 14px; line-height: 1.6;
+  }
+  .empty { font-family: Arial, sans-serif; text-align: center; color: #8a8676; padding: 30px 0; }
+  .success { font-family: Arial, sans-serif; text-align: center; padding: 20px 10px; }
+  .success h2 { font-family: Georgia, serif; font-size: 20px; color: #556238; margin-bottom: 10px; }
+  .success .code-box {
+    background: #eef1e6; border-radius: 10px; padding: 14px; margin: 16px 0; font-size: 18px; font-weight: 700; color: #556238;
+  }
+  .error-msg { font-family: Arial, sans-serif; color: #a3455a; font-size: 13px; text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <a href="carrinho.html" class="back-link">&larr; Voltar para o carrinho</a>
+    <h1>FINALIZAR PEDIDO</h1>
+    <div id="content"></div>
+  </div>
+
+<script>
+const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xzepqvng";
+const PIX_KEY = "5531999153132";
+
+const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
+
+function sbHeaders() {
+  return {
+    "apikey": SUPABASE_ANON_KEY,
+    "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+    "Content-Type": "application/json"
+  };
+}
+
+function loadCart() {
+  return JSON.parse(localStorage.getItem("sagradoCart") || "[]");
+}
+
+function buildOrderSummary(cart, subtotal, frete, total) {
+  let text = "";
+  cart.forEach((item, i) => {
+    text += (i+1) + ". " + item.tipo + " - R$ " + item.preco.toFixed(2).replace('.',',') + "\n";
+    Object.entries(item.detalhes || {}).forEach(([k,v]) => {
+      text += "   " + k + ": " + v + "\n";
+    });
+  });
+  text += "\nSubtotal: R$ " + subtotal.toFixed(2).replace('.',',') + "\n";
+  text += "Frete: R$ " + frete.toFixed(2).replace('.',',') + "\n";
+  text += "TOTAL: R$ " + total.toFixed(2).replace('.',',');
+  return text;
+}
+
+async function saveOrderToSupabase(orderCode, nome, total, cart) {
+  const itensSummary = cart.map(item => ({
+    tipo: item.tipo,
+    preco: item.preco,
+    detalhes: item.detalhes || {},
+    etiquetaImg: item.etiquetaImg || null
+  }));
+
+  const res = await fetch(SUPABASE_URL + "/rest/v1/orders", {
+    method: "POST",
+    headers: sbHeaders(),
+    body: JSON.stringify({
+      order_code: orderCode,
+      cliente: nome,
+      email: session.email,
+      total: total,
+      pagamento: "Pendente",
+      envio: "Pedido confirmado",
+      rastreio: "",
+      itens: itensSummary,
+      data: new Date().toLocaleDateString('pt-BR')
+    })
+  });
+
+  if (!res.ok) {
+    throw new Error("Não foi possível registrar o pedido no painel.");
+  }
+}
+
+function render() {
+  if (!session) {
+    window.location.href = "auth.html";
+    return;
+  }
+
+  const cart = loadCart();
+  const content = document.getElementById("content");
+
+  if (cart.length === 0) {
+    content.innerHTML = '<p class="empty">Seu carrinho está vazio. <a href="index.html">Voltar para o início</a></p>';
+    return;
+  }
+
+  const subtotal = cart.reduce((sum, item) => sum + item.preco, 0);
+  const frete = 25;
+  const total = subtotal + frete;
+  const orderSummary = buildOrderSummary(cart, subtotal, frete, total);
+  const orderCode = "SDM-" + Date.now().toString().slice(-6);
+
+  content.innerHTML =
+    '<p class="section-title">Pagamento via Pix</p>' +
+    '<div class="pix-box">' +
+      '<p style="margin:0; font-family:Arial,sans-serif; font-size:13px;">Chave Pix</p>' +
+      '<p class="pix-key">' + PIX_KEY + '</p>' +
+      '<p style="margin:0; font-family:Arial,sans-serif; font-size:12px; color:#5f6b52;">Faça o Pix no valor total abaixo e anexe o comprovante</p>' +
+    '</div>' +
+    '<p class="total-box">Total: R$ ' + total.toFixed(2).replace('.',',') + '</p>' +
+
+    '<form id="order-form">' +
+      '<p class="section-title">Dados para entrega</p>' +
+      '<label for="nome">Nome completo</label>' +
+      '<input type="text" name="Nome completo" id="nome" required>' +
+      '<label for="cpf">CPF</label>' +
+      '<input type="text" name="CPF" id="cpf" required>' +
+      '<label for="cep">CEP</label>' +
+      '<input type="text" name="CEP" id="cep" required>' +
+      '<label for="endereco">Endereço (rua, número, bairro)</label>' +
+      '<input type="text" name="Endereço" id="endereco" required>' +
+      '<div class="row">' +
+        '<div><label for="cidade">Cidade</label><input type="text" name="Cidade" id="cidade" required></div>' +
+        '<div><label for="estado">Estado</label><input type="text" name="Estado" id="estado" required></div>' +
+      '</div>' +
+      '<p class="note" style="margin-top:14px;">Pedido vinculado à conta: <strong>' + session.email + '</strong></p>' +
+
+      '<label for="comprovante">Comprovante do Pix (foto ou print)</label>' +
+      '<input type="file" name="Comprovante" id="comprovante" accept="image/*" required>' +
+
+      '<button type="submit" class="submit-btn" id="submit-btn">Enviar pedido</button>' +
+      '<p class="error-msg" id="error-msg" style="display:none;"></p>' +
+    '</form>';
+
+  document.getElementById("order-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const submitBtn = document.getElementById("submit-btn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Enviando...";
+    document.getElementById("error-msg").style.display = "none";
+
+    const nomeCliente = document.getElementById("nome").value;
+
+    const formData = new FormData(document.getElementById("order-form"));
+    formData.append("email", session.email);
+    formData.append("_subject", "Novo pedido - Sagrado de Mim (" + orderCode + ")");
+    formData.append("Código do pedido", orderCode);
+    formData.append("Resumo do pedido", orderSummary);
+
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        body: formData,
+        headers: { "Accept": "application/json" }
+      });
+
+      if (res.ok) {
+        await saveOrderToSupabase(orderCode, nomeCliente, total, cart);
+        localStorage.removeItem("sagradoCart");
+        document.getElementById("content").innerHTML =
+          '<div class="success">' +
+          '<h2>Pedido enviado! 🌿</h2>' +
+          '<p>Guarde este código para acompanhar seu pedido:</p>' +
+          '<div class="code-box">' + orderCode + '</div>' +
+          '<p>Assim que confirmarmos o pagamento, vamos começar a preparar seu perfume com todo carinho.</p>' +
+          '<a href="meus-pedidos.html" class="submit-btn" style="display:block; text-decoration:none; margin-top:16px;">Acompanhar meu pedido</a>' +
+          '</div>';
+      } else {
+        document.getElementById("error-msg").style.display = "block";
+        document.getElementById("error-msg").textContent = "Algo deu errado ao enviar o e-mail. Tente novamente em instantes.";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Enviar pedido";
+      }
+    } catch (err) {
+      document.getElementById("error-msg").style.display = "block";
+      document.getElementById("error-msg").textContent = "Erro: " + err.message;
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Enviar pedido";
+    }
+  });
+}
+
+render();
+</script>
+</body>
+</html>

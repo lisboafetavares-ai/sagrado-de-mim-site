@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sagrado de Mim — Painel da Loja</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Georgia, 'Liberation Serif', serif;
+    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    color: #332f28;
+    min-height: 100vh;
+  }
+  .top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 28px; border-bottom: 1px solid rgba(61,58,52,0.15);
+  }
+  .top-bar h1 { font-size: 20px; letter-spacing: 2px; margin: 0; font-weight: normal; }
+  .top-bar a { font-family: Arial, sans-serif; font-size: 13px; color: #556238; text-decoration: none; font-weight: 700; margin-left: 18px; }
+  .layout { display: flex; max-width: 1200px; margin: 0 auto; min-height: calc(100vh - 70px); }
+  .sidebar {
+    width: 320px; flex-shrink: 0; border-right: 1px solid rgba(61,58,52,0.15);
+    padding: 20px; overflow-y: auto;
+  }
+  .sidebar-item {
+    font-family: Arial, sans-serif; padding: 14px 16px; border-radius: 10px; cursor: pointer;
+    margin-bottom: 8px; border: 1px solid rgba(61,58,52,0.15); background: #fbf7f0;
+  }
+  .sidebar-item.active { border-color: #556238; background: #eef1e6; }
+  .sidebar-item .code { font-weight: 700; font-size: 14px; }
+  .sidebar-item .meta { font-size: 12px; color: #8a8676; margin-top: 4px; }
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .status-dot.pendente { background: #a3455a; }
+  .status-dot.confirmado { background: #556238; }
+  .main-panel { flex: 1; padding: 32px 40px; }
+  label { font-family: Arial, sans-serif; font-size: 13px; font-weight: 700; display: block; margin-bottom: 6px; margin-top: 18px; }
+  input[type="text"], select {
+    width: 100%; font-family: Arial, sans-serif; font-size: 15px; padding: 12px 14px;
+    border-radius: 8px; border: 1px solid rgba(61,58,52,0.3);
+  }
+  .btn {
+    font-family: Arial, sans-serif; font-weight: 700; font-size: 15px;
+    background: #556238; color: #fff; padding: 14px 22px; border-radius: 10px; border: none; cursor: pointer;
+  }
+  .row { display: flex; gap: 16px; }
+  .row > div { flex: 1; }
+  .save-msg { font-size: 13px; color: #556238; margin-top: 8px; display: none; }
+  .empty { font-family: Arial, sans-serif; text-align: center; color: #8a8676; padding: 60px 20px; font-size: 15px; }
+  .label-img { max-width: 340px; border: 1px solid rgba(61,58,52,0.2); border-radius: 8px; margin: 12px 0; display: block; }
+  .order-title { font-size: 26px; margin: 0 0 6px; }
+  .order-meta { font-family: Arial, sans-serif; font-size: 14px; color: #4a463e; margin: 0 0 20px; }
+  .item-block { border-top: 1px solid rgba(61,58,52,0.15); padding-top: 16px; margin-top: 16px; }
+  .item-title { font-family: Arial, sans-serif; font-weight: 700; font-size: 15px; margin: 0 0 4px; }
+</style>
+</head>
+<body>
+  <div class="top-bar">
+    <h1>PAINEL DA LOJA</h1>
+    <div>
+      <a href="index.html">Ver loja</a>
+      <a href="#" id="logout-link">Sair</a>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main-panel" id="main-panel">
+      <p class="empty">Selecione um pedido na lateral.</p>
+    </div>
+  </div>
+
+<script>
+const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
+const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
+let ordersCache = {};
+let activeCode = null;
+
+function sbHeaders() {
+  return {
+    "apikey": SUPABASE_ANON_KEY,
+    "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+    "Content-Type": "application/json"
+  };
+}
+
+async function fetchAllOrders() {
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/orders?order=data.desc", {
+      headers: sbHeaders()
+    });
+    if (!res.ok) return {};
+    const rows = await res.json();
+    const map = {};
+    rows.forEach(row => { map[row.order_code] = row; });
+    return map;
+  } catch (err) {
+    return {};
+  }
+}
+
+async function saveOrder(codigo, updates) {
+  await fetch(SUPABASE_URL + "/rest/v1/orders?order_code=eq." + encodeURIComponent(codigo), {
+    method: "PATCH",
+    headers: sbHeaders(),
+    body: JSON.stringify(updates)
+  });
+}
+
+function renderSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const codes = Object.keys(ordersCache);
+  if (codes.length === 0) {
+    sidebar.innerHTML = '<p class="empty">Nenhum pedido ainda.</p>';
+    return;
+  }
+  sidebar.innerHTML = codes.map(codigo => {
+    const data = ordersCache[codigo];
+    const isPago = (data.pagamento || "Pendente").toLowerCase().includes("confirmado");
+    return '<div class="sidebar-item' + (codigo === activeCode ? ' active' : '') + '" data-codigo="' + codigo + '">' +
+      '<div class="code"><span class="status-dot ' + (isPago ? 'confirmado' : 'pendente') + '"></span>' + codigo + '</div>' +
+      '<div class="meta">' + (data.cliente || "—") + ' · R$ ' + (data.total ? Number(data.total).toFixed(2).replace('.',',') : "—") + '</div>' +
+    '</div>';
+  }).join('');
+
+  sidebar.querySelectorAll(".sidebar-item").forEach(el => {
+    el.addEventListener("click", () => {
+      activeCode = el.dataset.codigo;
+      renderSidebar();
+      renderMainPanel(activeCode);
+    });
+  });
+}
+
+function renderMainPanel(codigo) {
+  const data = ordersCache[codigo];
+  const main = document.getElementById("main-panel");
+
+  const itensHtml = (data.itens || []).map(item => {
+    const imgHtml = item.etiquetaImg
+      ? '<img src="' + item.etiquetaImg + '" class="label-img" alt="Etiqueta">'
+      : '';
+    return '<div class="item-block">' +
+      '<p class="item-title">' + item.tipo + ' — R$ ' + Number(item.preco).toFixed(2).replace('.',',') + '</p>' +
+      imgHtml +
+    '</div>';
+  }).join('');
+
+  main.innerHTML =
+    '<p class="order-title">' + codigo + '</p>' +
+    '<p class="order-meta">Cliente: ' + (data.cliente || "—") + ' · E-mail: ' + (data.email || "—") + ' · Total: R$ ' + (data.total ? Number(data.total).toFixed(2).replace('.',',') : "—") + '</p>' +
+    itensHtml +
+    '<div class="row" style="margin-top:20px;">' +
+      '<div>' +
+        '<label>Pagamento</label>' +
+        '<select class="f-pagamento">' +
+          '<option value="Pendente"' + (data.pagamento === "Pendente" ? " selected" : "") + '>Pendente</option>' +
+          '<option value="Confirmado"' + (data.pagamento === "Confirmado" ? " selected" : "") + '>Confirmado</option>' +
+        '</select>' +
+      '</div>' +
+      '<div>' +
+        '<label>Envio</label>' +
+        '<select class="f-envio">' +
+          '<option value="Pedido confirmado"' + (data.envio === "Pedido confirmado" ? " selected" : "") + '>Pedido confirmado</option>' +
+          '<option value="Em produção"' + (data.envio === "Em produção" ? " selected" : "") + '>Em produção</option>' +
+          '<option value="Embalado"' + (data.envio === "Embalado" ? " selected" : "") + '>Embalado</option>' +
+          '<option value="Postado"' + (data.envio === "Postado" ? " selected" : "") + '>Postado</option>' +
+        '</select>' +
+      '</div>' +
+    '</div>' +
+    '<label>Transportadora</label>' +
+    '<input type="text" class="f-transportadora" value="' + (data.transportadora || "") + '" placeholder="Ex: Correios, Jadlog...">' +
+    '<label>Código de rastreio</label>' +
+    '<input type="text" class="f-rastreio" value="' + (data.rastreio || "") + '" placeholder="Ex: BR123456789BR">' +
+    '<div style="margin-top:20px;">' +
+      '<button type="button" class="btn" id="save-btn">Salvar</button>' +
+      '<p class="save-msg" id="save-msg">Salvo!</p>' +
+    '</div>';
+
+  document.getElementById("save-btn").addEventListener("click", async () => {
+    const updates = {
+      pagamento: main.querySelector(".f-pagamento").value,
+      envio: main.querySelector(".f-envio").value,
+      transportadora: main.querySelector(".f-transportadora").value.trim(),
+      rastreio: main.querySelector(".f-rastreio").value.trim()
+    };
+    await saveOrder(codigo, updates);
+    ordersCache[codigo] = { ...data, ...updates };
+    document.getElementById("save-msg").style.display = "block";
+    setTimeout(() => { document.getElementById("save-msg").style.display = "none"; }, 2000);
+    renderSidebar();
+  });
+}
+
+async function loadAll() {
+  ordersCache = await fetchAllOrders();
+  const codes = Object.keys(ordersCache);
+  renderSidebar();
+  if (codes.length > 0) {
+    activeCode = codes[0];
+    renderSidebar();
+    renderMainPanel(activeCode);
+  }
+}
+
+document.getElementById("logout-link").addEventListener("click", (e) => {
+  e.preventDefault();
+  localStorage.removeItem("sagradoSession");
+  window.location.href = "auth.html";
+});
+
+if (SUPABASE_URL.includes("COLE_AQUI")) {
+  document.getElementById("main-panel").innerHTML = '<p class="empty">Este painel ainda não está conectado ao Supabase.</p>';
+} else if (!session) {
+  window.location.href = "auth.html";
+} else if (!session.isAdmin) {
+  window.location.href = "index.html";
+} else {
+  loadAll();
+}
+</script>
+</body>
+</html>

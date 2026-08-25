@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sagrado de Mim — Entrar</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    font-family: Georgia, 'Liberation Serif', serif;
+    color: #332f28;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card {
+    background: #fbf7f0;
+    border: 1px solid rgba(61,58,52,0.25);
+    border-radius: 18px;
+    max-width: 420px;
+    width: 100%;
+    padding: 40px 32px;
+    box-shadow: 0 10px 30px rgba(61,58,52,0.08);
+  }
+  .brand { text-align: center; margin-bottom: 24px; }
+  .brand h1 { font-size: 24px; letter-spacing: 4px; margin: 0; font-weight: normal; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tab {
+    flex: 1; text-align: center; padding: 10px; font-family: Arial, sans-serif; font-size: 13px;
+    font-weight: 700; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid rgba(61,58,52,0.25); color: #8a8676;
+  }
+  .tab.active { background: #556238; color: #fff; border-color: #556238; }
+  label { font-family: Arial, sans-serif; font-size: 13px; font-weight: 700; display: block; margin-bottom: 4px; margin-top: 12px; }
+  input {
+    width: 100%; font-family: Arial, sans-serif; font-size: 14px; padding: 10px 12px;
+    border-radius: 8px; border: 1px solid rgba(61,58,52,0.3);
+  }
+  .btn {
+    width: 100%; font-family: Arial, sans-serif; font-weight: 700; font-size: 15px;
+    background: #556238; color: #fff; padding: 14px; border-radius: 10px; border: none; margin-top: 20px; cursor: pointer;
+  }
+  .btn:disabled { opacity: 0.6; }
+  .error-msg { font-family: Arial, sans-serif; color: #a3455a; font-size: 13px; text-align: center; margin-top: 12px; }
+  .info-msg { font-family: Arial, sans-serif; color: #556238; font-size: 13px; text-align: center; margin-top: 12px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand"><h1>SAGRADO DE MIM</h1></div>
+    <div class="tabs">
+      <div class="tab active" id="tab-login">Entrar</div>
+      <div class="tab" id="tab-signup">Criar conta</div>
+    </div>
+
+    <label for="email-input">E-mail</label>
+    <input type="email" id="email-input">
+    <label for="password-input" id="password-label">Senha</label>
+    <input type="password" id="password-input">
+
+    <button type="button" class="btn" id="submit-btn">Entrar</button>
+    <p id="forgot-link" style="text-align:center; margin-top:12px; font-family:Arial,sans-serif; font-size:12px;"><a href="#" style="color:#8a8676;">Esqueci minha senha</a></p>
+    <p class="error-msg" id="error-msg" style="display:none;"></p>
+    <p class="info-msg" id="info-msg" style="display:none;"></p>
+  </div>
+
+<script>
+// ATENÇÃO: cole aqui a URL e a chave "anon public" do seu projeto Supabase
+const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
+const ADMIN_EMAIL = "lisboafetavares@gmail.com";
+
+function sbHeaders() {
+  return {
+    "apikey": SUPABASE_ANON_KEY,
+    "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+    "Content-Type": "application/json"
+  };
+}
+
+async function hashPassword(password) {
+  const enc = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function getUser(email) {
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/users?email=eq." + encodeURIComponent(email), {
+      headers: sbHeaders()
+    });
+    if (!res.ok) return null;
+    const rows = await res.json();
+    return rows[0] || null;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function saveUser(email, passwordHash, isAdmin) {
+  const res = await fetch(SUPABASE_URL + "/rest/v1/users", {
+    method: "POST",
+    headers: sbHeaders(),
+    body: JSON.stringify({ email, password_hash: passwordHash, is_admin: isAdmin })
+  });
+  return res.ok;
+}
+
+async function updatePassword(email, passwordHash) {
+  const res = await fetch(SUPABASE_URL + "/rest/v1/users?email=eq." + encodeURIComponent(email), {
+    method: "PATCH",
+    headers: sbHeaders(),
+    body: JSON.stringify({ password_hash: passwordHash })
+  });
+  return res.ok;
+}
+
+function setSession(email, isAdmin) {
+  localStorage.setItem("sagradoSession", JSON.stringify({ email, isAdmin }));
+}
+
+let mode = "login";
+
+function setMode(newMode) {
+  mode = newMode;
+  document.getElementById("tab-login").classList.toggle("active", mode === "login");
+  document.getElementById("tab-signup").classList.toggle("active", mode === "signup" || mode === "reset");
+  document.getElementById("submit-btn").textContent = mode === "login" ? "Entrar" : (mode === "reset" ? "Redefinir senha" : "Criar conta");
+  document.getElementById("password-label").textContent = mode === "reset" ? "Nova senha" : "Senha";
+  document.getElementById("forgot-link").style.display = mode === "login" ? "block" : "none";
+  document.getElementById("error-msg").style.display = "none";
+  document.getElementById("info-msg").style.display = "none";
+}
+
+document.getElementById("tab-login").addEventListener("click", () => setMode("login"));
+document.getElementById("tab-signup").addEventListener("click", () => setMode("signup"));
+document.querySelector("#forgot-link a").addEventListener("click", (e) => {
+  e.preventDefault();
+  setMode("reset");
+});
+
+function redirectAfterLogin(isAdmin) {
+  window.location.href = isAdmin ? "admin.html" : "index.html";
+}
+
+const existingSession = JSON.parse(localStorage.getItem("sagradoSession") || "null");
+if (existingSession) {
+  redirectAfterLogin(existingSession.isAdmin);
+}
+
+document.getElementById("submit-btn").addEventListener("click", async () => {
+  const errorMsg = document.getElementById("error-msg");
+  const infoMsg = document.getElementById("info-msg");
+  errorMsg.style.display = "none";
+  infoMsg.style.display = "none";
+
+  if (SUPABASE_URL.includes("COLE_AQUI")) {
+    errorMsg.textContent = "O site ainda não está conectado. Fale com a loja.";
+    errorMsg.style.display = "block";
+    return;
+  }
+
+  const email = document.getElementById("email-input").value.trim().toLowerCase();
+  const password = document.getElementById("password-input").value;
+
+  if (!email || !password) {
+    errorMsg.textContent = "Preencha e-mail e senha.";
+    errorMsg.style.display = "block";
+    return;
+  }
+
+  const btn = document.getElementById("submit-btn");
+  btn.disabled = true;
+  const passwordHash = await hashPassword(password);
+
+  if (mode === "login") {
+    const user = await getUser(email);
+    btn.disabled = false;
+    if (!user || user.password_hash !== passwordHash) {
+      errorMsg.textContent = "E-mail ou senha incorretos.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    const isAdmin = email === ADMIN_EMAIL;
+    setSession(email, isAdmin);
+    redirectAfterLogin(isAdmin);
+  } else if (mode === "reset") {
+    const existing = await getUser(email);
+    btn.disabled = false;
+    if (!existing) {
+      errorMsg.textContent = "Não encontramos uma conta com esse e-mail.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    const updated = await updatePassword(email, passwordHash);
+    if (!updated) {
+      errorMsg.textContent = "Não foi possível redefinir a senha agora. Tente novamente.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    infoMsg.textContent = "Senha redefinida! Já pode entrar com a nova senha.";
+    infoMsg.style.display = "block";
+    document.getElementById("password-input").value = "";
+    setMode("login");
+  } else {
+    const existing = await getUser(email);
+    if (existing) {
+      btn.disabled = false;
+      errorMsg.textContent = "Este e-mail já tem conta. Faça login.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    const isAdmin = email === ADMIN_EMAIL;
+    const saved = await saveUser(email, passwordHash, isAdmin);
+    btn.disabled = false;
+    if (!saved) {
+      errorMsg.textContent = "Não foi possível criar a conta agora. Tente novamente em instantes.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    setSession(email, isAdmin);
+    redirectAfterLogin(isAdmin);
+  }
+});
+</script>
+</body>
+</html>

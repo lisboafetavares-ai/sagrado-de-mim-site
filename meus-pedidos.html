@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sagrado de Mim — Meus Pedidos</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    font-family: Georgia, 'Liberation Serif', serif;
+    color: #332f28;
+    min-height: 100vh;
+  }
+  .card {
+    background: #fbf7f0;
+    border: 1px solid rgba(61,58,52,0.25);
+    border-radius: 18px;
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 36px 32px;
+    box-shadow: 0 10px 30px rgba(61,58,52,0.08);
+  }
+  h1 { font-size: 22px; letter-spacing: 2px; margin: 0 0 6px; font-weight: normal; text-align:center; }
+  .back-link { display:block; text-align:center; font-family:Arial,sans-serif; font-size:12px; color:#8a8676; text-decoration:none; margin-bottom:14px; }
+  .order-card {
+    border: 1px solid rgba(61,58,52,0.2);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    font-family: Arial, sans-serif;
+  }
+  .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .order-code { font-weight: 700; font-size: 14px; }
+  .order-date { font-size: 12px; color: #8a8676; }
+  .order-item { font-size: 13px; color: #4a463e; margin: 3px 0; }
+  .order-total { font-weight: 700; margin-top: 8px; font-size: 14px; }
+  .timeline { margin: 14px 0; }
+  .timeline-step { display: flex; gap: 12px; }
+  .timeline-marker { display: flex; flex-direction: column; align-items: center; }
+  .timeline-dot {
+    width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+  }
+  .timeline-dot.done { background: #556238; color: #fff; }
+  .timeline-dot.pending { background: #fff; border: 2px solid rgba(61,58,52,0.25); color: transparent; }
+  .timeline-line { width: 2px; flex: 1; background: rgba(61,58,52,0.2); min-height: 24px; }
+  .timeline-content { padding-bottom: 18px; }
+  .timeline-label { font-weight: 700; font-size: 13px; margin: 0 0 2px; color: #332f28; text-transform: capitalize; }
+  .timeline-detail { font-size: 12px; color: #4a463e; margin: 0; }
+  .empty { font-family: Arial, sans-serif; text-align: center; color: #8a8676; padding: 30px 10px; line-height: 1.6; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" class="back-link">&larr; Voltar para o início</a>
+    <h1>MEUS PEDIDOS</h1>
+    <div id="orders-area"></div>
+  </div>
+
+<script>
+const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
+const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
+
+function sbHeaders() {
+  return {
+    "apikey": SUPABASE_ANON_KEY,
+    "Authorization": "Bearer " + SUPABASE_ANON_KEY
+  };
+}
+
+const STAGES = ["Pedido confirmado", "Em produção", "Embalado", "Postado"];
+
+function renderTimeline(status) {
+  const pago = (status.pagamento || "Pendente").toLowerCase().includes("confirmado");
+  const currentIndex = Math.max(0, STAGES.indexOf(status.envio || "Pedido confirmado"));
+
+  const step = (label, isDone, detailHtml, isLast) => {
+    return '<div class="timeline-step">' +
+      '<div class="timeline-marker">' +
+        '<div class="timeline-dot ' + (isDone ? 'done' : 'pending') + '">' + (isDone ? '✓' : '') + '</div>' +
+        (isLast ? '' : '<div class="timeline-line"></div>') +
+      '</div>' +
+      '<div class="timeline-content">' +
+        '<p class="timeline-label">' + label + '</p>' +
+        detailHtml +
+      '</div>' +
+    '</div>';
+  };
+
+  const pagamentoBadge = '<p class="timeline-detail" style="margin-bottom:12px;"><strong>Pagamento:</strong> ' + (pago ? 'Confirmado ✓' : 'Aguardando confirmação') + '</p>';
+
+  const stepsHtml = STAGES.map((stageLabel, idx) => {
+    const isDone = idx <= currentIndex;
+    const isLast = idx === STAGES.length - 1;
+    let detail = '<p class="timeline-detail"></p>';
+    if (stageLabel === "Postado" && idx === currentIndex) {
+      const transp = status.transportadora ? '<p class="timeline-detail"><strong>' + status.transportadora + '</strong></p>' : '';
+      const rastreio = status.rastreio ? '<p class="timeline-detail">Código: <strong>' + status.rastreio + '</strong></p>' : '';
+      detail = transp + rastreio;
+    }
+    return step(stageLabel, isDone, detail, isLast);
+  }).join('');
+
+  return pagamentoBadge + '<div class="timeline">' + stepsHtml + '</div>';
+}
+
+async function render() {
+  const area = document.getElementById("orders-area");
+
+  if (!session) {
+    window.location.href = "auth.html";
+    return;
+  }
+
+  area.innerHTML = '<p class="empty">Carregando seus pedidos...</p>';
+
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/orders?email=eq." + encodeURIComponent(session.email) + "&order=data.desc", {
+      headers: sbHeaders()
+    });
+    const orders = await res.json();
+
+    if (!orders || orders.length === 0) {
+      area.innerHTML = '<p class="empty">Você ainda não tem pedidos por aqui.<br><a href="index.html">Fazer meu primeiro perfume →</a></p>';
+      return;
+    }
+
+    area.innerHTML = orders.map(order => {
+      const itemsHtml = (order.itens || []).map(item => '<p class="order-item">• ' + item.tipo + '</p>').join('');
+      return '<div class="order-card">' +
+        '<div class="order-header">' +
+          '<span class="order-code">' + order.order_code + '</span>' +
+          '<span class="order-date">' + (order.data || '') + '</span>' +
+        '</div>' +
+        renderTimeline(order) +
+        '<div style="margin-top:6px;">' + itemsHtml + '</div>' +
+        '<p class="order-total">Total: R$ ' + (order.total ? Number(order.total).toFixed(2).replace('.',',') : '—') + '</p>' +
+      '</div>';
+    }).join('');
+  } catch (err) {
+    area.innerHTML = '<p class="empty">Não foi possível carregar seus pedidos agora.</p>';
+  }
+}
+
+render();
+</script>
+</body>
+</html>
