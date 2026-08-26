@@ -111,25 +111,32 @@ async function saveOrderToSupabase(orderCode, nome, total, cart, endereco, cidad
     etiquetaImg: item.etiquetaImg || null
   }));
 
-  const res = await fetch(SUPABASE_URL + "/rest/v1/orders", {
+  const basePayload = {
+    order_code: orderCode,
+    cliente: nome,
+    email: session.email,
+    total: total,
+    pagamento: "Pendente",
+    envio: "Pedido confirmado",
+    rastreio: "",
+    itens: itensSummary,
+    data: new Date().toLocaleDateString('pt-BR')
+  };
+
+  let res = await fetch(SUPABASE_URL + "/rest/v1/orders", {
     method: "POST",
     headers: sbHeaders(),
-    body: JSON.stringify({
-      order_code: orderCode,
-      cliente: nome,
-      email: session.email,
-      total: total,
-      pagamento: "Pendente",
-      envio: "Pedido confirmado",
-      rastreio: "",
-      itens: itensSummary,
-      data: new Date().toLocaleDateString('pt-BR'),
-      endereco: endereco,
-      cidade: cidade,
-      estado: estado,
-      cep: cep
-    })
+    body: JSON.stringify({ ...basePayload, endereco, cidade, estado, cep })
   });
+
+  if (!res.ok) {
+    // provavelmente as colunas de endereço ainda não existem no banco — tenta salvar sem elas
+    res = await fetch(SUPABASE_URL + "/rest/v1/orders", {
+      method: "POST",
+      headers: sbHeaders(),
+      body: JSON.stringify(basePayload)
+    });
+  }
 
   if (!res.ok) {
     throw new Error("Não foi possível registrar o pedido no painel.");

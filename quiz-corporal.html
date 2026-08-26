@@ -457,6 +457,7 @@ let activeQuestions = [];
 let current = 0;
 let scores = {};
 let occasionAnswer = "";
+let answerLog = []; // guarda a família (ou null) escolhida em cada pergunta, na ordem, pra poder desfazer ao voltar
 
 function renderProgress() {
   const bar = document.getElementById("progress");
@@ -485,11 +486,35 @@ function renderGenderQuestion() {
       const opt = genderQuestion.opts[parseInt(btn.dataset.idx)];
       genderAnswer = opt.v;
       activeQuestions = [occasionQuestion, ...questionSets[genderAnswer]];
+      answerLog = [];
       stage = "quiz";
       current = 0;
       renderQuestion();
     });
   });
+}
+
+function goBack() {
+  if (current === 0) {
+    // volta pra pergunta de gênero, desfazendo tudo (nenhuma pontuação foi dada ainda nesse ponto)
+    genderAnswer = "";
+    activeQuestions = [];
+    answerLog = [];
+    scores = {};
+    occasionAnswer = "";
+    stage = "gender";
+    renderGenderQuestion();
+    return;
+  }
+  current--;
+  const lastFamily = answerLog.pop();
+  if (lastFamily) {
+    scores[lastFamily] = Math.max(0, (scores[lastFamily] || 0) - 1);
+  }
+  if (current === 0 && activeQuestions[0] && activeQuestions[0].isOccasion) {
+    occasionAnswer = "";
+  }
+  renderQuestion();
 }
 
 function renderQuestion() {
@@ -503,15 +528,22 @@ function renderQuestion() {
       '<button type="button" class="option" data-idx="' + idx + '">' + o.t + '</button>'
     ).join('') +
     '</div>' +
-    '<p class="step-label">Pergunta ' + (current+2) + ' de ' + (activeQuestions.length+1) + '</p>';
+    '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">' +
+      '<button type="button" id="back-btn" style="background:none; border:none; color:#8a8676; font-family:Arial,sans-serif; font-size:13px; cursor:pointer; padding:0;">&larr; Voltar</button>' +
+      '<p class="step-label" style="margin:0;">Pergunta ' + (current+2) + ' de ' + (activeQuestions.length+1) + '</p>' +
+    '</div>';
+
+  document.getElementById("back-btn").addEventListener("click", goBack);
 
   area.querySelectorAll(".option").forEach(btn => {
     btn.addEventListener("click", () => {
       const opt = item.opts[parseInt(btn.dataset.idx)];
       if (item.isOccasion) {
         occasionAnswer = opt.t;
+        answerLog.push(null);
       } else {
         scores[opt.f] = (scores[opt.f] || 0) + 1;
+        answerLog.push(opt.f);
       }
       current++;
       if (current < activeQuestions.length) {
@@ -760,7 +792,7 @@ function renderFinalSummary() {
     '<button type="button" class="restart" id="restart-final" style="margin-top:10px;">Fazer outro perfume</button>';
 
   document.getElementById("restart-final").addEventListener("click", () => {
-    stage = "gender"; genderAnswer = ""; activeQuestions = []; current = 0; scores = {};
+    stage = "gender"; genderAnswer = ""; activeQuestions = []; current = 0; scores = {}; answerLog = [];
     occasionAnswer = ""; capAnswer = ""; perfumeName = ""; placedIcons = []; selectedPaletteId = null; labelImageDataUrl = null; referenceAnswer = "";
     document.getElementById("progress").classList.remove("hidden");
     document.getElementById("quiz-area").classList.remove("hidden");
