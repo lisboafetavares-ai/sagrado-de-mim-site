@@ -56,6 +56,8 @@
       <div class="tab" id="tab-signup">Criar conta</div>
     </div>
 
+    <p id="promo-msg" style="display:none; background:#eef1e6; border-radius:10px; padding:12px 14px; font-family:Arial,sans-serif; font-size:13px; text-align:center; color:#556238; margin:0 0 8px;">🎁 Cadastre-se e ganhe uma amostra surpresa no seu primeiro pedido!</p>
+
     <label for="email-input">E-mail</label>
     <input type="email" id="email-input">
     <label for="password-input" id="password-label">Senha</label>
@@ -130,6 +132,7 @@ function setMode(newMode) {
   document.getElementById("submit-btn").textContent = mode === "login" ? "Entrar" : (mode === "reset" ? "Redefinir senha" : "Criar conta");
   document.getElementById("password-label").textContent = mode === "reset" ? "Nova senha" : "Senha";
   document.getElementById("forgot-link").style.display = mode === "login" ? "block" : "none";
+  document.getElementById("promo-msg").style.display = mode === "signup" ? "block" : "none";
   document.getElementById("error-msg").style.display = "none";
   document.getElementById("info-msg").style.display = "none";
 }

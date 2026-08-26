@@ -155,6 +155,8 @@
         <div class="auth-tab" id="auth-tab-signup">Criar conta</div>
       </div>
 
+      <p id="auth-promo" style="display:none; background:#eef1e6; border-radius:10px; padding:12px 14px; font-family:Arial,sans-serif; font-size:13px; text-align:center; color:#556238; margin:0 0 8px;">🎁 Cadastre-se e ganhe uma amostra surpresa no seu primeiro pedido!</p>
+
       <label for="auth-email-input">E-mail</label>
       <input type="email" id="auth-email-input">
       <label for="auth-password-input" id="auth-password-label">Senha</label>
@@ -276,6 +278,7 @@ function setAuthMode(newMode) {
   document.getElementById("auth-submit-btn").textContent = authMode === "login" ? "Entrar" : (authMode === "reset" ? "Redefinir senha" : "Criar conta");
   document.getElementById("auth-password-label").textContent = authMode === "reset" ? "Nova senha" : "Senha";
   document.getElementById("auth-forgot-link").style.display = authMode === "login" ? "block" : "none";
+  document.getElementById("auth-promo").style.display = authMode === "signup" ? "block" : "none";
   document.getElementById("auth-error-msg").style.display = "none";
   document.getElementById("auth-info-msg").style.display = "none";
 }

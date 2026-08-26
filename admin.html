@@ -163,10 +163,17 @@ function renderMainPanel(codigo) {
     ? '<p class="order-meta" style="margin-top:-14px; color:#c9a24a;">Avaliação: ' + '★'.repeat(data.avaliacao_nota) + '☆'.repeat(5 - data.avaliacao_nota) + (data.avaliacao_comentario ? ' — "' + data.avaliacao_comentario + '"' : '') + '</p>'
     : '';
 
+  const pedidosDesseEmail = Object.values(ordersCache).filter(o => o.email === data.email).length;
+  const isPrimeiraCompra = pedidosDesseEmail <= 1;
+  const primeiraCompraHtml = isPrimeiraCompra
+    ? '<p style="background:#eef1e6; color:#556238; font-family:Arial,sans-serif; font-weight:700; font-size:13px; padding:10px 14px; border-radius:8px; margin:8px 0;">🎁 Primeira compra dessa cliente — inclua a amostra de boas-vindas!</p>'
+    : '';
+
   main.innerHTML =
     '<p class="order-title">' + codigo + '</p>' +
     '<p class="order-meta">Cliente: ' + (data.cliente || "—") + ' · E-mail: ' + (data.email || "—") + ' · Total: R$ ' + (data.total ? Number(data.total).toFixed(2).replace('.',',') : "—") + '</p>' +
     (enderecoCompleto ? '<p class="order-meta" style="margin-top:-14px;">Endereço: ' + enderecoCompleto + '</p>' : '') +
+    primeiraCompraHtml +
     reviewHtml +
     itensHtml +
     '<div class="row" style="margin-top:20px;">' +
