@@ -69,8 +69,7 @@ const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
 function sbHeaders() {
   return {
     "apikey": SUPABASE_ANON_KEY,
-    "Authorization": "Bearer " + SUPABASE_ANON_KEY
-  };
+    };
 }
 
 const STAGES = ["Pedido confirmado", "Em produção", "Embalado", "Postado"];
