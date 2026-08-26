@@ -116,9 +116,56 @@
     color: #8a8676;
     padding: 20px;
   }
+  .auth-overlay {
+    position: fixed; inset: 0; background: rgba(50,45,38,0.55);
+    display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+  }
+  .auth-card {
+    background: #fbf7f0; border: 1px solid rgba(61,58,52,0.25); border-radius: 18px;
+    max-width: 420px; width: 100%; padding: 40px 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .auth-brand { text-align: center; margin-bottom: 24px; }
+  .auth-brand h2 { font-size: 24px; letter-spacing: 4px; margin: 0; font-weight: normal; }
+  .auth-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .auth-tab {
+    flex: 1; text-align: center; padding: 10px; font-family: Arial, sans-serif; font-size: 13px;
+    font-weight: 700; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid rgba(61,58,52,0.25); color: #8a8676;
+  }
+  .auth-tab.active { background: #556238; color: #fff; border-color: #556238; }
+  .auth-card label { font-family: Arial, sans-serif; font-size: 13px; font-weight: 700; display: block; margin-bottom: 4px; margin-top: 12px; }
+  .auth-card input {
+    width: 100%; font-family: Arial, sans-serif; font-size: 14px; padding: 10px 12px;
+    border-radius: 8px; border: 1px solid rgba(61,58,52,0.3);
+  }
+  .auth-btn {
+    width: 100%; font-family: Arial, sans-serif; font-weight: 700; font-size: 15px;
+    background: #556238; color: #fff; padding: 14px; border-radius: 10px; border: none; margin-top: 20px; cursor: pointer;
+  }
+  .auth-btn:disabled { opacity: 0.6; }
+  .auth-error { font-family: Arial, sans-serif; color: #a3455a; font-size: 13px; text-align: center; margin-top: 12px; }
+  .auth-info { font-family: Arial, sans-serif; color: #556238; font-size: 13px; text-align: center; margin-top: 12px; }
 </style>
 </head>
 <body>
+  <div id="auth-overlay" class="auth-overlay" style="display:none;">
+    <div class="auth-card">
+      <div class="auth-brand"><h2>SAGRADO DE MIM</h2></div>
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="auth-tab-login">Entrar</div>
+        <div class="auth-tab" id="auth-tab-signup">Criar conta</div>
+      </div>
+
+      <label for="auth-email-input">E-mail</label>
+      <input type="email" id="auth-email-input">
+      <label for="auth-password-input" id="auth-password-label">Senha</label>
+      <input type="password" id="auth-password-input">
+
+      <button type="button" class="auth-btn" id="auth-submit-btn">Entrar</button>
+      <p id="auth-forgot-link" style="text-align:center; margin-top:12px; font-family:Arial,sans-serif; font-size:12px;"><a href="#" style="color:#8a8676;">Esqueci minha senha</a></p>
+      <p class="auth-error" id="auth-error-msg" style="display:none;"></p>
+      <p class="auth-info" id="auth-info-msg" style="display:none;"></p>
+    </div>
+  </div>
   <header>
     <img src="assets/logo.jpeg" alt="Logo Sagrado de Mim" class="logo">
     <h1>SAGRADO DE MIM</h1>
@@ -171,9 +218,147 @@
   </footer>
 
 <script>
+// ATENÇÃO: cole aqui a URL e a chave "anon public" do seu projeto Supabase (mesmas usadas nos outros arquivos)
+const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
+const ADMIN_EMAIL = "lisboafetavares@gmail.com";
+
+function sbHeaders() {
+  return { "apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json" };
+}
+
+async function hashPassword(password) {
+  const enc = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function getUser(email) {
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/users?email=eq." + encodeURIComponent(email), { headers: sbHeaders() });
+    if (!res.ok) return null;
+    const rows = await res.json();
+    return rows[0] || null;
+  } catch (err) { return null; }
+}
+
+async function saveUser(email, passwordHash, isAdmin) {
+  const res = await fetch(SUPABASE_URL + "/rest/v1/users", {
+    method: "POST", headers: sbHeaders(),
+    body: JSON.stringify({ email, password_hash: passwordHash, is_admin: isAdmin })
+  });
+  return res.ok;
+}
+
+async function updatePassword(email, passwordHash) {
+  const res = await fetch(SUPABASE_URL + "/rest/v1/users?email=eq." + encodeURIComponent(email), {
+    method: "PATCH", headers: sbHeaders(),
+    body: JSON.stringify({ password_hash: passwordHash })
+  });
+  return res.ok;
+}
+
+function setSession(email, isAdmin) {
+  localStorage.setItem("sagradoSession", JSON.stringify({ email, isAdmin }));
+}
+
+function onLoggedIn(isAdmin) {
+  document.getElementById("auth-overlay").style.display = "none";
+  if (isAdmin) document.getElementById("admin-link").style.display = "inline";
+}
+
+let authMode = "login";
+
+function setAuthMode(newMode) {
+  authMode = newMode;
+  document.getElementById("auth-tab-login").classList.toggle("active", authMode === "login");
+  document.getElementById("auth-tab-signup").classList.toggle("active", authMode === "signup" || authMode === "reset");
+  document.getElementById("auth-submit-btn").textContent = authMode === "login" ? "Entrar" : (authMode === "reset" ? "Redefinir senha" : "Criar conta");
+  document.getElementById("auth-password-label").textContent = authMode === "reset" ? "Nova senha" : "Senha";
+  document.getElementById("auth-forgot-link").style.display = authMode === "login" ? "block" : "none";
+  document.getElementById("auth-error-msg").style.display = "none";
+  document.getElementById("auth-info-msg").style.display = "none";
+}
+
+document.getElementById("auth-tab-login").addEventListener("click", () => setAuthMode("login"));
+document.getElementById("auth-tab-signup").addEventListener("click", () => setAuthMode("signup"));
+document.querySelector("#auth-forgot-link a").addEventListener("click", (e) => {
+  e.preventDefault();
+  setAuthMode("reset");
+});
+
+document.getElementById("auth-submit-btn").addEventListener("click", async () => {
+  const errorMsg = document.getElementById("auth-error-msg");
+  const infoMsg = document.getElementById("auth-info-msg");
+  errorMsg.style.display = "none";
+  infoMsg.style.display = "none";
+
+  const email = document.getElementById("auth-email-input").value.trim().toLowerCase();
+  const password = document.getElementById("auth-password-input").value;
+
+  if (!email || !password) {
+    errorMsg.textContent = "Preencha e-mail e senha.";
+    errorMsg.style.display = "block";
+    return;
+  }
+
+  const btn = document.getElementById("auth-submit-btn");
+  btn.disabled = true;
+  const passwordHash = await hashPassword(password);
+
+  if (authMode === "login") {
+    const user = await getUser(email);
+    btn.disabled = false;
+    if (!user || user.password_hash !== passwordHash) {
+      errorMsg.textContent = "E-mail ou senha incorretos.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    const isAdmin = email === ADMIN_EMAIL;
+    setSession(email, isAdmin);
+    onLoggedIn(isAdmin);
+  } else if (authMode === "reset") {
+    const existing = await getUser(email);
+    btn.disabled = false;
+    if (!existing) {
+      errorMsg.textContent = "Não encontramos uma conta com esse e-mail.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    const updated = await updatePassword(email, passwordHash);
+    if (!updated) {
+      errorMsg.textContent = "Não foi possível redefinir a senha agora. Tente novamente.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    infoMsg.textContent = "Senha redefinida! Já pode entrar com a nova senha.";
+    infoMsg.style.display = "block";
+    document.getElementById("auth-password-input").value = "";
+    setAuthMode("login");
+  } else {
+    const existing = await getUser(email);
+    if (existing) {
+      btn.disabled = false;
+      errorMsg.textContent = "Este e-mail já tem conta. Faça login.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    const isAdmin = email === ADMIN_EMAIL;
+    const saved = await saveUser(email, passwordHash, isAdmin);
+    btn.disabled = false;
+    if (!saved) {
+      errorMsg.textContent = "Não foi possível criar a conta agora. Tente novamente em instantes.";
+      errorMsg.style.display = "block";
+      return;
+    }
+    setSession(email, isAdmin);
+    onLoggedIn(isAdmin);
+  }
+});
+
 const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
 if (!session) {
-  window.location.href = "auth.html";
+  document.getElementById("auth-overlay").style.display = "flex";
 }
 if (session && session.isAdmin) {
   document.getElementById("admin-link").style.display = "inline";
@@ -182,7 +367,7 @@ if (session && session.isAdmin) {
 document.getElementById("logout-link").addEventListener("click", (e) => {
   e.preventDefault();
   localStorage.removeItem("sagradoSession");
-  window.location.href = "auth.html";
+  location.reload();
 });
 
 // ATENÇÃO: cole aqui o link de "Horário de agendamento" gerado no Google Calendar
