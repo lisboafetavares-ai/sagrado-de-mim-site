@@ -604,11 +604,11 @@ let placedIcons = []; // {id, char, xPct, yPct}
 let selectedPaletteId = null;
 const iconOptions = [
   {id:"coracao", char:"♥"},
+  {id:"coracao-vazio", char:"♡"},
   {id:"estrela", char:"★"},
   {id:"sol", char:"☼"},
   {id:"lua", char:"☾"},
-  {id:"flor", char:"⚘"},
-  {id:"ramo", char:"❧"},
+  {id:"flor", char:"✿"},
   {id:"infinito", char:"∞"},
   {id:"estrela-clara", char:"✩"}
 ];
@@ -633,18 +633,18 @@ function renderCapQuestion() {
 
 function renderLabelPreview(interactive) {
   const placedHtml = placedIcons.map((p, idx) =>
-    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:16px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
+    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:18px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
   ).join('');
 
   // Tamanho real da etiqueta: 65mm x 34mm (formato paisagem, pra frasco)
-  return '<div id="label-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:8px; box-sizing:border-box; width:325px; height:170px; display:flex; align-items:center; justify-content:center; gap:8px; margin:0 auto 20px; ' + (interactive ? 'cursor:crosshair;' : '') + '">' +
-    '<div style="flex:1; text-align:center; pointer-events:none;">' +
-    '<p style="font-family:Georgia,serif; font-size:11px; letter-spacing:1.5px; margin:0 0 2px; color:#332f28;">SAGRADO DE MIM</p>' +
-    '<p style="font-family:Georgia,serif; font-style:italic; font-size:7px; margin:2px 0 5px; color:#7d9169;">uma fragrância feita para você</p>' +
-    '<p style="font-family:Georgia,serif; font-style:italic; font-size:15px; margin:5px 0 3px; color:#332f28;">' + (perfumeName || "Nome do perfume") + '</p>' +
+  return '<div id="label-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:8px; box-sizing:border-box; width:325px; height:170px; display:flex; align-items:stretch; justify-content:center; gap:8px; margin:0 auto 20px; ' + (interactive ? 'cursor:crosshair;' : '') + '">' +
+    '<div style="flex:1; text-align:center; pointer-events:none; display:flex; flex-direction:column; justify-content:space-evenly;">' +
+    '<p style="font-family:Georgia,serif; font-size:15px; letter-spacing:1.8px; margin:0; color:#332f28;">SAGRADO DE MIM</p>' +
+    '<p style="font-family:Georgia,serif; font-style:italic; font-size:9px; margin:0; color:#7d9169;">uma fragrância feita para você</p>' +
+    '<p style="font-family:Georgia,serif; font-style:italic; font-size:24px; margin:0; color:#332f28;">' + (perfumeName || "Nome do perfume") + '</p>' +
     '</div>' +
-    '<div style="position:relative; width:50px; height:140px; flex-shrink:0; pointer-events:none;">' +
-      '<div style="position:absolute; top:0; left:0; width:140px; height:50px; transform-origin:0 0; transform:rotate(90deg) translate(0,-100%); font-family:Arial,sans-serif; font-size:4.6px; line-height:1.3; color:#4a463e; border-top:1px solid rgba(61,58,52,0.2); padding-top:4px;">' +
+    '<div style="position:relative; width:52px; height:150px; flex-shrink:0; pointer-events:none;">' +
+      '<div style="position:absolute; top:0; left:0; width:150px; height:52px; transform-origin:0 0; transform:rotate(90deg) translate(0,-100%); font-family:Arial,sans-serif; font-size:5.4px; line-height:1.35; color:#4a463e; border-top:1px solid rgba(61,58,52,0.2); padding-top:4px;">' +
         '<span style="font-weight:700; color:#332f28;">PERFUME · </span>' +
         'Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético. · ' +
         'NÃO INGERIR E EVITAR CONTATO COM OS OLHOS. USO EXTERNO · ' +
