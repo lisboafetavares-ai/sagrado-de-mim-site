@@ -127,8 +127,10 @@ async function saveOrderToSupabase(orderCode, nome, total, cart, endereco, cidad
     headers: sbHeaders(),
     body: JSON.stringify({ ...basePayload, endereco, cidade, estado, cep })
   });
+  let firstErrorText = "";
 
   if (!res.ok) {
+    firstErrorText = await res.text();
     // provavelmente as colunas de endereço ainda não existem no banco — tenta salvar sem elas
     res = await fetch(SUPABASE_URL + "/rest/v1/orders", {
       method: "POST",
@@ -138,7 +140,8 @@ async function saveOrderToSupabase(orderCode, nome, total, cart, endereco, cidad
   }
 
   if (!res.ok) {
-    throw new Error("Não foi possível registrar o pedido no painel.");
+    const secondErrorText = await res.text();
+    throw new Error("Supabase: " + secondErrorText.slice(0, 200));
   }
 }
 
