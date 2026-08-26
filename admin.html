@@ -71,6 +71,7 @@
     </div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
@@ -145,10 +146,15 @@ function renderMainPanel(codigo) {
     const detalhesHtml = Object.entries(item.detalhes || {}).map(([k,v]) =>
       '<p style="margin:2px 0; font-size:13px;"><strong>' + k + ':</strong> ' + v + '</p>'
     ).join('');
+    const nomeDoPerfume = (item.detalhes || {})["Nome do perfume"];
+    const regenBtn = nomeDoPerfume
+      ? '<button type="button" class="btn regen-label-btn" data-idx="' + idx + '" data-nome="' + nomeDoPerfume.replace(/"/g,'&quot;') + '" style="margin-top:8px; margin-left:8px; font-size:13px; padding:8px 14px; background:#8a8676;">Atualizar etiqueta para o tamanho novo</button>'
+      : '';
     return '<div class="item-block">' +
       '<p class="item-title">' + item.tipo + ' — R$ ' + Number(item.preco).toFixed(2).replace('.',',') + '</p>' +
       detalhesHtml +
       imgHtml +
+      regenBtn +
     '</div>';
   }).join('');
 
@@ -199,8 +205,70 @@ function renderMainPanel(codigo) {
     setTimeout(() => { document.getElementById("save-msg").style.display = "none"; }, 2000);
     renderSidebar();
   });
+
+  main.querySelectorAll(".regen-label-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      btn.textContent = "Gerando...";
+      try {
+        const idx = parseInt(btn.dataset.idx);
+        const newUrl = await regenerateLabel(btn.dataset.nome);
+        const updatedItens = [...(data.itens || [])];
+        updatedItens[idx] = { ...updatedItens[idx], etiquetaImg: newUrl };
+        await saveOrder(codigo, { itens: updatedItens });
+        ordersCache[codigo] = { ...data, itens: updatedItens };
+        renderMainPanel(codigo);
+      } catch (err) {
+        alert("Não foi possível atualizar a etiqueta: " + err.message);
+        btn.disabled = false;
+        btn.textContent = "Atualizar etiqueta para o tamanho novo";
+      }
+    });
+  });
 }
 
+const CLOUDINARY_CLOUD_NAME = "ld4xgnhw";
+const CLOUDINARY_UPLOAD_PRESET = "vb70iaep";
+
+async function regenerateLabel(perfumeName) {
+  const holder = document.createElement("div");
+  holder.style.position = "fixed";
+  holder.style.left = "-9999px";
+  holder.style.top = "0";
+  holder.innerHTML =
+    '<div id="regen-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:8px; box-sizing:border-box; width:325px; height:170px; display:flex; align-items:center; justify-content:center; gap:8px;">' +
+      '<div style="flex:1; text-align:center;">' +
+        '<p style="font-family:Georgia,serif; font-size:15px; letter-spacing:1.8px; margin:0 0 3px; color:#332f28;">SAGRADO DE MIM</p>' +
+        '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:9px; margin:3px 0 7px; color:#4f5b42;">uma fragrância feita para você</p>' +
+        '<p style="font-family:Georgia,serif; font-style:italic; font-size:24px; margin:7px 0 3px; color:#332f28;">' + perfumeName + '</p>' +
+      '</div>' +
+      '<div style="position:relative; width:52px; height:150px; flex-shrink:0;">' +
+        '<div style="position:absolute; top:0; left:0; width:150px; height:52px; transform-origin:0 0; transform:rotate(90deg) translate(0,-100%); font-family:Arial,sans-serif; font-weight:600; font-size:5.4px; line-height:1.35; color:#241f19; border-top:1px solid rgba(61,58,52,0.2); padding-top:4px;">' +
+          '<span style="font-weight:700; color:#000000;">PERFUME · </span>' +
+          'Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético. · ' +
+          'NÃO INGERIR E EVITAR CONTATO COM OS OLHOS. USO EXTERNO · ' +
+          '<span style="font-weight:700; color:#000000;">PRODUTO ARTESANAL</span> · Válido por 1 ano' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(holder);
+
+  const canvasEl = document.getElementById("regen-canvas");
+  const canvas = await html2canvas(canvasEl, { backgroundColor: "#fdfbf7", scale: 3 });
+  document.body.removeChild(holder);
+
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+  const formData = new FormData();
+  formData.append("file", blob);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+  const res = await fetch("https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME + "/image/upload", {
+    method: "POST",
+    body: formData
+  });
+  const uploadData = await res.json();
+  if (!uploadData.secure_url) throw new Error("Falha no upload da imagem");
+  return uploadData.secure_url;
+}
 async function loadAll() {
   ordersCache = await fetchAllOrders();
   const codes = Object.keys(ordersCache);
