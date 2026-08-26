@@ -479,7 +479,8 @@ function renderGenderQuestion() {
     genderQuestion.opts.map((o, idx) =>
       '<button type="button" class="option" data-idx="' + idx + '">' + o.t + '</button>'
     ).join('') +
-    '</div>';
+    '</div>' +
+    '<a href="index.html" id="back-btn" style="display:inline-block; margin-top:12px; color:#8a8676; font-family:Arial,sans-serif; font-size:13px; text-decoration:none;">&larr; Voltar ao início</a>';
 
   area.querySelectorAll(".option").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -604,12 +605,12 @@ let selectedPaletteId = null;
 const iconOptions = [
   {id:"coracao", char:"♥"},
   {id:"estrela", char:"★"},
-  {id:"lua", char:"☾"},
-  {id:"flor", char:"❀"},
-  {id:"folha", char:"❦"},
   {id:"sol", char:"☼"},
-  {id:"diamante", char:"◆"},
-  {id:"onda", char:"〜"}
+  {id:"brilho", char:"✧"},
+  {id:"flor", char:"❁"},
+  {id:"folha", char:"☘"},
+  {id:"diamante", char:"◇"},
+  {id:"infinito", char:"∞"}
 ];
 
 let referenceAnswer = "";
