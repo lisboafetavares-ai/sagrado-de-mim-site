@@ -71,6 +71,7 @@
     </div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
@@ -137,9 +138,10 @@ function renderMainPanel(codigo) {
   const data = ordersCache[codigo];
   const main = document.getElementById("main-panel");
 
-  const itensHtml = (data.itens || []).map(item => {
+  const itensHtml = (data.itens || []).map((item, idx) => {
     const imgHtml = item.etiquetaImg
-      ? '<img src="' + item.etiquetaImg + '" class="label-img" alt="Etiqueta">'
+      ? '<img src="' + item.etiquetaImg + '" class="label-img" alt="Etiqueta">' +
+        '<button type="button" class="btn print-label-btn" data-img="' + item.etiquetaImg + '" style="margin-top:8px; font-size:13px; padding:8px 14px;">Baixar PDF para imprimir (alinhado na folha)</button>'
       : '';
     const detalhesHtml = Object.entries(item.detalhes || {}).map(([k,v]) =>
       '<p style="margin:2px 0; font-size:13px;"><strong>' + k + ':</strong> ' + v + '</p>'
@@ -198,6 +200,51 @@ function renderMainPanel(codigo) {
     setTimeout(() => { document.getElementById("save-msg").style.display = "none"; }, 2000);
     renderSidebar();
   });
+
+  main.querySelectorAll(".print-label-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      btn.textContent = "Gerando PDF...";
+      try {
+        await generateLabelPdf(btn.dataset.img, codigo);
+      } catch (err) {
+        alert("Não foi possível gerar o PDF: " + err.message);
+      }
+      btn.disabled = false;
+      btn.textContent = "Baixar PDF para imprimir (alinhado na folha)";
+    });
+  });
+}
+
+// Medidas exatas tiradas do molde real da Pimaco (folha A5, 2 colunas x 5 linhas, etiqueta 65mm x 34mm)
+async function generateLabelPdf(imgUrl, codigo) {
+  const PAGE_W = 148, PAGE_H = 210; // A5 em mm
+  const LABEL_W = 65, LABEL_H = 34;
+  const LEFT_MARGIN = 8.1, TOP_MARGIN = 20.15, COL_GAP = 2;
+
+  // baixa a imagem e converte pra base64 (necessário pro jsPDF)
+  const res = await fetch(imgUrl);
+  const blob = await res.blob();
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "mm", format: [PAGE_W, PAGE_H] });
+
+  // posiciona na primeira etiqueta (coluna 1, linha 1) — cole a etiqueta física ali e a folha continua servindo pras próximas
+  const x = LEFT_MARGIN;
+  const y = TOP_MARGIN;
+  doc.addImage(dataUrl, "PNG", x, y, LABEL_W, LABEL_H);
+
+  doc.setFontSize(7);
+  doc.setTextColor(150);
+  doc.text("Sagrado de Mim · Pedido " + codigo + " · Imprimir em Tamanho Real / 100%, papel A5", 8, PAGE_H - 6);
+
+  doc.save("etiqueta-" + codigo + ".pdf");
 }
 
 async function loadAll() {
