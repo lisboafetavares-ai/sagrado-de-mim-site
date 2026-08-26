@@ -159,11 +159,15 @@ function renderMainPanel(codigo) {
   }).join('');
 
   const enderecoCompleto = [data.endereco, data.cidade, data.estado, data.cep].filter(Boolean).join(' · ');
+  const reviewHtml = data.avaliacao_nota
+    ? '<p class="order-meta" style="margin-top:-14px; color:#c9a24a;">Avaliação: ' + '★'.repeat(data.avaliacao_nota) + '☆'.repeat(5 - data.avaliacao_nota) + (data.avaliacao_comentario ? ' — "' + data.avaliacao_comentario + '"' : '') + '</p>'
+    : '';
 
   main.innerHTML =
     '<p class="order-title">' + codigo + '</p>' +
     '<p class="order-meta">Cliente: ' + (data.cliente || "—") + ' · E-mail: ' + (data.email || "—") + ' · Total: R$ ' + (data.total ? Number(data.total).toFixed(2).replace('.',',') : "—") + '</p>' +
     (enderecoCompleto ? '<p class="order-meta" style="margin-top:-14px;">Endereço: ' + enderecoCompleto + '</p>' : '') +
+    reviewHtml +
     itensHtml +
     '<div class="row" style="margin-top:20px;">' +
       '<div>' +

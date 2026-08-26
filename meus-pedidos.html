@@ -69,6 +69,7 @@ const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
 function sbHeaders() {
   return {
     "apikey": SUPABASE_ANON_KEY,
+    "Content-Type": "application/json"
     };
 }
 
@@ -131,6 +132,18 @@ async function render() {
 
     area.innerHTML = orders.map(order => {
       const itemsHtml = (order.itens || []).map(item => '<p class="order-item">• ' + item.tipo + '</p>').join('');
+      const nota = order.avaliacao_nota || 0;
+      const starsHtml = [1,2,3,4,5].map(n =>
+        '<span class="review-star" data-order="' + order.order_code + '" data-value="' + n + '" style="cursor:pointer; font-size:22px; color:' + (n <= nota ? '#c9a24a' : '#d8d2c4') + ';">★</span>'
+      ).join('');
+      const jaAvaliou = order.avaliacao_nota ? true : false;
+      const reviewBox = '<div class="review-box" style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(61,58,52,0.15);">' +
+        '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Seu perfume já chegou? Conte pra gente como foi!</p>' +
+        '<div class="stars-row" data-order="' + order.order_code + '">' + starsHtml + '</div>' +
+        '<textarea class="review-comment" data-order="' + order.order_code + '" placeholder="Escreva sua experiência (opcional)" style="width:100%; margin-top:8px; font-family:Arial,sans-serif; font-size:13px; padding:8px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); resize:vertical; min-height:50px;">' + (order.avaliacao_comentario || '') + '</textarea>' +
+        '<button type="button" class="btn review-submit" data-order="' + order.order_code + '" style="margin-top:8px; font-family:Arial,sans-serif; font-size:13px; font-weight:700; background:#556238; color:#fff; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">' + (jaAvaliou ? 'Atualizar avaliação' : 'Enviar avaliação') + '</button>' +
+        '<span class="review-saved" data-order="' + order.order_code + '" style="display:none; margin-left:10px; font-family:Arial,sans-serif; font-size:12px; color:#556238;">Obrigada pelo carinho! 🌿</span>' +
+      '</div>';
       return '<div class="order-card">' +
         '<div class="order-header">' +
           '<span class="order-code">' + order.order_code + '</span>' +
@@ -139,11 +152,65 @@ async function render() {
         renderTimeline(order) +
         '<div style="margin-top:6px;">' + itemsHtml + '</div>' +
         '<p class="order-total">Total: R$ ' + (order.total ? Number(order.total).toFixed(2).replace('.',',') : '—') + '</p>' +
+        reviewBox +
       '</div>';
     }).join('');
+
+    attachReviewHandlers();
   } catch (err) {
     area.innerHTML = '<p class="empty">Não foi possível carregar seus pedidos agora.</p>';
   }
+}
+
+function attachReviewHandlers() {
+  const selectedRatings = {};
+
+  document.querySelectorAll(".stars-row").forEach(row => {
+    const orderCode = row.dataset.order;
+    row.querySelectorAll(".review-star").forEach(star => {
+      star.addEventListener("click", () => {
+        const value = parseInt(star.dataset.value);
+        selectedRatings[orderCode] = value;
+        row.querySelectorAll(".review-star").forEach(s => {
+          s.style.color = parseInt(s.dataset.value) <= value ? "#c9a24a" : "#d8d2c4";
+        });
+      });
+    });
+  });
+
+  document.querySelectorAll(".review-submit").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const orderCode = btn.dataset.order;
+      const comentario = document.querySelector('.review-comment[data-order="' + orderCode + '"]').value;
+      const nota = selectedRatings[orderCode];
+
+      if (!nota && !comentario) {
+        alert("Escolha uma nota ou escreva um comentário antes de enviar.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
+      try {
+        const updates = {};
+        if (nota) updates.avaliacao_nota = nota;
+        if (comentario) updates.avaliacao_comentario = comentario;
+
+        await fetch(SUPABASE_URL + "/rest/v1/orders?order_code=eq." + encodeURIComponent(orderCode), {
+          method: "PATCH",
+          headers: sbHeaders(),
+          body: JSON.stringify(updates)
+        });
+
+        document.querySelector('.review-saved[data-order="' + orderCode + '"]').style.display = "inline";
+        btn.textContent = "Atualizar avaliação";
+      } catch (err) {
+        alert("Não foi possível enviar sua avaliação agora.");
+        btn.textContent = "Enviar avaliação";
+      }
+      btn.disabled = false;
+    });
+  });
 }
 
 render();
