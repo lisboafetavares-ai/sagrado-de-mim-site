@@ -223,7 +223,8 @@ function renderMainPanel(codigo) {
       btn.textContent = "Gerando...";
       try {
         const idx = parseInt(btn.dataset.idx);
-        const newUrl = await regenerateLabel(btn.dataset.nome);
+        const item = (data.itens || [])[idx];
+        const newUrl = await regenerateLabel(btn.dataset.nome, item.iconsPosicionados || [], item.labelStyle || "classico", item.labelAccentColor || "#7d3320");
         const updatedItens = [...(data.itens || [])];
         updatedItens[idx] = { ...updatedItens[idx], etiquetaImg: newUrl };
         await saveOrder(codigo, { itens: updatedItens });
@@ -241,7 +242,11 @@ function renderMainPanel(codigo) {
 const CLOUDINARY_CLOUD_NAME = "ld4xgnhw";
 const CLOUDINARY_UPLOAD_PRESET = "vb70iaep";
 
-async function regenerateLabel(perfumeName) {
+async function regenerateLabel(perfumeName, iconsPosicionados, style, accentColor) {
+  const placedHtml = (iconsPosicionados || []).map(p =>
+    '<span style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:18px; color:#556238;">' + p.char + '</span>'
+  ).join('');
+
   const holder = document.createElement("div");
   holder.style.position = "fixed";
   holder.style.left = "-9999px";
@@ -260,6 +265,7 @@ async function regenerateLabel(perfumeName) {
         '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; margin:0 0 2px; color:#000000;">PRODUTO ARTESANAL</p>' +
         '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; margin:0; color:#000000;">Válido por 1 ano</p>' +
       '</div>' +
+      placedHtml +
     '</div>';
   document.body.appendChild(holder);
 
