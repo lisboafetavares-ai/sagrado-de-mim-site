@@ -644,11 +644,30 @@ const accentColorOptions = [
 
 function renderStyleQuestion() {
   const resultArea = document.getElementById("result-area");
+
+  const tempName = perfumeName;
+  perfumeName = "Exemplo";
+  const classicoThumb = renderLabelPreviewClassico(false);
+  const artesanalThumb = renderLabelPreviewArtesanal(false);
+  perfumeName = tempName;
+
   resultArea.innerHTML =
     '<p class="result-title">Escolha o estilo da etiqueta</p>' +
+    '<div style="display:flex; gap:14px; margin-bottom:14px; align-items:flex-start;">' +
+      '<div style="flex:1; text-align:center;">' +
+        '<div style="width:100%; height:130px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#f2efe5; border-radius:8px;">' +
+          '<div style="transform:scale(0.38); transform-origin:center;">' + classicoThumb + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="flex:1; text-align:center;">' +
+        '<div style="width:100%; height:130px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#f2efe5; border-radius:8px;">' +
+          '<div style="transform:scale(0.26); transform-origin:center;">' + artesanalThumb + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
     '<div class="options" style="margin-bottom:10px;">' +
     '<button type="button" class="option" data-style="classico">Clássico — retrato, 34×65mm</button>' +
-    '<button type="button" class="option" data-style="artesanal">Artesanal — retrato, com nome lateral, 67,7×99mm</button>' +
+    '<button type="button" class="option" data-style="artesanal">Artesanal — paisagem, com nome lateral, 99×67,7mm</button>' +
     '</div>';
   resultArea.querySelectorAll("[data-style]").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -692,34 +711,34 @@ function renderLabelPreviewArtesanal(interactive) {
 
   const accent = labelAccentColor || "#7d3320";
 
-  // Tamanho real da etiqueta: 67,7mm x 99mm (formato retrato, Pimaco A4365)
-  return '<div id="label-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:2px; box-sizing:border-box; width:338px; height:495px; margin:0 auto 20px; overflow:hidden; ' + (interactive ? 'cursor:crosshair;' : '') + '">' +
+  // Tamanho real da etiqueta: 99mm x 67,7mm (formato paisagem, mesma folha Pimaco A4365, impressa deitada)
+  return '<div id="label-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:2px; box-sizing:border-box; width:495px; height:338px; margin:0 auto 20px; overflow:hidden; ' + (interactive ? 'cursor:crosshair;' : '') + '">' +
 
     // nome da marca, vertical, junto à borda esquerda (lendo de baixo pra cima)
-    '<div style="position:relative; width:20px; height:451px; position:absolute; left:14px; top:22px; pointer-events:none;">' +
-      '<div style="position:absolute; bottom:0; left:0; width:451px; height:20px; transform-origin:0 100%; transform:rotate(-90deg); font-family:Georgia,serif; font-weight:700; font-size:13px; letter-spacing:3px; color:#000000; white-space:nowrap;">SAGRADO DE MIM</div>' +
+    '<div style="position:absolute; left:12px; top:16px; width:18px; height:306px; pointer-events:none;">' +
+      '<div style="position:absolute; bottom:0; left:0; width:306px; height:18px; transform-origin:0 100%; transform:rotate(-90deg); font-family:Georgia,serif; font-weight:700; font-size:11px; letter-spacing:2px; color:#000000; white-space:nowrap;">SAGRADO DE MIM</div>' +
     '</div>' +
 
-    // cruz decorativa (linha horizontal + vertical) separando o topo
-    '<div style="position:absolute; left:44px; right:20px; top:96px; height:1.5px; background:' + accent + '; pointer-events:none;"></div>' +
-    '<div style="position:absolute; left:170px; top:20px; bottom:150px; width:1.5px; background:' + accent + '; pointer-events:none;"></div>' +
+    // cruz decorativa, compacta, no canto superior
+    '<div style="position:absolute; left:42px; width:140px; top:58px; height:1.5px; background:' + accent + '; pointer-events:none;"></div>' +
+    '<div style="position:absolute; left:112px; top:16px; height:84px; width:1.5px; background:' + accent + '; pointer-events:none;"></div>' +
 
-    // nome do perfume, grande, no canto superior direito
-    '<div style="position:absolute; left:180px; right:18px; top:20px; text-align:right; pointer-events:none;">' +
-      '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:26px; line-height:1.15; margin:0; color:' + accent + ';">' + (perfumeName || "Nome do perfume") + '</p>' +
+    // nome do perfume, ao lado da cruz
+    '<div style="position:absolute; left:160px; right:16px; top:16px; pointer-events:none;">' +
+      '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:22px; line-height:1.1; margin:0; color:' + accent + ';">' + (perfumeName || "Nome do perfume") + '</p>' +
     '</div>' +
 
-    // área central em branco, pra colocar elementos decorativos
-    '<div style="position:absolute; left:44px; right:20px; top:110px; bottom:150px;"></div>' +
+    // área central em branco, pra colocar elementos decorativos (ilustração)
+    '<div style="position:absolute; left:42px; right:16px; top:74px; bottom:64px;"></div>' +
 
-    // rodapé: informações + tagline
-    '<div style="position:absolute; left:44px; right:20px; bottom:20px; pointer-events:none;">' +
-      '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:9px; margin:0 0 8px; color:#3d4a33;">uma fragrância feita para você</p>' +
-      '<div style="border-top:1.5px solid #000000; padding-top:6px;">' +
-        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:7px; letter-spacing:1px; margin:0 0 4px; color:#000000;">PERFUME ARTESANAL</p>' +
-        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6.3px; line-height:1.35; margin:0 0 3px; color:#000000;">Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético.</p>' +
-        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6.3px; line-height:1.35; margin:0 0 3px; color:#000000;">NÃO INGERIR E EVITAR CONTATO COM OS OLHOS. USO EXTERNO.</p>' +
-        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6.3px; margin:0; color:#000000;">Válido por 1 ano</p>' +
+    // rodapé: informações + tagline, ocupando a largura toda
+    '<div style="position:absolute; left:42px; right:16px; bottom:12px; pointer-events:none;">' +
+      '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 5px; color:#3d4a33;">uma fragrância feita para você</p>' +
+      '<div style="border-top:1.5px solid #000000; padding-top:4px;">' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6.5px; letter-spacing:1px; margin:0 0 3px; color:#000000;">PERFUME ARTESANAL</p>' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; line-height:1.3; margin:0 0 2px; color:#000000;">Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético.</p>' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; line-height:1.3; margin:0 0 2px; color:#000000;">NÃO INGERIR E EVITAR CONTATO COM OS OLHOS. USO EXTERNO.</p>' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; margin:0; color:#000000;">Válido por 1 ano</p>' +
       '</div>' +
     '</div>' +
 
