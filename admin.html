@@ -148,7 +148,7 @@ function renderMainPanel(codigo) {
     ).join('');
     const nomeDoPerfume = (item.detalhes || {})["Nome do perfume"];
     const regenBtn = nomeDoPerfume
-      ? '<button type="button" class="btn regen-label-btn" data-idx="' + idx + '" data-nome="' + nomeDoPerfume.replace(/"/g,'&quot;') + '" style="margin-top:8px; margin-left:8px; font-size:13px; padding:8px 14px; background:#8a8676;">Atualizar etiqueta para o tamanho novo</button>'
+      ? '<button type="button" class="btn regen-label-btn" data-idx="' + idx + '" data-nome="' + nomeDoPerfume.replace(/"/g,'&quot;') + '" style="margin-top:8px; margin-left:8px; font-size:13px; padding:8px 14px; background:#8a8676;">Atualizar etiqueta (versão mais nítida)</button>'
       : '';
     return '<div class="item-block">' +
       '<p class="item-title">' + item.tipo + ' — R$ ' + Number(item.preco).toFixed(2).replace('.',',') + '</p>' +
@@ -232,7 +232,7 @@ function renderMainPanel(codigo) {
       } catch (err) {
         alert("Não foi possível atualizar a etiqueta: " + err.message);
         btn.disabled = false;
-        btn.textContent = "Atualizar etiqueta para o tamanho novo";
+        btn.textContent = "Atualizar etiqueta (versão mais nítida)";
       }
     });
   });
