@@ -634,7 +634,7 @@ function renderCapQuestion() {
 
 function renderLabelPreview(interactive) {
   const placedHtml = placedIcons.map((p, idx) =>
-    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:16px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
+    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:26px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
   ).join('');
 
   // Tamanho real da etiqueta: 65mm x 34mm (formato paisagem)
@@ -662,7 +662,7 @@ function renderLabelEditor() {
     '<input type="text" id="name-input" placeholder="Ex: Encanto, Lua Nova..." style="width:100%; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px;">' +
     '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Escolha um elemento e clique na etiqueta para posicioná-lo</p>' +
     '<div class="options" style="flex-direction:row; flex-wrap:wrap; gap:8px; margin-bottom:8px;">' +
-    iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:10px 16px; font-size:26px; line-height:1; color:#556238;">' + o.char + '</button>').join('') +
+    iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:12px 18px; font-size:34px; line-height:1; color:#556238;">' + o.char + '</button>').join('') +
     '</div>' +
     '<p class="step-label" style="text-align:left; margin:0 0 16px;">Clique num elemento acima, depois clique na etiqueta pra posicioná-lo. Clique num elemento já colocado para removê-lo.</p>' +
     '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Você tem um perfume preferido ou de referência? (opcional)</p>' +
