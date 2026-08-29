@@ -640,12 +640,12 @@ function renderLabelPreview(interactive) {
   // Tamanho real da etiqueta: 65mm x 34mm (formato paisagem)
   return '<div id="label-canvas" style="position:relative; background:#ece0cf; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:9px 10px; box-sizing:border-box; width:325px; height:170px; display:flex; align-items:center; justify-content:center; gap:8px; margin:0 auto 20px; ' + (interactive ? 'cursor:crosshair;' : '') + '">' +
     '<div style="flex:1; text-align:center; pointer-events:none;">' +
-    '<p style="font-family:Georgia,serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000000;">SAGRADO DE MIM</p>' +
-    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
-    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:19px; margin:0; color:#000000;">☆ ' + (perfumeName || "Nome do perfume") + ' ☆</p>' +
+    '<p style="font-family:Georgia,serif; font-weight:700; font-size:17px; letter-spacing:1.8px; margin:0 0 4px; color:#000000;">SAGRADO DE MIM</p>' +
+    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:9.5px; margin:0 0 7px; color:#3d4a33;">uma fragrância feita para você</p>' +
+    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:23px; margin:0; color:#000000;">☆ ' + (perfumeName || "Nome do perfume") + ' ☆</p>' +
     '</div>' +
     '<div style="position:relative; width:48px; height:150px; flex-shrink:0; pointer-events:none;">' +
-      '<div style="position:absolute; top:50%; left:50%; width:150px; height:48px; transform:translate(-50%,-50%) rotate(-90deg); font-family:Arial,sans-serif; font-weight:700; font-size:6px; line-height:1.35; color:#000000; display:flex; align-items:center;">' +
+      '<div style="position:absolute; top:50%; left:50%; width:150px; height:48px; transform:translate(-50%,-50%) rotate(-90deg); font-family:Arial,sans-serif; font-weight:700; font-size:7px; line-height:1.35; color:#000000; display:flex; align-items:center;">' +
         '<span><strong>PERFUME</strong> — Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético. NÃO INGERIR. EVITAR CONTATO COM OS OLHOS. USO EXTERNO. <strong>PRODUTO ARTESANAL</strong> · Válido por 1 ano</span>' +
       '</div>' +
     '</div>' +
@@ -662,7 +662,7 @@ function renderLabelEditor() {
     '<input type="text" id="name-input" placeholder="Ex: Encanto, Lua Nova..." style="width:100%; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px;">' +
     '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Escolha um elemento e clique na etiqueta para posicioná-lo</p>' +
     '<div class="options" style="flex-direction:row; flex-wrap:wrap; gap:8px; margin-bottom:8px;">' +
-    iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:10px 16px; font-size:26px; line-height:1;">' + o.char + '</button>').join('') +
+    iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:10px 16px; font-size:26px; line-height:1; color:#556238;">' + o.char + '</button>').join('') +
     '</div>' +
     '<p class="step-label" style="text-align:left; margin:0 0 16px;">Clique num elemento acima, depois clique na etiqueta pra posicioná-lo. Clique num elemento já colocado para removê-lo.</p>' +
     '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Você tem um perfume preferido ou de referência? (opcional)</p>' +
