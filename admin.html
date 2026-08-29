@@ -244,7 +244,7 @@ const CLOUDINARY_UPLOAD_PRESET = "vb70iaep";
 
 async function regenerateLabel(perfumeName, iconsPosicionados) {
   const placedHtml = (iconsPosicionados || []).map(p =>
-    '<span style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:18px; color:#556238;">' + p.char + '</span>'
+    '<span style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:16px; color:#556238;">' + p.char + '</span>'
   ).join('');
 
   const holder = document.createElement("div");
@@ -253,18 +253,16 @@ async function regenerateLabel(perfumeName, iconsPosicionados) {
   holder.style.top = "0";
 
   holder.innerHTML =
-    '<div id="regen-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:10px 8px; box-sizing:border-box; width:170px; height:325px; display:flex; flex-direction:column; justify-content:space-between;">' +
+    '<div id="regen-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:9px 10px; box-sizing:border-box; width:325px; height:170px; display:flex; flex-direction:column; justify-content:space-between;">' +
       '<div style="text-align:center;">' +
-        '<p style="font-family:Georgia,serif; font-weight:700; font-size:12px; letter-spacing:1px; margin:0 0 4px; color:#000000;">SAGRADO DE MIM</p>' +
-        '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:7.5px; margin:0 0 12px; color:#3d4a33; line-height:1.3;">uma fragrância<br>feita para você</p>' +
-        '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:18px; margin:0; color:#000000;">' + perfumeName + '</p>' +
+        '<p style="font-family:Georgia,serif; font-weight:700; font-size:15px; letter-spacing:1.5px; margin:0 0 2px; color:#000000;">SAGRADO DE MIM</p>' +
+        '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 4px; color:#3d4a33;">uma fragrância feita para você</p>' +
+        '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:20px; margin:0; color:#000000;">' + perfumeName + '</p>' +
       '</div>' +
-      '<div style="text-align:center; border-top:1.5px solid #000000; padding-top:6px;">' +
-        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; margin:0 0 4px; color:#000000;">PERFUME</p>' +
-        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; line-height:1.35; margin:0 0 4px; color:#000000;">Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético.</p>' +
-        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; line-height:1.35; margin:0 0 4px; color:#000000;">NÃO INGERIR. EVITAR CONTATO COM OS OLHOS. USO EXTERNO.</p>' +
-        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; margin:0 0 2px; color:#000000;">PRODUTO ARTESANAL</p>' +
-        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; margin:0; color:#000000;">Válido por 1 ano</p>' +
+      '<div style="text-align:center; border-top:1.5px solid #000000; padding-top:5px;">' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6.5px; line-height:1.3; margin:0 0 2px; color:#000000;"><strong>PERFUME</strong> — Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético.</p>' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6.5px; line-height:1.3; margin:0 0 2px; color:#000000;">NÃO INGERIR. EVITAR CONTATO COM OS OLHOS. USO EXTERNO.</p>' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6.5px; margin:0; color:#000000;"><strong>PRODUTO ARTESANAL</strong> · Válido por 1 ano</p>' +
       '</div>' +
       placedHtml +
     '</div>';
