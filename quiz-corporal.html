@@ -640,9 +640,9 @@ function renderLabelPreview(interactive) {
   // Tamanho real da etiqueta: 65mm x 34mm (formato paisagem)
   return '<div id="label-canvas" style="position:relative; background:#ece0cf; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:9px 10px; box-sizing:border-box; width:325px; height:170px; display:flex; align-items:center; justify-content:center; gap:8px; margin:0 auto 20px; ' + (interactive ? 'cursor:crosshair;' : '') + '">' +
     '<div style="flex:1; text-align:center; pointer-events:none;">' +
-    '<p style="font-family:Georgia,serif; font-weight:700; font-size:17px; letter-spacing:1.8px; margin:0 0 4px; color:#000000;">SAGRADO DE MIM</p>' +
-    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:9.5px; margin:0 0 7px; color:#3d4a33;">uma fragrância feita para você</p>' +
-    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:23px; margin:0; color:#000000;">☆ ' + (perfumeName || "Nome do perfume") + ' ☆</p>' +
+    '<p style="font-family:Georgia,serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000000;">SAGRADO DE MIM</p>' +
+    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
+    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:19px; margin:0; color:#000000;">' + (perfumeName || "Nome do perfume") + '</p>' +
     '</div>' +
     '<div style="position:relative; width:48px; height:150px; flex-shrink:0; pointer-events:none;">' +
       '<div style="position:absolute; top:50%; left:50%; width:150px; height:48px; transform:translate(-50%,-50%) rotate(-90deg); font-family:Arial,sans-serif; font-weight:700; font-size:7px; line-height:1.35; color:#000000; display:flex; align-items:center;">' +
