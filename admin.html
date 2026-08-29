@@ -224,7 +224,7 @@ function renderMainPanel(codigo) {
       try {
         const idx = parseInt(btn.dataset.idx);
         const item = (data.itens || [])[idx];
-        const newUrl = await regenerateLabel(btn.dataset.nome, item.iconsPosicionados || [], item.labelStyle || "classico", item.labelAccentColor || "#7d3320");
+        const newUrl = await regenerateLabel(btn.dataset.nome, item.iconsPosicionados || []);
         const updatedItens = [...(data.itens || [])];
         updatedItens[idx] = { ...updatedItens[idx], etiquetaImg: newUrl };
         await saveOrder(codigo, { itens: updatedItens });
@@ -242,13 +242,9 @@ function renderMainPanel(codigo) {
 const CLOUDINARY_CLOUD_NAME = "ld4xgnhw";
 const CLOUDINARY_UPLOAD_PRESET = "vb70iaep";
 
-async function regenerateLabel(perfumeName, iconsPosicionados, style, accentColor) {
-  const accent = accentColor || "#7d3320";
-  const placedHtmlClassico = (iconsPosicionados || []).map(p =>
+async function regenerateLabel(perfumeName, iconsPosicionados) {
+  const placedHtml = (iconsPosicionados || []).map(p =>
     '<span style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:18px; color:#556238;">' + p.char + '</span>'
-  ).join('');
-  const placedHtmlArtesanal = (iconsPosicionados || []).map(p =>
-    '<span style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:22px; color:#556238;">' + p.char + '</span>'
   ).join('');
 
   const holder = document.createElement("div");
@@ -256,42 +252,22 @@ async function regenerateLabel(perfumeName, iconsPosicionados, style, accentColo
   holder.style.left = "-9999px";
   holder.style.top = "0";
 
-  if (style === "artesanal") {
-    holder.innerHTML =
-      '<div id="regen-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:2px; box-sizing:border-box; width:495px; height:338px; overflow:hidden;">' +
-        '<div style="position:absolute; left:75px; right:0; top:100px; height:1.5px; background:' + accent + ';"></div>' +
-        '<div style="position:absolute; left:130px; top:0; bottom:0; width:1.5px; background:' + accent + ';"></div>' +
-        '<div style="position:absolute; left:12px; top:14px; width:55px; height:310px;">' +
-          '<div style="position:absolute; top:50%; left:50%; width:310px; height:55px; transform:translate(-50%,-50%) rotate(-90deg); font-family:Arial,sans-serif; font-weight:700; font-size:8.5px; line-height:1.4; color:' + accent + '; display:flex; align-items:center;">' +
-            '<span><strong>PERFUME ARTESANAL</strong> — Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético. Não ingerir. Evitar contato com os olhos. Uso externo. Válido por 1 ano.</span>' +
-          '</div>' +
-        '</div>' +
-        '<div style="position:absolute; left:145px; top:14px; width:200px;">' +
-          '<p style="font-family:Georgia,serif; font-weight:700; font-size:26px; line-height:1.05; margin:0; color:' + accent + ';">' + perfumeName + '</p>' +
-        '</div>' +
-        '<div style="position:absolute; left:0; right:0; bottom:14px; text-align:center;">' +
-          '<p style="font-family:Georgia,serif; font-weight:700; font-size:20px; letter-spacing:3px; margin:0; color:#000000;">SAGRADO DE MIM</p>' +
-        '</div>' +
-        placedHtmlArtesanal +
-      '</div>';
-  } else {
-    holder.innerHTML =
-      '<div id="regen-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:10px 8px; box-sizing:border-box; width:170px; height:325px; display:flex; flex-direction:column; justify-content:space-between;">' +
-        '<div style="text-align:center;">' +
-          '<p style="font-family:Georgia,serif; font-weight:700; font-size:12px; letter-spacing:1px; margin:0 0 4px; color:#000000;">SAGRADO DE MIM</p>' +
-          '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:7.5px; margin:0 0 12px; color:#3d4a33; line-height:1.3;">uma fragrância<br>feita para você</p>' +
-          '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:18px; margin:0; color:#000000;">' + perfumeName + '</p>' +
-        '</div>' +
-        '<div style="text-align:center; border-top:1.5px solid #000000; padding-top:6px;">' +
-          '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; margin:0 0 4px; color:#000000;">PERFUME</p>' +
-          '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; line-height:1.35; margin:0 0 4px; color:#000000;">Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético.</p>' +
-          '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; line-height:1.35; margin:0 0 4px; color:#000000;">NÃO INGERIR. EVITAR CONTATO COM OS OLHOS. USO EXTERNO.</p>' +
-          '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; margin:0 0 2px; color:#000000;">PRODUTO ARTESANAL</p>' +
-          '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; margin:0; color:#000000;">Válido por 1 ano</p>' +
-        '</div>' +
-        placedHtmlClassico +
-      '</div>';
-  }
+  holder.innerHTML =
+    '<div id="regen-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:10px 8px; box-sizing:border-box; width:170px; height:325px; display:flex; flex-direction:column; justify-content:space-between;">' +
+      '<div style="text-align:center;">' +
+        '<p style="font-family:Georgia,serif; font-weight:700; font-size:12px; letter-spacing:1px; margin:0 0 4px; color:#000000;">SAGRADO DE MIM</p>' +
+        '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:7.5px; margin:0 0 12px; color:#3d4a33; line-height:1.3;">uma fragrância<br>feita para você</p>' +
+        '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:18px; margin:0; color:#000000;">' + perfumeName + '</p>' +
+      '</div>' +
+      '<div style="text-align:center; border-top:1.5px solid #000000; padding-top:6px;">' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; margin:0 0 4px; color:#000000;">PERFUME</p>' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; line-height:1.35; margin:0 0 4px; color:#000000;">Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético.</p>' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; line-height:1.35; margin:0 0 4px; color:#000000;">NÃO INGERIR. EVITAR CONTATO COM OS OLHOS. USO EXTERNO.</p>' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:6px; margin:0 0 2px; color:#000000;">PRODUTO ARTESANAL</p>' +
+        '<p style="font-family:Arial,sans-serif; font-weight:700; font-size:5.6px; margin:0; color:#000000;">Válido por 1 ano</p>' +
+      '</div>' +
+      placedHtml +
+    '</div>';
   document.body.appendChild(holder);
 
   const canvasEl = document.getElementById("regen-canvas");

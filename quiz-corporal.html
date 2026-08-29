@@ -627,61 +627,12 @@ function renderCapQuestion() {
   resultArea.querySelectorAll("[data-cap]").forEach(btn => {
     btn.addEventListener("click", () => {
       capAnswer = btn.dataset.cap;
-      renderStyleQuestion();
-    });
-  });
-}
-
-let labelStyle = "classico";
-let labelAccentColor = "#7d3320";
-const accentColorOptions = [
-  {name:"Vinho", hex:"#7d3320"},
-  {name:"Verde-sálvia", hex:"#556238"},
-  {name:"Azul-marinho", hex:"#2f3e52"},
-  {name:"Rosa-antigo", hex:"#a3455a"},
-  {name:"Preto", hex:"#000000"}
-];
-
-function renderStyleQuestion() {
-  const resultArea = document.getElementById("result-area");
-
-  const tempName = perfumeName;
-  perfumeName = "Exemplo";
-  const classicoThumb = renderLabelPreviewClassico(false);
-  const artesanalThumb = renderLabelPreviewArtesanal(false);
-  perfumeName = tempName;
-
-  resultArea.innerHTML =
-    '<p class="result-title">Escolha o estilo da etiqueta</p>' +
-    '<div style="display:flex; gap:14px; margin-bottom:14px; align-items:flex-start;">' +
-      '<div style="flex:1; text-align:center;">' +
-        '<div style="width:100%; height:130px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#f2efe5; border-radius:8px;">' +
-          '<div style="transform:scale(0.38); transform-origin:center;">' + classicoThumb + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div style="flex:1; text-align:center;">' +
-        '<div style="width:100%; height:130px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#f2efe5; border-radius:8px;">' +
-          '<div style="transform:scale(0.26); transform-origin:center;">' + artesanalThumb + '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
-    '<div class="options" style="margin-bottom:10px;">' +
-    '<button type="button" class="option" data-style="classico">Clássico — retrato, 34×65mm</button>' +
-    '<button type="button" class="option" data-style="artesanal">Artesanal — paisagem, com nome lateral, 99×67,7mm</button>' +
-    '</div>';
-  resultArea.querySelectorAll("[data-style]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      labelStyle = btn.dataset.style;
       renderLabelEditor();
     });
   });
 }
 
 function renderLabelPreview(interactive) {
-  return labelStyle === "artesanal" ? renderLabelPreviewArtesanal(interactive) : renderLabelPreviewClassico(interactive);
-}
-
-function renderLabelPreviewClassico(interactive) {
   const placedHtml = placedIcons.map((p, idx) =>
     '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:18px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
   ).join('');
@@ -704,58 +655,13 @@ function renderLabelPreviewClassico(interactive) {
   '</div>';
 }
 
-function renderLabelPreviewArtesanal(interactive) {
-  const placedHtml = placedIcons.map((p, idx) =>
-    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:22px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
-  ).join('');
-
-  const accent = labelAccentColor || "#7d3320";
-
-  // Tamanho real da etiqueta: 99mm x 67,7mm (formato paisagem, mesma folha Pimaco A4365, impressa deitada)
-  return '<div id="label-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:2px; box-sizing:border-box; width:495px; height:338px; margin:0 auto 20px; overflow:hidden; ' + (interactive ? 'cursor:crosshair;' : '') + '">' +
-
-    // cruz completa, ponta a ponta
-    '<div style="position:absolute; left:75px; right:0; top:100px; height:1.5px; background:' + accent + '; pointer-events:none;"></div>' +
-    '<div style="position:absolute; left:130px; top:0; bottom:0; width:1.5px; background:' + accent + '; pointer-events:none;"></div>' +
-
-    // texto lateral esquerdo: PERFUME ARTESANAL + composição, vertical, maior e mais nítido
-    '<div style="position:absolute; left:12px; top:14px; width:55px; height:310px; pointer-events:none;">' +
-      '<div style="position:absolute; top:50%; left:50%; width:310px; height:55px; transform:translate(-50%,-50%) rotate(-90deg); font-family:Arial,sans-serif; font-weight:700; font-size:8.5px; line-height:1.4; color:' + accent + '; display:flex; align-items:center;">' +
-        '<span><strong>PERFUME ARTESANAL</strong> — Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético. Não ingerir. Evitar contato com os olhos. Uso externo. Válido por 1 ano.</span>' +
-      '</div>' +
-    '</div>' +
-
-    // nome do perfume, quadrante superior direito
-    '<div style="position:absolute; left:145px; top:14px; width:200px; pointer-events:none;">' +
-      '<p style="font-family:Georgia,serif; font-weight:700; font-size:26px; line-height:1.05; margin:0; color:' + accent + ';">' + (perfumeName || "Nome do perfume") + '</p>' +
-    '</div>' +
-
-    // ilustração/elemento central
-    '<div style="position:absolute; left:75px; right:16px; top:108px; bottom:58px;"></div>' +
-
-    // SAGRADO DE MIM, rodapé, em destaque
-    '<div style="position:absolute; left:0; right:0; bottom:14px; text-align:center; pointer-events:none;">' +
-      '<p style="font-family:Georgia,serif; font-weight:700; font-size:20px; letter-spacing:3px; margin:0; color:#000000;">SAGRADO DE MIM</p>' +
-    '</div>' +
-
-    placedHtml +
-  '</div>';
-}
-
 function renderLabelEditor() {
   const resultArea = document.getElementById("result-area");
-  const colorPickerHtml = labelStyle === "artesanal"
-    ? '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Escolha a cor de destaque</p>' +
-      '<div class="options" style="flex-direction:row; flex-wrap:wrap; gap:8px; margin-bottom:16px;">' +
-      accentColorOptions.map(c => '<button type="button" class="option accent-color-btn" data-hex="' + c.hex + '" style="width:auto; padding:8px 14px; display:flex; align-items:center; gap:6px;"><span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:' + c.hex + '; border:1px solid rgba(0,0,0,0.2);"></span>' + c.name + '</button>').join('') +
-      '</div>'
-    : '';
   resultArea.innerHTML =
     '<p class="result-title">Personalize sua etiqueta</p>' +
     '<div id="label-preview"></div>' +
     '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Nome do perfume</p>' +
     '<input type="text" id="name-input" placeholder="Ex: Encanto, Lua Nova..." style="width:100%; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px;">' +
-    colorPickerHtml +
     '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Escolha um elemento e clique na etiqueta para posicioná-lo</p>' +
     '<div class="options" style="flex-direction:row; flex-wrap:wrap; gap:8px; margin-bottom:8px;">' +
     iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:10px 16px; font-size:26px; line-height:1;">' + o.char + '</button>').join('') +
@@ -769,13 +675,6 @@ function renderLabelEditor() {
     document.getElementById("label-preview").innerHTML = renderLabelPreview(true);
     attachCanvasEvents();
   };
-
-  resultArea.querySelectorAll(".accent-color-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      labelAccentColor = btn.dataset.hex;
-      updatePreview();
-    });
-  });
 
   function attachCanvasEvents() {
     const canvas = document.getElementById("label-canvas");
