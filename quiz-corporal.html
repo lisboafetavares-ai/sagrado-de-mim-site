@@ -167,6 +167,27 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
+
+function sbHeaders() {
+  return { "apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json" };
+}
+
+async function saveAromaticProfile(dominante, secundario) {
+  const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
+  if (!session) return;
+  try {
+    await fetch(SUPABASE_URL + "/rest/v1/users?email=eq." + encodeURIComponent(session.email), {
+      method: "PATCH",
+      headers: sbHeaders(),
+      body: JSON.stringify({ perfil_dominante: dominante, perfil_secundario: secundario || null })
+    });
+  } catch (err) {
+    // silencioso: não bloqueia o fluxo do quiz se isso falhar
+  }
+}
+
 const occasionQuestion = {
   isOccasion: true,
   q: "Para qual ocasião você gostaria desse perfume?",
@@ -564,6 +585,7 @@ function renderResult() {
 
   const sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]);
   const top = sorted.slice(0, 2).map(e => e[0]);
+  saveAromaticProfile(top[0], top[1]);
 
   const genderLabels = {feminino:"Feminino", masculino:"Masculino", unissex:"Unissex"};
   let html = '<p class="result-title">Gênero</p>' +
