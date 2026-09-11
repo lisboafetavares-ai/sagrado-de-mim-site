@@ -102,21 +102,29 @@ async function getUser(email) {
 }
 
 async function saveUser(email, passwordHash, isAdmin) {
-  const res = await fetch(SUPABASE_URL + "/rest/v1/users", {
-    method: "POST",
-    headers: sbHeaders(),
-    body: JSON.stringify({ email, password_hash: passwordHash, is_admin: isAdmin })
-  });
-  return res.ok;
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/users", {
+      method: "POST",
+      headers: sbHeaders(),
+      body: JSON.stringify({ email, password_hash: passwordHash, is_admin: isAdmin })
+    });
+    return res.ok;
+  } catch (err) {
+    return false;
+  }
 }
 
 async function updatePassword(email, passwordHash) {
-  const res = await fetch(SUPABASE_URL + "/rest/v1/users?email=eq." + encodeURIComponent(email), {
-    method: "PATCH",
-    headers: sbHeaders(),
-    body: JSON.stringify({ password_hash: passwordHash })
-  });
-  return res.ok;
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/users?email=eq." + encodeURIComponent(email), {
+      method: "PATCH",
+      headers: sbHeaders(),
+      body: JSON.stringify({ password_hash: passwordHash })
+    });
+    return res.ok;
+  } catch (err) {
+    return false;
+  }
 }
 
 function setSession(email, isAdmin) {
