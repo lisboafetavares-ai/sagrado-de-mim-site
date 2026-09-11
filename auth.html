@@ -108,9 +108,13 @@ async function saveUser(email, passwordHash, isAdmin) {
       headers: sbHeaders(),
       body: JSON.stringify({ email, password_hash: passwordHash, is_admin: isAdmin })
     });
-    return res.ok;
+    if (!res.ok) {
+      const text = await res.text();
+      return { ok: false, error: text };
+    }
+    return { ok: true };
   } catch (err) {
-    return false;
+    return { ok: false, error: "Erro de rede: " + err.message };
   }
 }
 
@@ -226,8 +230,8 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
     const isAdmin = email === ADMIN_EMAIL;
     const saved = await saveUser(email, passwordHash, isAdmin);
     btn.disabled = false;
-    if (!saved) {
-      errorMsg.textContent = "Não foi possível criar a conta agora. Tente novamente em instantes.";
+    if (!saved.ok) {
+      errorMsg.textContent = "Erro: " + (saved.error || "desconhecido").slice(0, 200);
       errorMsg.style.display = "block";
       return;
     }
