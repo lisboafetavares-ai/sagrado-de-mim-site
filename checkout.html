@@ -65,6 +65,12 @@
 <body>
   <div class="card">
     <a href="carrinho.html" class="back-link">&larr; Voltar para o carrinho</a>
+
+    <div style="display:flex; justify-content:center; gap:18px; margin-bottom:18px; font-family:Arial,sans-serif; font-size:12px;">
+      <a href="carrinho.html" style="color:#8a8676; text-decoration:none;">🛒 Carrinho</a>
+      <a href="meu-perfil.html" style="color:#8a8676; text-decoration:none;">Meu perfil</a>
+      <a href="meus-pedidos.html" style="color:#8a8676; text-decoration:none;">Meus pedidos</a>
+    </div>
     <h1>FINALIZAR PEDIDO</h1>
     <div id="content"></div>
   </div>
@@ -197,6 +203,8 @@ function render() {
       '<p class="error-msg" id="error-msg" style="display:none;"></p>' +
     '</form>';
 
+  preencherComPerfil();
+
   document.getElementById("order-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById("submit-btn");
@@ -224,7 +232,9 @@ function render() {
         const cidadeVal = document.getElementById("cidade").value;
         const estadoVal = document.getElementById("estado").value;
         const cepVal = document.getElementById("cep").value;
+        const cpfVal = document.getElementById("cpf").value;
         await saveOrderToSupabase(orderCode, nomeCliente, total, cart, enderecoVal, cidadeVal, estadoVal, cepVal);
+        salvarNoPerfil(nomeCliente, cpfVal, cepVal, enderecoVal, cidadeVal, estadoVal);
         localStorage.removeItem("sagradoCart");
         document.getElementById("content").innerHTML =
           '<div class="success">' +
@@ -247,6 +257,36 @@ function render() {
       submitBtn.textContent = "Enviar pedido";
     }
   });
+}
+
+async function preencherComPerfil() {
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/users?email=eq." + encodeURIComponent(session.email), { headers: sbHeaders() });
+    if (!res.ok) return;
+    const rows = await res.json();
+    const user = rows[0];
+    if (!user) return;
+    if (user.nome) document.getElementById("nome").value = user.nome;
+    if (user.cpf) document.getElementById("cpf").value = user.cpf;
+    if (user.cep) document.getElementById("cep").value = user.cep;
+    if (user.endereco) document.getElementById("endereco").value = user.endereco;
+    if (user.cidade) document.getElementById("cidade").value = user.cidade;
+    if (user.estado) document.getElementById("estado").value = user.estado;
+  } catch (err) {
+    // silencioso: não bloqueia o checkout se isso falhar
+  }
+}
+
+async function salvarNoPerfil(nome, cpf, cep, endereco, cidade, estado) {
+  try {
+    await fetch(SUPABASE_URL + "/rest/v1/users?email=eq." + encodeURIComponent(session.email), {
+      method: "PATCH",
+      headers: sbHeaders(),
+      body: JSON.stringify({ nome, cpf, cep, endereco, cidade, estado })
+    });
+  } catch (err) {
+    // silencioso: o pedido já foi enviado, isso é só uma conveniência
+  }
 }
 
 render();
