@@ -107,7 +107,8 @@ function renderTimeline(status) {
     if (stageLabel === "Postado" && idx === currentIndex) {
       const transp = status.transportadora ? '<p class="timeline-detail"><strong>' + status.transportadora + '</strong></p>' : '';
       const rastreio = status.rastreio ? '<p class="timeline-detail">Código: <strong>' + status.rastreio + '</strong></p>' : '';
-      detail = transp + rastreio;
+      const linkRastreio = status.rastreio ? '<a href="https://rastreamento.correios.com.br/app/index.php?objetos=' + encodeURIComponent(status.rastreio) + '" target="_blank" style="display:inline-block; margin-top:6px; font-family:Arial,sans-serif; font-size:12px; font-weight:700; color:#556238; text-decoration:none;">Rastrear objeto →</a>' : '';
+      detail = transp + rastreio + linkRastreio;
     }
     return step(stageLabel, isDone, detail, isLast);
   }).join('');

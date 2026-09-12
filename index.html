@@ -179,6 +179,12 @@
     <img src="assets/banner.png" alt="Banner Sagrado de Mim">
   </div>
 
+  <div id="cart-reminder" style="display:none; max-width:720px; margin:20px auto 0; padding:0 20px;">
+    <a href="carrinho.html" style="display:block; text-decoration:none; background:#eef1e6; border:1px solid #556238; color:#3d4a33; padding:16px 20px; border-radius:12px; font-family:Arial,sans-serif; font-size:14px; text-align:center;">
+      🛒 Você tinha itens esperando no carrinho — <strong>continuar de onde parou →</strong>
+    </a>
+  </div>
+
   <div style="max-width:720px; margin:24px auto 0; padding:0 20px;">
     <button type="button" id="visit-toggle" style="width:100%; font-family:Georgia,serif; font-size:16px; letter-spacing:1px; background:#556238; color:#fff; border:none; padding:16px; border-radius:12px; cursor:pointer;">Viva essa experiência conosco. Agende sua visita.</button>
     <div id="visit-details" style="display:none; background:#fbf7f0; border:1px solid rgba(61,58,52,0.25); border-radius:12px; padding:22px 24px; margin-top:10px; font-family:Arial,sans-serif;">
@@ -246,12 +252,16 @@
     </aside>
   </div>
 
+  <div id="testimonials-section" style="max-width:960px; margin:0 auto; padding:20px; display:none;">
+    <p style="font-family:Arial,sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#8a8676; text-align:center; margin:0 0 20px;">O que nossas clientes dizem</p>
+    <div id="testimonials-grid" style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;"></div>
+  </div>
+
   <footer>
     Sagrado de Mim — feito à mão, pensado para você.
   </footer>
 
-<script>
-// ATENÇÃO: cole aqui a URL e a chave "anon public" do seu projeto Supabase (mesmas usadas nos outros arquivos)
+<script>// ATENÇÃO: cole aqui a URL e a chave "anon public" do seu projeto Supabase (mesmas usadas nos outros arquivos)
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
 const ADMIN_EMAIL = "lisboafetavares@gmail.com";
@@ -413,6 +423,45 @@ if (session && session.isAdmin) {
 document.getElementById("auth-close-btn").addEventListener("click", () => {
   document.getElementById("auth-overlay").style.display = "none";
 });
+
+async function loadTestimonials() {
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/orders?avaliacao_nota=gte.4&avaliacao_comentario=not.is.null&limit=6&order=data.desc", { headers: sbHeaders() });
+    if (!res.ok) return;
+    const rows = await res.json();
+    if (!rows.length) return;
+
+    const grid = document.getElementById("testimonials-grid");
+    grid.innerHTML = rows.map(r => {
+      const nomeExibido = (r.cliente || "Cliente").split(" ")[0];
+      return '<div style="background:#fbf7f0; border:1px solid rgba(61,58,52,0.15); border-radius:14px; padding:20px; width:260px;">' +
+        '<p style="color:#c9a24a; font-size:16px; margin:0 0 8px;">' + "★".repeat(r.avaliacao_nota) + "☆".repeat(5 - r.avaliacao_nota) + '</p>' +
+        '<p style="font-family:Georgia,serif; font-style:italic; font-size:14px; color:#4a463e; margin:0 0 10px; line-height:1.5;">"' + r.avaliacao_comentario + '"</p>' +
+        '<p style="font-family:Arial,sans-serif; font-size:12px; font-weight:700; color:#8a8676; margin:0;">— ' + nomeExibido + '</p>' +
+      '</div>';
+    }).join('');
+    document.getElementById("testimonials-section").style.display = "block";
+  } catch (err) {
+    // silencioso: seção só não aparece se der erro
+  }
+}
+loadTestimonials();
+
+function checkCartReminder() {
+  const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
+  if (cart.length === 0) {
+    localStorage.removeItem("sagradoCartTimestamp");
+    return;
+  }
+  const ts = localStorage.getItem("sagradoCartTimestamp");
+  const umaHora = 60 * 60 * 1000;
+  if (!ts) {
+    localStorage.setItem("sagradoCartTimestamp", Date.now().toString());
+  } else if (Date.now() - parseInt(ts) > umaHora) {
+    document.getElementById("cart-reminder").style.display = "block";
+  }
+}
+checkCartReminder();
 
 document.getElementById("logout-link").addEventListener("click", (e) => {
   e.preventDefault();

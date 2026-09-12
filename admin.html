@@ -66,9 +66,10 @@
     </div>
   </div>
 
-  <div style="display:flex; gap:10px; padding:14px 28px 0; border-bottom:1px solid rgba(61,58,52,0.1);">
+  <div style="display:flex; gap:10px; padding:14px 28px 0; border-bottom:1px solid rgba(61,58,52,0.1); align-items:center;">
     <button type="button" id="tab-pedidos" class="admin-tab" style="background:#556238; color:#fff; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Pedidos</button>
     <button type="button" id="tab-etiqueta" class="admin-tab" style="background:#eef1e6; color:#556238; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Personalizar Etiqueta</button>
+    <button type="button" id="backup-btn" style="margin-left:auto; background:none; border:1px solid rgba(61,58,52,0.25); color:#8a8676; padding:8px 14px; border-radius:8px; font-family:Arial,sans-serif; font-weight:700; font-size:12px; cursor:pointer;">⬇ Baixar backup de pedidos</button>
   </div>
 
   <div class="layout" id="view-pedidos">
@@ -319,6 +320,25 @@ document.getElementById("logout-link").addEventListener("click", (e) => {
   e.preventDefault();
   localStorage.removeItem("sagradoSession");
   window.location.href = "auth.html";
+});
+
+document.getElementById("backup-btn").addEventListener("click", async () => {
+  const btn = document.getElementById("backup-btn");
+  btn.disabled = true;
+  btn.textContent = "Gerando...";
+  try {
+    const allOrders = Object.values(ordersCache);
+    const dataStr = JSON.stringify(allOrders, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "backup-pedidos-" + new Date().toISOString().slice(0,10) + ".json";
+    link.click();
+  } catch (err) {
+    alert("Não foi possível gerar o backup agora.");
+  }
+  btn.disabled = false;
+  btn.textContent = "⬇ Baixar backup de pedidos";
 });
 
 document.getElementById("tab-pedidos").addEventListener("click", () => {

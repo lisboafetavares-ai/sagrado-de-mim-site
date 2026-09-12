@@ -108,7 +108,7 @@ function buildOrderSummary(cart, subtotal, frete, total) {
   return text;
 }
 
-async function saveOrderToSupabase(orderCode, nome, total, cart, endereco, cidade, estado, cep) {
+async function saveOrderToSupabase(orderCode, nome, total, cart, endereco, cidade, estado, cep, embrulho, embrulhoMensagem, cupom) {
   const itensSummary = cart.map(item => ({
     tipo: item.tipo,
     preco: item.preco,
@@ -125,7 +125,10 @@ async function saveOrderToSupabase(orderCode, nome, total, cart, endereco, cidad
     envio: "Pedido confirmado",
     rastreio: "",
     itens: itensSummary,
-    data: new Date().toLocaleDateString('pt-BR')
+    data: new Date().toLocaleDateString('pt-BR'),
+    embrulho_presente: embrulho || false,
+    embrulho_mensagem: embrulhoMensagem || null,
+    cupom: cupom || null
   };
 
   let res = await fetch(SUPABASE_URL + "/rest/v1/orders", {
@@ -142,6 +145,16 @@ async function saveOrderToSupabase(orderCode, nome, total, cart, endereco, cidad
       method: "POST",
       headers: sbHeaders(),
       body: JSON.stringify(basePayload)
+    });
+  }
+
+  if (!res.ok) {
+    // pode ser que as colunas de embrulho/cupom tambem nao existam ainda — tenta a versao minima
+    const { embrulho_presente, embrulho_mensagem, cupom, ...minimalPayload } = basePayload;
+    res = await fetch(SUPABASE_URL + "/rest/v1/orders", {
+      method: "POST",
+      headers: sbHeaders(),
+      body: JSON.stringify(minimalPayload)
     });
   }
 
@@ -167,8 +180,6 @@ function render() {
 
   const subtotal = cart.reduce((sum, item) => sum + item.preco, 0);
   const frete = 25;
-  const total = subtotal + frete;
-  const orderSummary = buildOrderSummary(cart, subtotal, frete, total);
   const orderCode = "SDM-" + Date.now().toString().slice(-6);
 
   content.innerHTML =
@@ -178,7 +189,20 @@ function render() {
       '<p class="pix-key">' + PIX_KEY + '</p>' +
       '<p style="margin:0; font-family:Arial,sans-serif; font-size:12px; color:#5f6b52;">Faça o Pix no valor total abaixo e anexe o comprovante</p>' +
     '</div>' +
-    '<p class="total-box">Total: R$ ' + total.toFixed(2).replace('.',',') + '</p>' +
+
+    '<p class="section-title" style="margin-top:16px;">Cupom de desconto (opcional)</p>' +
+    '<div style="display:flex; gap:8px; margin-bottom:8px;">' +
+      '<input type="text" id="cupom-input" placeholder="Ex: BEMVINDA10" style="flex:1; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3);">' +
+      '<button type="button" id="aplicar-cupom-btn" style="font-family:Arial,sans-serif; font-weight:700; font-size:13px; background:#556238; color:#fff; border:none; padding:0 16px; border-radius:8px; cursor:pointer;">Aplicar</button>' +
+    '</div>' +
+    '<p id="cupom-msg" style="font-family:Arial,sans-serif; font-size:12px; margin:0 0 10px;"></p>' +
+
+    '<label style="display:flex; align-items:center; gap:8px; font-family:Arial,sans-serif; font-size:14px; margin-bottom:14px;">' +
+      '<input type="checkbox" id="embrulho-check"> Embrulhar para presente (+ R$ 5,00)' +
+    '</label>' +
+    '<textarea id="embrulho-mensagem" placeholder="Mensagem pro presente (opcional)" rows="2" style="display:none; width:100%; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:14px; resize:vertical;"></textarea>' +
+
+    '<p class="total-box" id="total-box">Total: R$ ' + (subtotal + frete).toFixed(2).replace('.',',') + '</p>' +
 
     '<form id="order-form">' +
       '<p class="section-title">Dados para entrega</p>' +
@@ -205,6 +229,46 @@ function render() {
 
   preencherComPerfil();
 
+  let appliedCoupon = null;
+
+  function recalcularTotal() {
+    const embrulho = document.getElementById("embrulho-check").checked;
+    let total = subtotal + frete + (embrulho ? 5 : 0);
+    if (appliedCoupon) {
+      total = total * (1 - appliedCoupon.desconto_percentual / 100);
+    }
+    document.getElementById("total-box").textContent = "Total: R$ " + total.toFixed(2).replace('.', ',');
+    return total;
+  }
+
+  document.getElementById("embrulho-check").addEventListener("change", (e) => {
+    document.getElementById("embrulho-mensagem").style.display = e.target.checked ? "block" : "none";
+    recalcularTotal();
+  });
+
+  document.getElementById("aplicar-cupom-btn").addEventListener("click", async () => {
+    const code = document.getElementById("cupom-input").value.trim().toUpperCase();
+    const msg = document.getElementById("cupom-msg");
+    if (!code) return;
+    try {
+      const res = await fetch(SUPABASE_URL + "/rest/v1/coupons?code=eq." + encodeURIComponent(code) + "&ativo=eq.true", { headers: sbHeaders() });
+      const rows = await res.json();
+      if (rows[0]) {
+        appliedCoupon = rows[0];
+        msg.style.color = "#556238";
+        msg.textContent = "Cupom aplicado! " + rows[0].desconto_percentual + "% de desconto.";
+      } else {
+        appliedCoupon = null;
+        msg.style.color = "#a3455a";
+        msg.textContent = "Cupom inválido ou expirado.";
+      }
+    } catch (err) {
+      msg.style.color = "#a3455a";
+      msg.textContent = "Não foi possível verificar o cupom agora.";
+    }
+    recalcularTotal();
+  });
+
   document.getElementById("order-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById("submit-btn");
@@ -213,12 +277,20 @@ function render() {
     document.getElementById("error-msg").style.display = "none";
 
     const nomeCliente = document.getElementById("nome").value;
+    const embrulho = document.getElementById("embrulho-check").checked;
+    const embrulhoMsg = document.getElementById("embrulho-mensagem").value.trim();
+    const totalFinal = recalcularTotal();
+    const orderSummary = buildOrderSummary(cart, subtotal, frete, totalFinal) +
+      (embrulho ? "\nEmbrulho para presente: Sim" + (embrulhoMsg ? " — Mensagem: " + embrulhoMsg : "") : "") +
+      (appliedCoupon ? "\nCupom aplicado: " + appliedCoupon.code + " (" + appliedCoupon.desconto_percentual + "%)" : "");
 
     const formData = new FormData(document.getElementById("order-form"));
     formData.append("email", session.email);
     formData.append("_subject", "Novo pedido - Sagrado de Mim (" + orderCode + ")");
     formData.append("Código do pedido", orderCode);
     formData.append("Resumo do pedido", orderSummary);
+    if (embrulho) formData.append("Embrulho para presente", embrulhoMsg || "Sim, sem mensagem");
+    if (appliedCoupon) formData.append("Cupom", appliedCoupon.code);
 
     try {
       const res = await fetch(FORMSPREE_ENDPOINT, {
@@ -233,9 +305,10 @@ function render() {
         const estadoVal = document.getElementById("estado").value;
         const cepVal = document.getElementById("cep").value;
         const cpfVal = document.getElementById("cpf").value;
-        await saveOrderToSupabase(orderCode, nomeCliente, total, cart, enderecoVal, cidadeVal, estadoVal, cepVal);
+        await saveOrderToSupabase(orderCode, nomeCliente, totalFinal, cart, enderecoVal, cidadeVal, estadoVal, cepVal, embrulho, embrulhoMsg, appliedCoupon ? appliedCoupon.code : null);
         salvarNoPerfil(nomeCliente, cpfVal, cepVal, enderecoVal, cidadeVal, estadoVal);
         localStorage.removeItem("sagradoCart");
+        localStorage.removeItem("sagradoCartTimestamp");
         document.getElementById("content").innerHTML =
           '<div class="success">' +
           '<h2>Pedido enviado! 🌿</h2>' +
