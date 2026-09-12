@@ -89,17 +89,19 @@
 
 <script>
 const aromas = {
-  bambu: { nome: "Bambu com Trouss", icon: "🎋", cor: "#556238",
-    desc: "Fresco e revigorante, traz uma energia natural e concentrada pro ambiente." },
-  chabranco: { nome: "Chá Branco", icon: "🍵", cor: "#8a8676",
-    desc: "Leve e sofisticado, deixa o ar limpo com uma elegância discreta." },
-  aveiamel: { nome: "Aveia e Mel", icon: "🍯", cor: "#c9932e",
-    desc: "Doce e aconchegante, envolve o ambiente numa sensação de conforto." },
   lavanda: { nome: "Lavanda", icon: "💜", cor: "#8b5fa8",
     desc: "Calmo e relaxante, ideal pra desacelerar e descansar." },
-  neroli: { nome: "Neroli", icon: "🌸", cor: "#e08a2e",
-    desc: "Floral amadeirado, traz sofisticação e um toque romântico." },
-  chaverde: { nome: "Chá Verde", icon: "🌿", cor: "#5f8a5f",
+  canela: { nome: "Canela", icon: "🟤", cor: "#a3652a",
+    desc: "Quente e envolvente, traz aconchego pros dias mais frios." },
+  incenso: { nome: "Incenso", icon: "🕯️", cor: "#6b5842",
+    desc: "Espiritual e contemplativo, ideal pra momentos de introspecção." },
+  mirra_arruda: { nome: "Mirra com Arruda", icon: "🌿", cor: "#4a5a3a",
+    desc: "Protetor e ancestral, traz uma sensação de limpeza energética." },
+  bamboo: { nome: "Bamboo Trouss", icon: "🎋", cor: "#556238",
+    desc: "Fresco e revigorante, traz uma energia natural e concentrada pro ambiente." },
+  nerolia: { nome: "Nerolia", icon: "🌸", cor: "#c9932e",
+    desc: "Complexo e sofisticado — amadeirado, floral, com bergamota, manjericão, figo, neroli, vetiver e âmbar." },
+  chaverde: { nome: "Chá Verde", icon: "🍵", cor: "#5f8a5f",
     desc: "Energizante e revigorante, perfeito pra começar bem o dia." }
 };
 
@@ -107,55 +109,60 @@ const questions = [
   {
     texto: "Qual dessas palavras mais combina com o ambiente que você quer criar?",
     opcoes: [
-      { label: "Fresco e natural", key: "bambu" },
-      { label: "Leve e sofisticado", key: "chabranco" },
-      { label: "Doce e aconchegante", key: "aveiamel" },
       { label: "Calmo e relaxante", key: "lavanda" },
-      { label: "Romântico e elegante", key: "neroli" },
+      { label: "Quente e aconchegante", key: "canela" },
+      { label: "Espiritual e contemplativo", key: "incenso" },
+      { label: "Protetor e ancestral", key: "mirra_arruda" },
+      { label: "Fresco e natural", key: "bamboo" },
+      { label: "Sofisticado e floral", key: "nerolia" },
       { label: "Energético e revigorante", key: "chaverde" }
     ]
   },
   {
     texto: "Qual desses momentos mais representa seu lar?",
     opcoes: [
-      { label: "Manhã de trabalho focado", key: "bambu" },
-      { label: "Tarde tranquila lendo", key: "chabranco" },
-      { label: "Noite aconchegante em casa", key: "aveiamel" },
       { label: "Hora de relaxar e dormir", key: "lavanda" },
-      { label: "Um jantar especial", key: "neroli" },
+      { label: "Tarde fria tomando algo quente", key: "canela" },
+      { label: "Momento de meditação", key: "incenso" },
+      { label: "Ritual de limpeza espiritual", key: "mirra_arruda" },
+      { label: "Manhã de trabalho focado", key: "bamboo" },
+      { label: "Um jantar especial", key: "nerolia" },
       { label: "Início disposto de um novo dia", key: "chaverde" }
     ]
   },
   {
     texto: "Qual elemento representa seu estilo de decoração?",
     opcoes: [
-      { label: "Fibras naturais e bambu", key: "bambu" },
-      { label: "Linho e tons claros", key: "chabranco" },
-      { label: "Madeira e tecidos macios", key: "aveiamel" },
       { label: "Tons pastel e almofadas", key: "lavanda" },
-      { label: "Veludo e detalhes dourados", key: "neroli" },
+      { label: "Madeira escura e tons terrosos", key: "canela" },
+      { label: "Velas e altares", key: "incenso" },
+      { label: "Ervas secas e cristais", key: "mirra_arruda" },
+      { label: "Fibras naturais e bambu", key: "bamboo" },
+      { label: "Veludo e detalhes dourados", key: "nerolia" },
       { label: "Plantas e verde por toda parte", key: "chaverde" }
     ]
   },
   {
     texto: "O que você mais busca num ambiente perfumado?",
     opcoes: [
-      { label: "Sensação de limpeza e frescor", key: "bambu" },
-      { label: "Sofisticação discreta", key: "chabranco" },
-      { label: "Aconchego e conforto", key: "aveiamel" },
       { label: "Relaxamento e calma", key: "lavanda" },
-      { label: "Romantismo e charme", key: "neroli" },
+      { label: "Aconchego e conforto", key: "canela" },
+      { label: "Conexão espiritual", key: "incenso" },
+      { label: "Proteção e limpeza energética", key: "mirra_arruda" },
+      { label: "Sensação de limpeza e frescor", key: "bamboo" },
+      { label: "Sofisticação e charme", key: "nerolia" },
       { label: "Energia e disposição", key: "chaverde" }
     ]
   },
   {
     texto: "Que tipo de música combina com o clima que você quer em casa?",
     opcoes: [
-      { label: "Lo-fi ou sons da natureza", key: "bambu" },
-      { label: "Jazz sofisticado", key: "chabranco" },
-      { label: "Acústico e aconchegante", key: "aveiamel" },
       { label: "Instrumental relaxante", key: "lavanda" },
-      { label: "Clássica romântica", key: "neroli" },
+      { label: "Acústico e aconchegante", key: "canela" },
+      { label: "Mantras ou sons meditativos", key: "incenso" },
+      { label: "Música ritual ou tribal", key: "mirra_arruda" },
+      { label: "Lo-fi ou sons da natureza", key: "bamboo" },
+      { label: "Jazz sofisticado", key: "nerolia" },
       { label: "Eletrônica animada", key: "chaverde" }
     ]
   }
