@@ -213,6 +213,40 @@
             <p class="card-price" style="font-family:Arial,sans-serif; font-weight:700; color:#556238; margin:10px 0 0;">R$ 45,00</p>
             <button type="button" class="card-cta blindbox-add" style="background:none; border:none; padding:0; font-family:Arial,sans-serif; font-size:13px; font-weight:700; color:#556238; cursor:pointer; margin-top:6px;">Adicionar ao carrinho →</button>
           </div>
+
+          <div class="card" style="cursor:default;">
+            <p class="card-label">Aromatize seu espaço</p>
+            <p class="card-title">Difusor de Varetas</p>
+            <p class="card-desc">Perfuma o ambiente de forma contínua e delicada, com as varetas espalhando o aroma aos poucos pela casa.</p>
+            <p class="card-price" style="font-family:Arial,sans-serif; font-weight:700; color:#556238; margin:10px 0 0;">R$ 175,00</p>
+            <select class="difusor-aroma" style="width:100%; margin-top:10px; font-family:Arial,sans-serif; font-size:13px; padding:8px 10px; border-radius:8px; border:1px solid rgba(61,58,52,0.3);">
+              <option value="">Escolha o aroma...</option>
+              <option value="Bambu com Trouss">Bambu com Trouss</option>
+              <option value="Chá Branco">Chá Branco</option>
+              <option value="Aveia e Mel">Aveia e Mel</option>
+              <option value="Lavanda">Lavanda</option>
+              <option value="Neroli">Neroli</option>
+              <option value="Chá Verde">Chá Verde</option>
+            </select>
+            <button type="button" class="card-cta difusor-add" style="background:none; border:none; padding:0; font-family:Arial,sans-serif; font-size:13px; font-weight:700; color:#556238; cursor:pointer; margin-top:8px;">Adicionar ao carrinho →</button>
+          </div>
+
+          <div class="card" style="cursor:default;">
+            <p class="card-label">Para o ambiente</p>
+            <p class="card-title">Home Spray</p>
+            <p class="card-desc">Borrifa e perfuma instantaneamente qualquer cômodo — ideal pra deixar a casa com a sua cara antes de receber alguém.</p>
+            <p class="card-price" style="font-family:Arial,sans-serif; font-weight:700; color:#556238; margin:10px 0 0;">R$ 85,00</p>
+            <select class="homespray-aroma" style="width:100%; margin-top:10px; font-family:Arial,sans-serif; font-size:13px; padding:8px 10px; border-radius:8px; border:1px solid rgba(61,58,52,0.3);">
+              <option value="">Escolha o aroma...</option>
+              <option value="Bambu com Trouss">Bambu com Trouss</option>
+              <option value="Chá Branco">Chá Branco</option>
+              <option value="Aveia e Mel">Aveia e Mel</option>
+              <option value="Lavanda">Lavanda</option>
+              <option value="Neroli">Neroli</option>
+              <option value="Chá Verde">Chá Verde</option>
+            </select>
+            <button type="button" class="card-cta homespray-add" style="background:none; border:none; padding:0; font-family:Arial,sans-serif; font-size:13px; font-weight:700; color:#556238; cursor:pointer; margin-top:8px;">Adicionar ao carrinho →</button>
+          </div>
         </div>
       </main>
     </div>
@@ -421,6 +455,38 @@ document.querySelector(".blindbox-add").addEventListener("click", () => {
     tipo: "Blind Box — Vela na Latinha",
     preco: 45,
     detalhes: {"Observação": "Aroma e cristal surpresa"}
+  });
+  localStorage.setItem("sagradoCart", JSON.stringify(cart));
+  window.location.href = "carrinho.html";
+});
+
+document.querySelector(".difusor-add").addEventListener("click", () => {
+  const aroma = document.querySelector(".difusor-aroma").value;
+  if (!aroma) {
+    alert("Escolha um aroma antes de adicionar ao carrinho.");
+    return;
+  }
+  const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
+  cart.push({
+    tipo: "Difusor de Varetas",
+    preco: 175,
+    detalhes: {"Aroma": aroma}
+  });
+  localStorage.setItem("sagradoCart", JSON.stringify(cart));
+  window.location.href = "carrinho.html";
+});
+
+document.querySelector(".homespray-add").addEventListener("click", () => {
+  const aroma = document.querySelector(".homespray-aroma").value;
+  if (!aroma) {
+    alert("Escolha um aroma antes de adicionar ao carrinho.");
+    return;
+  }
+  const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
+  cart.push({
+    tipo: "Home Spray",
+    preco: 85,
+    detalhes: {"Aroma": aroma}
   });
   localStorage.setItem("sagradoCart", JSON.stringify(cart));
   window.location.href = "carrinho.html";
