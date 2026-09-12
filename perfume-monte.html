@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sagrado de Mim — Monte seu Perfume</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    font-family: Georgia, 'Liberation Serif', serif;
+    color: #332f28;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card {
+    background: #fbf7f0;
+    border: 1px solid rgba(61,58,52,0.25);
+    border-radius: 18px;
+    max-width: 560px;
+    width: 100%;
+    padding: 40px 36px;
+    box-shadow: 0 10px 30px rgba(61,58,52,0.08);
+  }
+  .brand { text-align: center; margin-bottom: 28px; }
+  .brand h1 { font-size: 26px; letter-spacing: 4px; margin: 0; font-weight: normal; }
+  .brand p {
+    font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px;
+    color: #5f6b52; margin: 6px 0 0; text-transform: uppercase;
+  }
+  .progress { display: flex; gap: 6px; margin-bottom: 28px; }
+  .progress div { flex: 1; height: 4px; border-radius: 2px; background: #e3dbca; transition: background 0.3s; }
+  .progress div.done { background: #7d9169; }
+  .question { font-family: Arial, sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 6px; line-height: 1.4; }
+  .question-sub { font-family: Arial, sans-serif; font-size: 13px; color: #8a8676; margin-bottom: 18px; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    font-family: Arial, sans-serif; text-align: left; padding: 14px 18px; border-radius: 10px;
+    border: 1px solid rgba(61,58,52,0.25); background: #ffffff; color: #332f28; font-size: 15px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .option:hover { border-color: #7d9169; background: #f2efe5; }
+  .step-label { font-family: Arial, sans-serif; font-size: 12px; color: #8a8676; margin-top: 16px; text-align: right; }
+  .result-title {
+    font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    color: #8a8676; margin: 0 0 14px;
+  }
+  .profile-card {
+    display: flex; gap: 14px; align-items: flex-start; border-radius: 14px;
+    padding: 18px 20px; margin-bottom: 14px; background: #eef1e6;
+  }
+  .profile-name { font-family: Arial, sans-serif; font-weight: 700; font-size: 15px; margin: 0 0 4px; color: #556238; }
+  .profile-desc { font-family: Arial, sans-serif; font-size: 14px; line-height: 1.55; margin: 0; color: #4a463e; }
+  .restart {
+    font-family: Arial, sans-serif; width: 100%; padding: 13px; border-radius: 10px;
+    border: 1px solid rgba(61,58,52,0.3); background: transparent; color: #332f28; font-size: 14px; cursor: pointer; margin-top: 8px;
+  }
+  .restart:hover { background: #f2efe5; }
+  .hidden { display: none; }
+  .pyramid-summary { font-family: Arial, sans-serif; font-size: 14px; margin: 0 0 6px; }
+  .pyramid-summary strong { color: #556238; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <p style="text-align:center; margin-bottom:14px;"><a href="index.html" style="font-family:Arial,sans-serif; font-size:12px; color:#8a8676; text-decoration:none;">&larr; Voltar para o início</a></p>
+    <div class="brand">
+      <h1>MONTE SEU PERFUME</h1>
+      <p>Escolha as notas da sua pirâmide olfativa</p>
+    </div>
+
+    <div id="progress" class="progress"></div>
+    <div id="quiz-area"></div>
+    <div id="result-area" class="hidden"></div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
+function sbHeaders() {
+  return { "apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json" };
+}
+
+const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
+if (!session) {
+  window.location.href = "auth.html";
+}
+
+const camadas = [
+  {
+    key: "saida",
+    titulo: "Notas de Saída",
+    sub: "São as primeiras que você sente — leves e frescas, evaporam mais rápido.",
+    opcoes: ["Bergamota", "Limão Siciliano", "Laranja Doce", "Hortelã", "Lavanda", "Cardamomo"]
+  },
+  {
+    key: "corpo",
+    titulo: "Notas de Corpo",
+    sub: "Aparecem depois de alguns minutos — formam o 'coração' do perfume.",
+    opcoes: ["Jasmim", "Rosa", "Lírio do Vale", "Flor de Laranjeira", "Ylang-Ylang", "Gerânio"]
+  },
+  {
+    key: "fundo",
+    titulo: "Notas de Fundo",
+    sub: "Ficam na pele por mais tempo — dão profundidade e fixação.",
+    opcoes: ["Baunilha", "Âmbar", "Sândalo", "Almíscar Branco", "Patchouli", "Cacau"]
+  }
+];
+
+let current = 0;
+let notas = {};
+
+function renderProgress() {
+  const progress = document.getElementById("progress");
+  progress.innerHTML = camadas.map((_, i) => '<div class="' + (i < current ? "done" : "") + '"></div>').join('');
+}
+
+function renderCamada() {
+  renderProgress();
+  const camada = camadas[current];
+  const quizArea = document.getElementById("quiz-area");
+  quizArea.innerHTML =
+    '<p class="question">' + camada.titulo + '</p>' +
+    '<p class="question-sub">' + camada.sub + '</p>' +
+    '<div class="options">' +
+    camada.opcoes.map((o, idx) => '<button type="button" class="option" data-idx="' + idx + '">' + o + '</button>').join('') +
+    '</div>';
+
+  quizArea.querySelectorAll(".option").forEach(btn => {
+    btn.addEventListener("click", () => {
+      notas[camada.key] = camada.opcoes[parseInt(btn.dataset.idx)];
+      current++;
+      if (current < camadas.length) {
+        renderCamada();
+      } else {
+        renderPyramidSummary();
+      }
+    });
+  });
+}
+
+function renderPyramidSummary() {
+  document.getElementById("progress").classList.add("hidden");
+  document.getElementById("quiz-area").classList.add("hidden");
+  const resultArea = document.getElementById("result-area");
+  resultArea.classList.remove("hidden");
+
+  resultArea.innerHTML =
+    '<p class="result-title">Sua pirâmide olfativa</p>' +
+    '<div class="profile-card">' +
+      '<div>' +
+        '<p class="pyramid-summary"><strong>Saída:</strong> ' + notas.saida + '</p>' +
+        '<p class="pyramid-summary"><strong>Corpo:</strong> ' + notas.corpo + '</p>' +
+        '<p class="pyramid-summary" style="margin-bottom:0;"><strong>Fundo:</strong> ' + notas.fundo + '</p>' +
+      '</div>' +
+    '</div>' +
+    '<button type="button" class="restart" id="continue-btn" style="border-color:#556238; color:#556238; font-weight:700;">Continuar para personalizar meu perfume →</button>' +
+    '<button type="button" class="restart" id="restart-btn">Recomeçar</button>';
+
+  document.getElementById("continue-btn").addEventListener("click", renderCapQuestion);
+  document.getElementById("restart-btn").addEventListener("click", () => {
+    current = 0;
+    notas = {};
+    document.getElementById("progress").classList.remove("hidden");
+    document.getElementById("quiz-area").classList.remove("hidden");
+    resultArea.classList.add("hidden");
+    renderCamada();
+  });
+}
+
+let capAnswer = "";
+let perfumeName = "";
+let placedIcons = [];
+let selectedPaletteId = null;
+const iconOptions = [
+  {id:"coracao", char:"♥"},
+  {id:"coracao-vazio", char:"♡"},
+  {id:"estrela", char:"★"},
+  {id:"sol", char:"☼"},
+  {id:"lua", char:"☾"},
+  {id:"flor", char:"❀"},
+  {id:"flor-fina", char:"✽"},
+  {id:"infinito", char:"∞"},
+  {id:"estrela-clara", char:"✩"}
+];
+
+function renderCapQuestion() {
+  const resultArea = document.getElementById("result-area");
+  resultArea.innerHTML =
+    '<p class="result-title">Escolha a tampa do frasco</p>' +
+    '<div class="options" style="margin-bottom:10px;">' +
+    '<button type="button" class="option" data-cap="Prata">Tampa Prata</button>' +
+    '<button type="button" class="option" data-cap="Preta">Tampa Preta</button>' +
+    '</div>';
+  resultArea.querySelectorAll("[data-cap]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      capAnswer = btn.dataset.cap;
+      renderLabelEditor();
+    });
+  });
+}
+
+function renderLabelPreview(interactive) {
+  const placedHtml = placedIcons.map((p, idx) =>
+    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:26px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
+  ).join('');
+
+  return '<div id="label-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:9px 10px; box-sizing:border-box; width:325px; height:170px; display:flex; align-items:center; justify-content:center; gap:8px; margin:0 auto 20px; ' + (interactive ? 'cursor:crosshair;' : '') + '">' +
+    '<div style="position:relative; width:48px; height:150px; flex-shrink:0; pointer-events:none;">' +
+      '<div style="position:absolute; top:50%; left:50%; width:150px; height:48px; transform:translate(-50%,-50%) rotate(-90deg); font-family:Arial,sans-serif; font-weight:700; font-size:7px; line-height:1.35; color:#000000; display:flex; align-items:center;">' +
+        '<span><strong>PERFUME</strong> — Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético. NÃO INGERIR. EVITAR CONTATO COM OS OLHOS. USO EXTERNO. <strong>PRODUTO ARTESANAL</strong> · Válido por 1 ano</span>' +
+      '</div>' +
+    '</div>' +
+    '<div style="flex:1; text-align:center; pointer-events:none;">' +
+    '<p style="font-family:Georgia,serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000000;">SAGRADO DE MIM</p>' +
+    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
+    '<p style="font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:19px; margin:0; color:#000000;">' + (perfumeName || "Nome do perfume") + '</p>' +
+    '</div>' +
+    placedHtml +
+  '</div>';
+}
+
+function renderLabelEditor() {
+  const resultArea = document.getElementById("result-area");
+  resultArea.innerHTML =
+    '<p class="result-title">Personalize sua etiqueta</p>' +
+    '<div id="label-preview"></div>' +
+    '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Nome do perfume</p>' +
+    '<input type="text" id="name-input" placeholder="Ex: Encanto, Lua Nova..." style="width:100%; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px;">' +
+    '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Escolha um elemento e clique na etiqueta para posicioná-lo</p>' +
+    '<div class="options" style="flex-direction:row; flex-wrap:wrap; gap:8px; margin-bottom:8px;">' +
+    iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:12px 18px; font-size:34px; line-height:1; color:#556238;">' + o.char + '</button>').join('') +
+    '</div>' +
+    '<p class="step-label" style="text-align:left; margin:0 0 16px;">Clique num elemento acima, depois clique na etiqueta pra posicioná-lo. Clique num elemento já colocado para removê-lo.</p>' +
+    '<button type="button" class="restart" id="finish-btn" style="border-color:#556238; color:#556238; font-weight:700;">Concluir personalização</button>';
+
+  const updatePreview = () => {
+    document.getElementById("label-preview").innerHTML = renderLabelPreview(true);
+    attachCanvasEvents();
+  };
+
+  function attachCanvasEvents() {
+    const canvas = document.getElementById("label-canvas");
+    canvas.addEventListener("click", (e) => {
+      if (e.target.classList.contains("placed-icon")) return;
+      if (!selectedPaletteId) return;
+      const rect = canvas.getBoundingClientRect();
+      const xPct = ((e.clientX - rect.left) / rect.width) * 100;
+      const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+      const opt = iconOptions.find(o => o.id === selectedPaletteId);
+      placedIcons.push({id: opt.id, char: opt.char, xPct, yPct});
+      updatePreview();
+    });
+    canvas.querySelectorAll(".placed-icon").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        placedIcons.splice(parseInt(el.dataset.idx), 1);
+        updatePreview();
+      });
+    });
+  }
+
+  updatePreview();
+
+  document.getElementById("name-input").addEventListener("input", (e) => {
+    perfumeName = e.target.value;
+    updatePreview();
+  });
+
+  resultArea.querySelectorAll(".icon-palette").forEach(btn => {
+    btn.addEventListener("click", () => {
+      resultArea.querySelectorAll(".icon-palette").forEach(b => { b.style.background = ""; b.style.borderColor = ""; });
+      if (selectedPaletteId === btn.dataset.id) {
+        selectedPaletteId = null;
+      } else {
+        selectedPaletteId = btn.dataset.id;
+        btn.style.background = "#f2efe5";
+        btn.style.borderColor = "#7d9169";
+      }
+    });
+  });
+
+  document.getElementById("finish-btn").addEventListener("click", async () => {
+    const finishBtn = document.getElementById("finish-btn");
+    finishBtn.disabled = true;
+    finishBtn.textContent = "Gerando etiqueta...";
+    try {
+      const canvasEl = document.getElementById("label-canvas");
+      const canvas = await html2canvas(canvasEl, {backgroundColor: "#fdfbf7", scale: 5});
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+      const formData = new FormData();
+      formData.append("file", blob);
+      formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+      const res = await fetch("https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME + "/image/upload", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      labelImageDataUrl = data.secure_url || null;
+    } catch (err) {
+      labelImageDataUrl = null;
+    }
+    renderFinalSummary();
+  });
+}
+
+const CLOUDINARY_CLOUD_NAME = "ld4xgnhw";
+const CLOUDINARY_UPLOAD_PRESET = "vb70iaep";
+let labelImageDataUrl = null;
+
+function renderFinalSummary() {
+  const resultArea = document.getElementById("result-area");
+
+  const orderItem = {
+    tipo: "Perfume Personalizado (Monte o Seu)",
+    preco: 150,
+    etiquetaImg: labelImageDataUrl,
+    iconsPosicionados: placedIcons,
+    detalhes: {
+      "Notas de Saída": notas.saida,
+      "Notas de Corpo": notas.corpo,
+      "Notas de Fundo": notas.fundo,
+      "Tampa": capAnswer,
+      "Nome do perfume": perfumeName || "(não definido)",
+      "Elementos na etiqueta": placedIcons.length ? placedIcons.length + " elemento(s) posicionado(s)" : "Nenhum"
+    }
+  };
+
+  const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
+  cart.push(orderItem);
+  localStorage.setItem("sagradoCart", JSON.stringify(cart));
+
+  resultArea.innerHTML =
+    '<p class="result-title">Adicionado ao carrinho!</p>' +
+    renderLabelPreview(false) +
+    '<p class="profile-desc"><strong>Perfume Personalizado</strong> — R$ 150,00</p>' +
+    '<p class="profile-desc"><strong>Saída:</strong> ' + notas.saida + ' · <strong>Corpo:</strong> ' + notas.corpo + ' · <strong>Fundo:</strong> ' + notas.fundo + '</p>' +
+    '<p class="profile-desc"><strong>Tampa:</strong> ' + capAnswer + '</p>' +
+    '<a href="carrinho.html" class="restart" style="display:block; text-align:center; text-decoration:none; border-color:#556238; color:#556238; font-weight:700; margin-top:14px;">Ir para o carrinho →</a>' +
+    '<button type="button" class="restart" id="restart-final" style="margin-top:10px;">Montar outro perfume</button>';
+
+  document.getElementById("restart-final").addEventListener("click", () => {
+    current = 0; notas = {}; capAnswer = ""; perfumeName = ""; placedIcons = []; selectedPaletteId = null; labelImageDataUrl = null;
+    document.getElementById("progress").classList.remove("hidden");
+    document.getElementById("quiz-area").classList.remove("hidden");
+    renderCamada();
+  });
+}
+
+renderCamada();
+</script>
+</body>
+</html>
