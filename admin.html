@@ -354,6 +354,29 @@ const atelierFontOptions = [
 let atelierSelectedFont = atelierFontOptions[0];
 let atelierPlacedIcons = [];
 let atelierSelectedPaletteId = null;
+let atelierProductType = "perfume";
+let atelierAromaName = "Aveia e Mel";
+let atelierVolume = "";
+const atelierAromaOptions = ["Bambu com Trouss", "Chá Branco", "Aveia e Mel", "Lavanda", "Neroli", "Chá Verde"];
+
+function atelierRenderAromaLabel() {
+  const produtoNome = atelierProductType === "difusor" ? "DIFUSOR DE VARETAS" : "HOME SPRAY";
+  const ingredientes = atelierProductType === "difusor"
+    ? "Óleo Mineral, Fragrância, Álcool, Corante."
+    : "Água, Álcool, Fragrância, Glicerina.";
+  const volumeDefault = atelierProductType === "difusor" ? "250mL" : "200mL";
+  const volume = atelierVolume || volumeDefault;
+
+  return '<div id="atelier-label-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; box-sizing:border-box; width:365px; height:250px; padding:18px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto 20px;">' +
+    '<p style="font-family:\'Segoe Script\',\'Brush Script MT\',cursive; font-style:italic; font-size:20px; color:#332f28; margin:0 0 10px;">Sagrado de Mim</p>' +
+    '<div style="border:2px solid #1a1a1a; padding:10px 12px; text-align:center; margin-bottom:10px; width:100%; box-sizing:border-box;">' +
+      '<p style="font-family:Georgia,serif; font-weight:700; font-size:20px; margin:0; letter-spacing:1px; color:#000;">' + atelierAromaName + '</p>' +
+    '</div>' +
+    '<p style="font-family:Georgia,serif; font-weight:700; font-size:17px; margin:0 0 8px; letter-spacing:1px; text-align:center; color:#000;">' + produtoNome + '</p>' +
+    '<p style="font-family:Arial,sans-serif; font-size:9px; font-style:italic; text-align:center; margin:0 0 6px; color:#333;"><strong>Ingredientes:</strong> ' + ingredientes + '</p>' +
+    '<p style="font-family:Arial,sans-serif; font-size:12px; text-align:center; margin:0; color:#000;">' + volume + '</p>' +
+  '</div>';
+}
 
 function atelierRenderLabel(interactive) {
   const placedHtml = atelierPlacedIcons.map((p, idx) =>
@@ -377,7 +400,22 @@ function atelierRenderLabel(interactive) {
 
 function renderAtelierEditor() {
   const container = document.getElementById("atelier-editor");
-  container.innerHTML =
+
+  const typeSelectorHtml =
+    '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Tipo de produto</p>' +
+    '<div style="display:flex; gap:8px; margin-bottom:20px;">' +
+      '<button type="button" class="atelier-type-btn" data-type="perfume" style="flex:1; padding:10px; font-family:Arial,sans-serif; font-weight:700; font-size:13px; border-radius:8px; border:1px solid ' + (atelierProductType === "perfume" ? "#556238" : "rgba(61,58,52,0.25)") + '; background:' + (atelierProductType === "perfume" ? "#eef1e6" : "#fff") + '; cursor:pointer;">Perfume</button>' +
+      '<button type="button" class="atelier-type-btn" data-type="difusor" style="flex:1; padding:10px; font-family:Arial,sans-serif; font-weight:700; font-size:13px; border-radius:8px; border:1px solid ' + (atelierProductType === "difusor" ? "#556238" : "rgba(61,58,52,0.25)") + '; background:' + (atelierProductType === "difusor" ? "#eef1e6" : "#fff") + '; cursor:pointer;">Difusor</button>' +
+      '<button type="button" class="atelier-type-btn" data-type="homespray" style="flex:1; padding:10px; font-family:Arial,sans-serif; font-weight:700; font-size:13px; border-radius:8px; border:1px solid ' + (atelierProductType === "homespray" ? "#556238" : "rgba(61,58,52,0.25)") + '; background:' + (atelierProductType === "homespray" ? "#eef1e6" : "#fff") + '; cursor:pointer;">Home Spray</button>' +
+    '</div>';
+
+  if (atelierProductType === "difusor" || atelierProductType === "homespray") {
+    renderAtelierAromaEditor(container, typeSelectorHtml);
+    return;
+  }
+
+  const container2 = container;
+  container2.innerHTML = typeSelectorHtml +
     '<div id="atelier-label-preview"></div>' +
     '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Nome do perfume</p>' +
     '<input type="text" id="atelier-name-input" placeholder="Ex: Encanto, Lua Nova..." style="width:100%; box-sizing:border-box; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px;">' +
@@ -456,7 +494,73 @@ function renderAtelierEditor() {
     btn.textContent = "Baixar etiqueta";
   });
 
+  attachAtelierTypeButtons(container);
   updateAtelierPreview();
+}
+
+function attachAtelierTypeButtons(container) {
+  container.querySelectorAll(".atelier-type-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      atelierProductType = btn.dataset.type;
+      renderAtelierEditor();
+    });
+  });
+}
+
+function renderAtelierAromaEditor(container, typeSelectorHtml) {
+  container.innerHTML = typeSelectorHtml +
+    '<div id="atelier-label-preview"></div>' +
+    '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Aroma</p>' +
+    '<select id="atelier-aroma-select" style="width:100%; box-sizing:border-box; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px;">' +
+      atelierAromaOptions.map(a => '<option value="' + a + '"' + (a === atelierAromaName ? ' selected' : '') + '>' + a + '</option>').join('') +
+      '<option value="__custom__">Outro (digitar)</option>' +
+    '</select>' +
+    '<input type="text" id="atelier-aroma-custom" placeholder="Digite o nome do aroma" style="display:none; width:100%; box-sizing:border-box; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px;">' +
+    '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Volume (opcional, deixe em branco pro padrão)</p>' +
+    '<input type="text" id="atelier-volume-input" placeholder="Ex: 250mL" style="width:100%; box-sizing:border-box; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px;">' +
+    '<button type="button" id="atelier-download-btn-aroma" style="width:100%; font-family:Arial,sans-serif; font-weight:700; font-size:15px; background:#556238; color:#fff; padding:14px; border-radius:10px; border:none; cursor:pointer;">Baixar etiqueta</button>';
+
+  const updatePreview = () => {
+    document.getElementById("atelier-label-preview").innerHTML = atelierRenderAromaLabel();
+  };
+
+  document.getElementById("atelier-aroma-select").addEventListener("change", (e) => {
+    if (e.target.value === "__custom__") {
+      document.getElementById("atelier-aroma-custom").style.display = "block";
+      atelierAromaName = document.getElementById("atelier-aroma-custom").value || "";
+    } else {
+      document.getElementById("atelier-aroma-custom").style.display = "none";
+      atelierAromaName = e.target.value;
+    }
+    updatePreview();
+  });
+
+  document.getElementById("atelier-aroma-custom").addEventListener("input", (e) => {
+    atelierAromaName = e.target.value;
+    updatePreview();
+  });
+
+  document.getElementById("atelier-volume-input").addEventListener("input", (e) => {
+    atelierVolume = e.target.value;
+    updatePreview();
+  });
+
+  document.getElementById("atelier-download-btn-aroma").addEventListener("click", async () => {
+    const btn = document.getElementById("atelier-download-btn-aroma");
+    btn.disabled = true;
+    btn.textContent = "Gerando...";
+    const canvasEl = document.getElementById("atelier-label-canvas");
+    const canvas = await html2canvas(canvasEl, { backgroundColor: "#fdfbf7", scale: 5 });
+    const link = document.createElement("a");
+    link.download = "etiqueta-" + atelierProductType + "-" + (atelierAromaName || "sagrado-de-mim").replace(/\s+/g, "-") + ".png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    btn.disabled = false;
+    btn.textContent = "Baixar etiqueta";
+  });
+
+  attachAtelierTypeButtons(container);
+  updatePreview();
 }
 
 if (SUPABASE_URL.includes("COLE_AQUI")) {
