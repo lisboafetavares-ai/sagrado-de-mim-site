@@ -68,6 +68,10 @@
   .format-title { font-family: Arial, sans-serif; font-weight: 700; font-size: 16px; margin: 0 0 4px; }
   .format-desc { font-family: Arial, sans-serif; font-size: 13px; color: #4a463e; margin: 0 0 6px; }
   .format-price { font-family: Arial, sans-serif; font-weight: 700; color: #556238; margin: 0; }
+  .name-input {
+    width: 100%; font-family: Arial, sans-serif; font-size: 15px; padding: 12px 14px;
+    border-radius: 10px; border: 1px solid rgba(61,58,52,0.3); margin-bottom: 20px;
+  }
 </style>
 </head>
 <body>
@@ -75,7 +79,7 @@
     <p style="text-align:center; margin-bottom:14px;"><a href="index.html" style="font-family:Arial,sans-serif; font-size:12px; color:#8a8676; text-decoration:none;">&larr; Voltar para o início</a></p>
     <div class="brand">
       <h1>AROMA PARA CASA</h1>
-      <p>Descubra o aroma ideal pro seu ambiente</p>
+      <p>Descubra e personalize o aroma do seu lar</p>
     </div>
 
     <div id="progress" class="progress"></div>
@@ -101,27 +105,65 @@ const aromas = {
 
 const questions = [
   {
-    texto: "Qual ambiente você mais quer perfumar?",
+    texto: "Qual dessas palavras mais combina com o ambiente que você quer criar?",
     opcoes: [
-      { label: "Sala de estar", pontos: { chabranco: 2, neroli: 1 } },
-      { label: "Quarto", pontos: { lavanda: 2, aveiamel: 1 } },
-      { label: "Banheiro", pontos: { chaverde: 2, bambu: 1 } },
-      { label: "Escritório ou home office", pontos: { bambu: 2, chaverde: 1 } }
+      { label: "Fresco e natural", key: "bambu" },
+      { label: "Leve e sofisticado", key: "chabranco" },
+      { label: "Doce e aconchegante", key: "aveiamel" },
+      { label: "Calmo e relaxante", key: "lavanda" },
+      { label: "Romântico e elegante", key: "neroli" },
+      { label: "Energético e revigorante", key: "chaverde" }
     ]
   },
   {
-    texto: "Que sensação você busca no ambiente?",
+    texto: "Qual desses momentos mais representa seu lar?",
     opcoes: [
-      { label: "Calma e relaxamento", pontos: { lavanda: 2, chabranco: 1 } },
-      { label: "Energia e disposição", pontos: { chaverde: 2, bambu: 1 } },
-      { label: "Aconchego e conforto", pontos: { aveiamel: 2, lavanda: 1 } },
-      { label: "Sofisticação e elegância", pontos: { neroli: 2, chabranco: 1 } }
+      { label: "Manhã de trabalho focado", key: "bambu" },
+      { label: "Tarde tranquila lendo", key: "chabranco" },
+      { label: "Noite aconchegante em casa", key: "aveiamel" },
+      { label: "Hora de relaxar e dormir", key: "lavanda" },
+      { label: "Um jantar especial", key: "neroli" },
+      { label: "Início disposto de um novo dia", key: "chaverde" }
+    ]
+  },
+  {
+    texto: "Qual elemento representa seu estilo de decoração?",
+    opcoes: [
+      { label: "Fibras naturais e bambu", key: "bambu" },
+      { label: "Linho e tons claros", key: "chabranco" },
+      { label: "Madeira e tecidos macios", key: "aveiamel" },
+      { label: "Tons pastel e almofadas", key: "lavanda" },
+      { label: "Veludo e detalhes dourados", key: "neroli" },
+      { label: "Plantas e verde por toda parte", key: "chaverde" }
+    ]
+  },
+  {
+    texto: "O que você mais busca num ambiente perfumado?",
+    opcoes: [
+      { label: "Sensação de limpeza e frescor", key: "bambu" },
+      { label: "Sofisticação discreta", key: "chabranco" },
+      { label: "Aconchego e conforto", key: "aveiamel" },
+      { label: "Relaxamento e calma", key: "lavanda" },
+      { label: "Romantismo e charme", key: "neroli" },
+      { label: "Energia e disposição", key: "chaverde" }
+    ]
+  },
+  {
+    texto: "Que tipo de música combina com o clima que você quer em casa?",
+    opcoes: [
+      { label: "Lo-fi ou sons da natureza", key: "bambu" },
+      { label: "Jazz sofisticado", key: "chabranco" },
+      { label: "Acústico e aconchegante", key: "aveiamel" },
+      { label: "Instrumental relaxante", key: "lavanda" },
+      { label: "Clássica romântica", key: "neroli" },
+      { label: "Eletrônica animada", key: "chaverde" }
     ]
   }
 ];
 
 let current = 0;
 let scores = {};
+let aromaNome = "";
 
 function renderProgress() {
   const progress = document.getElementById("progress");
@@ -141,20 +183,18 @@ function renderQuestion() {
   quizArea.querySelectorAll(".option").forEach(btn => {
     btn.addEventListener("click", () => {
       const opcao = q.opcoes[parseInt(btn.dataset.idx)];
-      Object.entries(opcao.pontos).forEach(([key, val]) => {
-        scores[key] = (scores[key] || 0) + val;
-      });
+      scores[opcao.key] = (scores[opcao.key] || 0) + 1;
       current++;
       if (current < questions.length) {
         renderQuestion();
       } else {
-        renderResult();
+        renderPerfilResult();
       }
     });
   });
 }
 
-function renderResult() {
+function renderPerfilResult() {
   document.getElementById("progress").classList.add("hidden");
   document.getElementById("quiz-area").classList.add("hidden");
   const resultArea = document.getElementById("result-area");
@@ -165,10 +205,39 @@ function renderResult() {
   const aroma = aromas[topKey];
 
   resultArea.innerHTML =
-    '<p class="result-title">Seu aroma ideal</p>' +
+    '<p class="result-title">Seu perfil aromático pra casa</p>' +
     '<div class="profile-card">' +
       '<div class="profile-icon">' + aroma.icon + '</div>' +
       '<div><p class="profile-name" style="color:' + aroma.cor + ';">' + aroma.nome + '</p>' +
+      '<p class="profile-desc">' + aroma.desc + '</p></div>' +
+    '</div>' +
+    '<p class="result-title" style="margin-top:22px;">Dê um nome ao seu aroma</p>' +
+    '<input type="text" id="aroma-name-input" class="name-input" placeholder="Ex: Manhã de Domingo, Refúgio...">' +
+    '<button type="button" class="restart" id="continue-formato-btn" style="border-color:#556238; color:#556238; font-weight:700;">Continuar →</button>' +
+    '<button type="button" class="restart" id="restart-btn">Refazer o quiz</button>';
+
+  document.getElementById("continue-formato-btn").addEventListener("click", () => {
+    aromaNome = document.getElementById("aroma-name-input").value.trim() || aroma.nome;
+    renderFormatoResult(aroma);
+  });
+
+  document.getElementById("restart-btn").addEventListener("click", () => {
+    current = 0;
+    scores = {};
+    document.getElementById("progress").classList.remove("hidden");
+    document.getElementById("quiz-area").classList.remove("hidden");
+    resultArea.classList.add("hidden");
+    renderQuestion();
+  });
+}
+
+function renderFormatoResult(aroma) {
+  const resultArea = document.getElementById("result-area");
+  resultArea.innerHTML =
+    '<p class="result-title">Seu aroma: ' + aromaNome + '</p>' +
+    '<div class="profile-card">' +
+      '<div class="profile-icon">' + aroma.icon + '</div>' +
+      '<div><p class="profile-name" style="color:' + aroma.cor + ';">Base: ' + aroma.nome + '</p>' +
       '<p class="profile-desc">' + aroma.desc + '</p></div>' +
     '</div>' +
     '<p class="result-title" style="margin-top:22px;">Escolha o formato</p>' +
@@ -182,24 +251,24 @@ function renderResult() {
       '<p class="format-desc">Borrifa e perfuma instantaneamente o ambiente.</p>' +
       '<p class="format-price">R$ 85,00</p>' +
     '</div>' +
-    '<button type="button" class="restart" id="restart-btn">Refazer o quiz</button>';
+    '<button type="button" class="restart" id="restart-btn2">Refazer o quiz</button>';
 
-  document.getElementById("format-difusor").addEventListener("click", () => adicionarAoCarrinho("Difusor de Varetas", 175, aroma.nome));
-  document.getElementById("format-spray").addEventListener("click", () => adicionarAoCarrinho("Home Spray", 85, aroma.nome));
+  document.getElementById("format-difusor").addEventListener("click", () => adicionarAoCarrinho("Difusor de Varetas", 175, aromaNome, aroma.nome));
+  document.getElementById("format-spray").addEventListener("click", () => adicionarAoCarrinho("Home Spray", 85, aromaNome, aroma.nome));
 
-  document.getElementById("restart-btn").addEventListener("click", () => {
+  document.getElementById("restart-btn2").addEventListener("click", () => {
     current = 0;
     scores = {};
+    aromaNome = "";
     document.getElementById("progress").classList.remove("hidden");
     document.getElementById("quiz-area").classList.remove("hidden");
-    resultArea.classList.add("hidden");
     renderQuestion();
   });
 }
 
-function adicionarAoCarrinho(tipo, preco, aroma) {
+function adicionarAoCarrinho(tipo, preco, nomeAroma, baseAroma) {
   const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
-  cart.push({ tipo: tipo, preco: preco, detalhes: { "Aroma": aroma } });
+  cart.push({ tipo: tipo, preco: preco, detalhes: { "Nome do aroma": nomeAroma, "Base aromática": baseAroma } });
   localStorage.setItem("sagradoCart", JSON.stringify(cart));
   window.location.href = "carrinho.html";
 }
