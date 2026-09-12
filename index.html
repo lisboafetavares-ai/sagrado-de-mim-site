@@ -188,34 +188,49 @@
     </div>
   </div>
 
-  <p style="text-align:right; max-width:720px; margin:0 auto; padding:0 20px; display:flex; justify-content:flex-end; gap:18px; flex-wrap:wrap;">
+  <p style="text-align:right; max-width:960px; margin:0 auto; padding:0 20px; display:flex; justify-content:flex-end; gap:18px; flex-wrap:wrap;">
     <a href="admin.html" id="admin-link" style="display:none; font-family:Arial,sans-serif; font-size:13px; color:#556238; text-decoration:none; font-weight:700;">Painel da loja</a>
-    <a href="meus-pedidos.html" style="font-family:Arial,sans-serif; font-size:13px; color:#8a8676; text-decoration:none;">Meus pedidos</a>
-    <a href="meu-perfil.html" style="font-family:Arial,sans-serif; font-size:13px; color:#8a8676; text-decoration:none;">Meu perfil</a>
-    <a href="carrinho.html" style="font-family:Arial,sans-serif; font-size:13px; color:#556238; text-decoration:none; font-weight:700;">🛒 Ver carrinho</a>
     <a href="#" id="logout-link" style="font-family:Arial,sans-serif; font-size:13px; color:#8a8676; text-decoration:none;">Sair</a>
   </p>
 
-  <main>
-    <p class="intro">Não sabe qual cheiro combina com você? Responda nosso quiz rápido e descubra o perfil aromático ideal para criarmos um perfume exclusivo especialmente para você.</p>
+  <div style="max-width:960px; margin:0 auto; padding:0 20px; display:flex; gap:28px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:280px;">
+      <main style="max-width:720px; margin:0;">
+        <p class="intro">Não sabe qual cheiro combina com você? Responda nosso quiz rápido e descubra o perfil aromático ideal para criarmos um perfume exclusivo especialmente para você.</p>
 
-    <div class="cards">
-      <a class="card" href="quiz-corporal.html">
-        <p class="card-label">Descubra seu perfil aromático</p>
-        <p class="card-title">Perfume Corporal</p>
-        <p class="card-desc">Um quiz rápido sobre personalidade, estilo e ocasião de uso para encontrar a fragrância que mais combina com você.</p>
-        <p class="card-cta">Responder o quiz →</p>
-      </a>
+        <div class="cards">
+          <a class="card" href="quiz-corporal.html">
+            <p class="card-label">Descubra seu perfil aromático</p>
+            <p class="card-title">Perfume Corporal</p>
+            <p class="card-desc">Um quiz rápido sobre personalidade, estilo e ocasião de uso para encontrar a fragrância que mais combina com você.</p>
+            <p class="card-cta">Responder o quiz →</p>
+          </a>
 
-      <div class="card" style="cursor:default;">
-        <p class="card-label">Edição limitada</p>
-        <p class="card-title">Blind Box — Vela na Latinha</p>
-        <p class="card-desc">Um aroma surpresa escolhido especialmente pra você, acompanhado de um cristal energizado que combina com a vibe da fragrância. Cada caixinha é única.</p>
-        <p class="card-price" style="font-family:Arial,sans-serif; font-weight:700; color:#556238; margin:10px 0 0;">R$ 45,00</p>
-        <button type="button" class="card-cta blindbox-add" style="background:none; border:none; padding:0; font-family:Arial,sans-serif; font-size:13px; font-weight:700; color:#556238; cursor:pointer; margin-top:6px;">Adicionar ao carrinho →</button>
-      </div>
+          <div class="card" style="cursor:default;">
+            <p class="card-label">Edição limitada</p>
+            <p class="card-title">Blind Box — Vela na Latinha</p>
+            <p class="card-desc">Um aroma surpresa escolhido especialmente pra você, acompanhado de um cristal energizado que combina com a vibe da fragrância. Cada caixinha é única.</p>
+            <p class="card-price" style="font-family:Arial,sans-serif; font-weight:700; color:#556238; margin:10px 0 0;">R$ 45,00</p>
+            <button type="button" class="card-cta blindbox-add" style="background:none; border:none; padding:0; font-family:Arial,sans-serif; font-size:13px; font-weight:700; color:#556238; cursor:pointer; margin-top:6px;">Adicionar ao carrinho →</button>
+          </div>
+        </div>
+      </main>
     </div>
-  </main>
+
+    <aside style="width:220px; flex-shrink:0;">
+      <div style="background:#fbf7f0; border:1px solid rgba(61,58,52,0.2); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:10px; position:sticky; top:20px;">
+        <a href="carrinho.html" style="display:flex; align-items:center; gap:12px; text-decoration:none; background:#556238; color:#fff; padding:14px 16px; border-radius:12px; font-family:Arial,sans-serif; font-weight:700; font-size:14px;">
+          <span style="font-size:20px;">🛒</span> Ver carrinho
+        </a>
+        <a href="meu-perfil.html" style="display:flex; align-items:center; gap:12px; text-decoration:none; background:#eef1e6; color:#3d4a33; padding:14px 16px; border-radius:12px; font-family:Arial,sans-serif; font-weight:700; font-size:14px;">
+          <span style="font-size:20px;">🌿</span> Meu perfil
+        </a>
+        <a href="meus-pedidos.html" style="display:flex; align-items:center; gap:12px; text-decoration:none; background:#eef1e6; color:#3d4a33; padding:14px 16px; border-radius:12px; font-family:Arial,sans-serif; font-weight:700; font-size:14px;">
+          <span style="font-size:20px;">📦</span> Meus pedidos
+        </a>
+      </div>
+    </aside>
+  </div>
 
   <footer>
     Sagrado de Mim — feito à mão, pensado para você.
