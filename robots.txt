@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lisboafetavares-ai.github.io/sagrado-de-mim-site/sitemap.xml
+Sitemap: https://sagradodemim.com.br/sitemap.xml
