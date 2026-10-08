@@ -84,7 +84,7 @@
 
   <div id="view-estoque" style="display:none; max-width:900px; margin:0 auto; padding:28px 24px;">
     <p style="font-family:Arial,sans-serif; font-size:13px; color:#6b6558; margin:0 0 6px;">Quantidade <strong>pronta entrega</strong> de cada produto. Com <strong>0</strong>, o produto aparece como <strong>sob encomenda (5 dias de produção)</strong>. Cada pedido novo desconta daqui automaticamente.</p>
-    <p style="font-family:Arial,sans-serif; font-size:12px; color:#8a8676; margin:0 0 20px;">Ao salvar, o painel pede o código de administração (o mesmo que você definiu no SQL do estoque).</p>
+    <p style="font-family:Arial,sans-serif; font-size:12px; color:#8a8676; margin:0 0 20px;">Na primeira vez que salvar, o painel pede a senha do estoque. Depois fica guardada neste computador.</p>
     <div id="estoque-lista"><p style="font-family:Arial,sans-serif; font-size:13px;">Carregando…</p></div>
   </div>
 
@@ -287,7 +287,7 @@ function renderMainPanel(codigo) {
         const n = await rpcAdmin("admin_devolver_estoque", { p_codigo: cod, p_order_code: codigo });
         alert(n > 0 ? (n + " unidade(s) devolvida(s) ao estoque.") : "Nada a devolver (já foi devolvido, ou o pedido não tirou nada do estoque).");
       } catch (err) {
-        if (err.codigoInvalido) sessionStorage.removeItem("codigoEstoque");
+        if (err.codigoInvalido) { sessionStorage.removeItem("codigoEstoque"); localStorage.removeItem("codigoEstoque"); }
         alert(err.codigoInvalido ? "Código incorreto." : ("Não foi possível devolver: " + err.message));
       }
       devolverBtn.disabled = false;
@@ -423,10 +423,10 @@ document.getElementById("tab-etiqueta").addEventListener("click", () => mostrarA
 
 // ---------- Estoque ----------
 function codigoEstoque(forcarNovo) {
-  let c = forcarNovo ? null : sessionStorage.getItem("codigoEstoque");
+  let c = forcarNovo ? null : (localStorage.getItem("codigoEstoque") || sessionStorage.getItem("codigoEstoque"));
   if (!c) {
-    c = prompt("Código de administração do estoque:");
-    if (c) sessionStorage.setItem("codigoEstoque", c);
+    c = prompt("Senha do estoque (só é pedida uma vez neste computador):");
+    if (c) localStorage.setItem("codigoEstoque", c);
   }
   return c;
 }
@@ -493,7 +493,7 @@ async function renderEstoque() {
         }
         msg.style.color = "#556238"; msg.textContent = "Salvo ✓";
       } catch (err) {
-        if (err.codigoInvalido) sessionStorage.removeItem("codigoEstoque");
+        if (err.codigoInvalido) { sessionStorage.removeItem("codigoEstoque"); localStorage.removeItem("codigoEstoque"); }
         msg.style.color = "#a3455a"; msg.textContent = err.codigoInvalido ? "Código incorreto — tente de novo." : ("Erro: " + err.message);
       }
       btn.disabled = false;
