@@ -94,6 +94,7 @@
   </div>
 
 <script src="produtos.js"></script>
+<script src="etiquetas.js" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
@@ -157,6 +158,28 @@ function renderSidebar() {
   });
 }
 
+function etiquetasPainelHtml(data) {
+  if (typeof etiquetasDoPedido === "undefined") return "";
+  const info = etiquetasDoPedido(data);
+  const partes = [];
+  if (info.corpo.length) partes.push(info.corpo.length + " etiqueta(s) de produto");
+  partes.push("1 selo da caixa");
+  const avisos = [];
+  if (info.faltaIngred.length) avisos.push("Faltam ingredientes de: " + info.faltaIngred.join(", "));
+  if (info.semModelo.length) avisos.push("Ainda sem etiqueta automática: " + info.semModelo.join(", "));
+  return '<div style="background:#f3eee4; border:1px solid rgba(61,58,52,0.2); border-radius:12px; padding:14px 16px; margin:10px 0 16px;">' +
+    '<p style="margin:0 0 8px; font-weight:700; font-size:14px;">Etiquetas para imprimir: ' + partes.join(" + ") + '</p>' +
+    (avisos.length ? '<p style="margin:0 0 10px; font-size:12px; color:#6b4a14;">' + avisos.join("<br>") + '</p>' : '') +
+    '<button type="button" class="btn" id="imprimir-etiquetas-btn" style="font-size:13px; padding:10px 16px;">🖨️ Imprimir etiquetas do pedido</button>' +
+  '</div>';
+}
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest && e.target.closest("#imprimir-etiquetas-btn");
+  if (!btn || !activeCode || !ordersCache[activeCode]) return;
+  imprimirEtiquetasPedido(activeCode, ordersCache[activeCode]);
+});
+
 function renderMainPanel(codigo) {
   const data = ordersCache[codigo];
   const main = document.getElementById("main-panel");
@@ -207,6 +230,7 @@ function renderMainPanel(codigo) {
     '<p class="order-meta">Cliente: ' + (data.cliente || "—") + ' · E-mail: ' + (data.email || "—") + ' · Total: R$ ' + (data.total ? Number(data.total).toFixed(2).replace('.',',') : "—") + '</p>' +
     (enderecoCompleto ? '<p class="order-meta" style="margin-top:-14px;">Endereço: ' + enderecoCompleto + '</p>' : '') +
     primeiraCompraHtml +
+    etiquetasPainelHtml(data) +
     encomendaHtml +
     reviewHtml +
     itensHtml +
