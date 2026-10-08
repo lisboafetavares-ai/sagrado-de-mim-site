@@ -61,10 +61,32 @@
   }
   #toast.show { opacity:1; transform: translateX(-50%) translateY(0); pointer-events:auto; }
   #toast a { color:#d9e4c4; font-weight:700; text-decoration:none; }
+  .perso-btn { width:100%; background:transparent; border:1px dashed rgba(61,58,52,0.4); color:#332f28; border-radius:999px; padding:10px; font-size:13px; cursor:pointer; margin-bottom:10px; font-family:Jost,Arial,sans-serif; }
+  .perso-btn:hover { border-color:#556238; color:#556238; }
+  .perso-ok { font-family:Jost,Arial,sans-serif; font-size:12px; color:#556238; margin:0 0 10px; display:flex; flex-wrap:wrap; gap:4px 10px; align-items:center; }
+  .perso-ok img { width:100%; border:1px solid rgba(61,58,52,0.2); border-radius:6px; }
+  .perso-ok button { background:none; border:none; padding:0; color:#5A4A3F; text-decoration:underline; cursor:pointer; font-size:12px; font-family:inherit; }
+  #perso-modal { position:fixed; inset:0; background:rgba(50,45,38,0.55); display:none; align-items:flex-start; justify-content:center; z-index:200; padding:24px 14px; overflow-y:auto; }
+  #perso-modal.show { display:flex; }
+  .perso-box { background:#FBF8F3; border-radius:24px; max-width:520px; width:100%; padding:30px 26px; position:relative; }
+  .perso-box h2 { font-family:'Cormorant Garamond',Georgia,serif; font-weight:500; font-size:32px; margin:0 0 4px; }
+  .perso-box .perso-sub { color:#5A4A3F; font-size:14px; margin:0 0 20px; }
+  .perso-box label { display:block; font-weight:500; font-size:14px; margin:16px 0 6px; }
+  .perso-box input[type=text] { width:100%; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); box-sizing:border-box; }
+  .perso-opts { display:flex; flex-wrap:wrap; gap:8px; }
+  .perso-opts button { background:#fff; border:1px solid rgba(61,58,52,0.25); border-radius:12px; padding:9px 14px; cursor:pointer; color:#332f28; }
+  .perso-opts button.sel { background:#f2efe5; border-color:#556238; }
+  .perso-close { position:absolute; top:14px; right:16px; width:44px; height:44px; background:none; border:none; font-size:22px; cursor:pointer; color:#5A4A3F; }
+  .perso-acoes { display:flex; gap:10px; margin-top:24px; }
+  .perso-acoes button { flex:1; padding:13px; border-radius:999px; font-size:14px; cursor:pointer; font-family:Jost,Arial,sans-serif; }
+  #perso-salvar { background:#556238; color:#fff; border:none; }
+  #perso-cancelar { background:transparent; border:1px solid #332f28; color:#332f28; }
+  .perso-preview-wrap { overflow-x:auto; padding:4px 0 8px; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Montserrat:wght@700&display=swap">
 <link rel="stylesheet" href="tema.css">
 </head>
 <body>
@@ -91,6 +113,25 @@
     <div class="grid" id="grid"></div>
   </div>
 
+
+  <div id="perso-modal" role="dialog" aria-modal="true" aria-labelledby="perso-titulo">
+    <div class="perso-box">
+      <button type="button" class="perso-close" id="perso-x" aria-label="Fechar">✕</button>
+      <h2 id="perso-titulo">Personalize sua etiqueta</h2>
+      <p class="perso-sub" id="perso-produto"></p>
+      <div class="perso-preview-wrap"><div id="perso-preview"></div></div>
+      <label for="perso-nome">Nome ou frase na etiqueta</label>
+      <input type="text" id="perso-nome" maxlength="28" placeholder="Ex: Para a Ana, Lua Nova, Meu cantinho...">
+      <label>Estilo da letra</label>
+      <div class="perso-opts" id="perso-fontes"></div>
+      <label>Elementos (escolha um e clique na etiqueta; clique num já colocado para tirar)</label>
+      <div class="perso-opts" id="perso-icones"></div>
+      <div class="perso-acoes">
+        <button type="button" id="perso-cancelar">Cancelar</button>
+        <button type="button" id="perso-salvar">Salvar etiqueta</button>
+      </div>
+    </div>
+  </div>
   <div id="toast"><span id="toast-text">Adicionado ao carrinho</span><a href="carrinho.html">Ver carrinho →</a></div>
 
 <footer class="sm-rodape">
@@ -110,6 +151,7 @@
 })();
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="produtos.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
@@ -166,7 +208,9 @@ function renderFiltros() {
 }
 
 function renderGrid() {
-  const lista = PRODUTOS.filter(p => categoriaAtiva === "Todos" || p.cat === categoriaAtiva);
+  const aromasAntes = {};
+  document.querySelectorAll("select.aroma").forEach(s => { if (s.value) aromasAntes[s.dataset.id] = s.value; });
+  const lista = PRODUTOS.filter(p => p.preco != null && (categoriaAtiva === "Todos" || p.cat === categoriaAtiva));
   const grid = document.getElementById("grid");
   grid.innerHTML = lista.map(p => {
     const foto = p.img
@@ -194,10 +238,16 @@ function renderGrid() {
         '<p class="status" data-status-id="' + p.id + '">' + status + '</p>' +
         '<p class="price">' + brl(p.preco) + '</p>' +
         aroma +
+        persoHtml(p.id) +
         '<button type="button" class="add-btn" data-id="' + p.id + '">Adicionar ao carrinho</button>' +
       '</div></div>';
   }).join('');
 
+  ligarPerso(grid);
+  Object.entries(aromasAntes).forEach(([id, v]) => {
+    const s = grid.querySelector('select.aroma[data-id="' + id + '"]');
+    if (s) { s.value = v; s.dispatchEvent(new Event("change")); }
+  });
   grid.querySelectorAll(".add-btn").forEach(btn => {
     btn.addEventListener("click", () => adicionar(btn.dataset.id));
   });
@@ -234,7 +284,13 @@ function adicionar(id) {
     detalhes["Entrega"] = jaNoCarrinho < q ? "Pronta entrega" : "Sob encomenda — 5 dias de produção";
   }
 
-  cart.push({ tipo: p.nome, preco: p.preco, detalhes: detalhes, produtoId: p.id, aromaEstoque: aromaSel });
+  const perso = PERSO[id];
+  if (perso && perso.aroma && perso.aroma !== aromaSel) {
+    if (!confirm("Sua etiqueta foi feita com o aroma " + perso.aroma + ", mas agora está escolhido " + aromaSel + ". Adicionar mesmo assim? (Para corrigir, cancele e clique em editar na etiqueta.)")) return;
+  }
+  if (perso) detalhes["Etiqueta personalizada"] = perso.nome ? "\u201c" + perso.nome + "\u201d (" + perso.fonte + ")" : "Sim (" + perso.fonte + ")";
+  cart.push({ tipo: p.nome, preco: p.preco, detalhes: detalhes, produtoId: p.id, aromaEstoque: aromaSel, etiquetaImg: perso ? perso.img : null });
+  if (perso) { delete PERSO[id]; renderGrid(); }
   localStorage.setItem("sagradoCart", JSON.stringify(cart));
 
   const toast = document.getElementById("toast");
@@ -245,6 +301,120 @@ function adicionar(id) {
 }
 
 carregarEstoque().then(() => { renderFiltros(); renderGrid(); });
+
+// ===== Etiqueta personalizada (opcional, para qualquer produto) =====
+const CLOUDINARY_CLOUD_NAME = "ld4xgnhw";
+const CLOUDINARY_UPLOAD_PRESET = "vb70iaep";
+const FONTES_ETQ = [
+  {id:"classico", label:"Clássico", family:"Georgia,serif", style:"italic", weight:"700"},
+  {id:"script", label:"Script", family:"'Dancing Script',cursive", style:"normal", weight:"700"},
+  {id:"elegante", label:"Elegante", family:"'Playfair Display',serif", style:"italic", weight:"400"},
+  {id:"moderno", label:"Moderno", family:"'Montserrat',sans-serif", style:"normal", weight:"700"}
+];
+const ICONES_ETQ = ["♥","♡","★","☼","☾","❀","✽","∞","✩"];
+const PERSO = {}; // id do produto -> { img, nome, fonte }
+let edit = null;  // estado do editor aberto
+
+function escHtml(t) { return String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function persoHtml(id) {
+  const p = PERSO[id];
+  if (!p) return '<button type="button" class="perso-btn" data-perso="' + id + '">✎ Personalizar etiqueta (opcional)</button>';
+  return '<div class="perso-ok"><img src="' + p.img + '" alt="Etiqueta personalizada">' +
+    '<span>✓ Etiqueta personalizada</span><button type="button" data-perso="' + id + '">editar</button>' +
+    '<button type="button" data-perso-rm="' + id + '">remover</button></div>';
+}
+
+function ligarPerso(root) {
+  root.querySelectorAll("[data-perso]").forEach(b => b.addEventListener("click", () => abrirPerso(b.dataset.perso)));
+  root.querySelectorAll("[data-perso-rm]").forEach(b => b.addEventListener("click", () => { delete PERSO[b.dataset.persoRm]; renderGrid(); }));
+}
+
+function aromaEscolhido(id) {
+  const sel = document.querySelector('select.aroma[data-id="' + id + '"]');
+  return sel && sel.value ? sel.value : "";
+}
+
+function etiquetaHtml() {
+  const p = PRODUTOS.find(x => x.id === edit.id);
+  const f = FONTES_ETQ.find(x => x.id === edit.fonte);
+  const linha = p.nome + (edit.aroma ? " · " + edit.aroma : "");
+  const icones = edit.icones.map((ic, i) =>
+    '<span class="etq-ic" data-i="' + i + '" style="position:absolute; left:' + ic.x + '%; top:' + ic.y + '%; transform:translate(-50%,-50%); font-size:24px; color:#556238; cursor:pointer;">' + ic.c + '</span>').join("");
+  return '<div id="label-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; width:325px; height:170px; margin:0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:12px 20px; box-sizing:border-box; cursor:crosshair;">' +
+    '<p style="font-family:Playfair Display,serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000; pointer-events:none;">SAGRADO DE MIM</p>' +
+    '<p style="font-family:Playfair Display,serif; font-style:italic; font-weight:700; font-size:9px; margin:0 0 8px; color:#3d4a33; pointer-events:none;">' + escHtml(linha) + '</p>' +
+    '<p style="font-family:' + f.family + '; font-style:' + f.style + '; font-weight:' + f.weight + '; font-size:21px; margin:0; color:#000; pointer-events:none; line-height:1.15;">' + escHtml(edit.nome || "Seu nome aqui") + '</p>' +
+    icones + '</div>';
+}
+
+function desenharPerso() {
+  const prev = document.getElementById("perso-preview");
+  prev.innerHTML = etiquetaHtml();
+  const cv = document.getElementById("label-canvas");
+  cv.addEventListener("click", e => {
+    if (e.target.classList.contains("etq-ic")) { edit.icones.splice(+e.target.dataset.i, 1); desenharPerso(); return; }
+    if (!edit.icone) return;
+    const r = cv.getBoundingClientRect();
+    edit.icones.push({ c: edit.icone, x: (e.clientX - r.left) / r.width * 100, y: (e.clientY - r.top) / r.height * 100 });
+    desenharPerso();
+  });
+  document.querySelectorAll("#perso-fontes button").forEach(b => b.classList.toggle("sel", b.dataset.f === edit.fonte));
+  document.querySelectorAll("#perso-icones button").forEach(b => b.classList.toggle("sel", b.dataset.c === edit.icone));
+}
+
+function abrirPerso(id) {
+  const p = PRODUTOS.find(x => x.id === id);
+  const antigo = PERSO[id];
+  edit = { id, aroma: aromaEscolhido(id), nome: antigo ? antigo.nome : "", fonte: antigo ? antigo.fonteId : "elegante",
+           icones: antigo ? antigo.icones.slice() : [], icone: null };
+  document.getElementById("perso-produto").textContent = p.nome + (p.tamanho ? " " + p.tamanho : "") + (edit.aroma ? " · " + edit.aroma : "");
+  document.getElementById("perso-nome").value = edit.nome;
+  document.getElementById("perso-modal").classList.add("show");
+  desenharPerso();
+  document.getElementById("perso-nome").focus();
+}
+
+function fecharPerso() { document.getElementById("perso-modal").classList.remove("show"); edit = null; }
+
+document.getElementById("perso-fontes").innerHTML = FONTES_ETQ.map(f =>
+  '<button type="button" data-f="' + f.id + '" style="font-family:' + f.family + '; font-style:' + f.style + '; font-weight:' + f.weight + '; font-size:16px;">' + f.label + '</button>').join("");
+document.getElementById("perso-icones").innerHTML = ICONES_ETQ.map(c =>
+  '<button type="button" data-c="' + c + '" style="font-size:24px; line-height:1; color:#556238; min-width:48px;" aria-label="Elemento ' + c + '">' + c + '</button>').join("");
+document.querySelectorAll("#perso-fontes button").forEach(b => b.addEventListener("click", () => { edit.fonte = b.dataset.f; desenharPerso(); }));
+document.querySelectorAll("#perso-icones button").forEach(b => b.addEventListener("click", () => { edit.icone = edit.icone === b.dataset.c ? null : b.dataset.c; desenharPerso(); }));
+document.getElementById("perso-nome").addEventListener("input", e => { edit.nome = e.target.value; desenharPerso(); });
+document.getElementById("perso-x").addEventListener("click", fecharPerso);
+document.getElementById("perso-cancelar").addEventListener("click", fecharPerso);
+document.getElementById("perso-modal").addEventListener("click", e => { if (e.target.id === "perso-modal") fecharPerso(); });
+
+document.getElementById("perso-salvar").addEventListener("click", async () => {
+  const btn = document.getElementById("perso-salvar");
+  btn.disabled = true; btn.textContent = "Gerando etiqueta...";
+  let img = null;
+  try {
+    const canvas = await html2canvas(document.getElementById("label-canvas"), { backgroundColor: "#fdfbf7", scale: 5 });
+    try {
+      const blob = await new Promise(r => canvas.toBlob(r, "image/png"));
+      const fd = new FormData();
+      fd.append("file", blob);
+      fd.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+      const res = await fetch("https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME + "/image/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      img = data.secure_url || null;
+    } catch (e) { img = null; }
+    if (!img) img = canvas.toDataURL("image/jpeg", 0.6); // reserva se o upload falhar
+  } catch (e) {
+    alert("Não foi possível gerar a etiqueta agora. Tente de novo.");
+    btn.disabled = false; btn.textContent = "Salvar etiqueta";
+    return;
+  }
+  const f = FONTES_ETQ.find(x => x.id === edit.fonte);
+  PERSO[edit.id] = { img, aroma: edit.aroma, nome: edit.nome.trim(), fonte: f.label, fonteId: f.id, icones: edit.icones };
+  btn.disabled = false; btn.textContent = "Salvar etiqueta";
+  fecharPerso();
+  renderGrid();
+});
 </script>
 </body>
 </html>
