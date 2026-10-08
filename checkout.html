@@ -198,6 +198,9 @@ function aplicarStatusEstoque(cart) {
       restante[key] -= 1;
       item.entrega = "pronta";
       item.detalhes["Entrega"] = "Pronta entrega";
+    } else if (item.limitado) {
+      item.entrega = "esgotado";
+      item.detalhes["Entrega"] = "Esgotado";
     } else {
       temEncomenda = true;
       item.entrega = "encomenda";
@@ -413,6 +416,10 @@ function render() {
 
   document.getElementById("order-form").addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (cart.some(i => i.entrega === "esgotado")) {
+      alert("A Caixa Misteriosa (edição limitada) esgotou ou não tem unidades suficientes. Remova do carrinho pra finalizar o pedido.");
+      return;
+    }
     const submitBtn = document.getElementById("submit-btn");
     submitBtn.disabled = true;
     submitBtn.textContent = "Enviando...";

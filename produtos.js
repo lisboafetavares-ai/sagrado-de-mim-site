@@ -1,5 +1,6 @@
 // Fonte única dos produtos da loja (usada por loja.html, checkout e painel).
 // Para colocar foto real: salvar em assets/produtos/ e preencher "img" (ex.: "assets/produtos/home-spray-500.jpg").
+// Produto com "limitado": true não vira sob encomenda: quando o estoque zera, aparece como esgotado.
 // Produto com "preco": null fica escondido na loja até ter preço.
 // O estoque NÃO fica aqui: fica na tabela "stock" do Supabase.
 const AROMAS = ["Lavanda", "Canela", "Incenso", "Mirra com Arruda", "Bamboo Trouss", "Nerolia", "Chá Verde"];
@@ -35,6 +36,7 @@ const PRODUTOS = [
   {"id": "manteiga-200", "cat": "Corpo", "nome": "Manteiga Corporal", "tamanho": "200g", "preco": 149.9, "aroma": true, "img": null},
   {"id": "creme-pes-100", "cat": "Corpo", "nome": "Creme para Tratamento dos Pés", "tamanho": "100ml", "preco": 89.9, "aroma": true, "img": null},
   {"id": "passa-facil", "cat": "Corpo", "nome": "Passa Fácil", "tamanho": "", "preco": 29.9, "aroma": true, "img": null},
+  {"id": "caixa-misteriosa", "cat": "Edição limitada", "nome": "Caixa Misteriosa", "tamanho": "Blind box de produtos", "preco": 250.0, "aroma": false, "limitado": true, "img": null},
   {"id": "sabonete-fatia-125", "cat": "Banho & Facial", "nome": "Sabonete Fatia", "tamanho": "125g", "preco": 32.0, "aroma": true, "img": null},
   {"id": "sabonete-gel-250", "cat": "Banho & Facial", "nome": "Sabonete em Gel", "tamanho": "250ml", "preco": 123.6, "aroma": true, "img": null},
   {"id": "espuma-facial-70", "cat": "Banho & Facial", "nome": "Espuma de Limpeza Facial", "tamanho": "70ml", "preco": 62.0, "aroma": true, "img": null}
