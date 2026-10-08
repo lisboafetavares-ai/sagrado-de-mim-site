@@ -31,22 +31,22 @@
   .brand { text-align: center; margin-bottom: 28px; }
   .brand h1 { font-size: 26px; letter-spacing: 4px; margin: 0; font-weight: normal; }
   .brand p {
-    font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px;
+    font-family: Jost, Arial, sans-serif; font-size: 12px; letter-spacing: 2px;
     color: #5f6b52; margin: 6px 0 0; text-transform: uppercase;
   }
   .progress { display: flex; gap: 6px; margin-bottom: 28px; }
   .progress div { flex: 1; height: 4px; border-radius: 2px; background: #e3dbca; transition: background 0.3s; }
   .progress div.done { background: #7d9169; }
-  .question { font-family: Arial, sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 18px; line-height: 1.4; }
+  .question { font-family: Jost, Arial, sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 18px; line-height: 1.4; }
   .options { display: flex; flex-direction: column; gap: 10px; }
   .option {
-    font-family: Arial, sans-serif; text-align: left; padding: 14px 18px; border-radius: 10px;
+    font-family: Jost, Arial, sans-serif; text-align: left; padding: 14px 18px; border-radius: 10px;
     border: 1px solid rgba(61,58,52,0.25); background: #ffffff; color: #332f28; font-size: 15px;
     cursor: pointer; transition: all 0.15s;
   }
   .option:hover { border-color: #7d9169; background: #f2efe5; }
   .result-title {
-    font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    font-family: Jost, Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
     color: #8a8676; margin: 0 0 14px;
   }
   .profile-card {
@@ -54,10 +54,10 @@
     padding: 18px 20px; margin-bottom: 14px; background: #eef1e6;
   }
   .profile-icon { font-size: 26px; line-height: 1; margin-top: 2px; }
-  .profile-name { font-family: Arial, sans-serif; font-weight: 700; font-size: 16px; margin: 0 0 4px; color: #556238; }
-  .profile-desc { font-family: Arial, sans-serif; font-size: 14px; line-height: 1.55; margin: 0; color: #4a463e; }
+  .profile-name { font-family: Jost, Arial, sans-serif; font-weight: 700; font-size: 16px; margin: 0 0 4px; color: #556238; }
+  .profile-desc { font-family: Jost, Arial, sans-serif; font-size: 14px; line-height: 1.55; margin: 0; color: #4a463e; }
   .restart {
-    font-family: Arial, sans-serif; width: 100%; padding: 13px; border-radius: 10px;
+    font-family: Jost, Arial, sans-serif; width: 100%; padding: 13px; border-radius: 10px;
     border: 1px solid rgba(61,58,52,0.3); background: transparent; color: #332f28; font-size: 14px; cursor: pointer; margin-top: 8px;
   }
   .restart:hover { background: #f2efe5; }
@@ -67,21 +67,38 @@
     cursor: pointer; transition: all 0.15s; background: #fff;
   }
   .format-card:hover { border-color: #556238; background: #f2efe5; }
-  .format-title { font-family: Arial, sans-serif; font-weight: 700; font-size: 16px; margin: 0 0 4px; }
-  .format-desc { font-family: Arial, sans-serif; font-size: 13px; color: #4a463e; margin: 0 0 6px; }
-  .format-price { font-family: Arial, sans-serif; font-weight: 700; color: #556238; margin: 0; }
+  .format-title { font-family: Jost, Arial, sans-serif; font-weight: 700; font-size: 16px; margin: 0 0 4px; }
+  .format-desc { font-family: Jost, Arial, sans-serif; font-size: 13px; color: #4a463e; margin: 0 0 6px; }
+  .format-price { font-family: Jost, Arial, sans-serif; font-weight: 700; color: #556238; margin: 0; }
   .name-input {
-    width: 100%; font-family: Arial, sans-serif; font-size: 15px; padding: 12px 14px;
+    width: 100%; font-family: Jost, Arial, sans-serif; font-size: 15px; padding: 12px 14px;
     border-radius: 10px; border: 1px solid rgba(61,58,52,0.3); margin-bottom: 20px;
   }
 </style>
-<script src="assets/topbar.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap">
+<link rel="stylesheet" href="tema.css">
 </head>
 <body>
+<p class="sm-aviso">Frete fixo de R$25 para todo o Brasil · Pagamento via Pix</p>
+<header class="sm-topo">
+  <a href="index.html" class="sm-logo"><img src="assets/logo-cursiva.png" alt="Sagrado de Mim"></a>
+  <nav aria-label="Principal">
+    <a href="loja.html">Loja</a>
+    <a href="index.html#perfume">Perfume Corporal</a>
+    <a href="index.html#velas">Velas</a>
+    <a href="index.html#sobre">Sobre</a>
+  </nav>
+  <div class="sm-icones">
+    <a href="meu-perfil.html" aria-label="Meu perfil" title="Meu perfil"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></a>
+    <a href="meus-pedidos.html" aria-label="Meus pedidos" title="Meus pedidos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg></a>
+    <a href="carrinho.html" aria-label="Carrinho" title="Carrinho"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 8h14l-1.2 12H6.2L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="sm-badge" id="sm-cart-count"></span></a>
+  </div>
+</header>
   <div class="card">
-    <p style="text-align:center; margin-bottom:14px;"><a href="index.html" style="font-family:Arial,sans-serif; font-size:12px; color:#8a8676; text-decoration:none;">&larr; Voltar para o início</a></p>
     <div class="brand">
-      <h1>AROMA PARA CASA</h1>
+      <h1>Aroma para Casa</h1>
       <p>Descubra e personalize o aroma do seu lar</p>
     </div>
 
@@ -89,6 +106,23 @@
     <div id="quiz-area"></div>
     <div id="result-area" class="hidden"></div>
   </div>
+
+<footer class="sm-rodape">
+  <div><img src="assets/logo-cursiva.png" alt="Sagrado de Mim"><p style="margin:6px 0 0; color:#5A4A3F;">Aromas</p></div>
+  <div class="cols">
+    <div><strong>Loja</strong><a href="quiz-corporal.html">Perfume Corporal</a><a href="perfume-monte.html">Monte seu Perfume</a><a href="quiz-casa.html">Aroma para Casa</a><a href="loja.html">Todos os produtos</a></div>
+    <div><strong>Minha conta</strong><a href="meu-perfil.html">Meu perfil</a><a href="meus-pedidos.html">Meus pedidos</a><a href="carrinho.html">Carrinho</a></div>
+    <div><strong>Contato</strong><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></div>
+  </div>
+</footer>
+<p class="sm-copy">Sagrado de Mim — feito à mão, pensado para você.</p>
+<script>
+(function () {
+  var n = JSON.parse(localStorage.getItem("sagradoCart") || "[]").length;
+  var b = document.getElementById("sm-cart-count");
+  if (b && n > 0) { b.textContent = n; b.style.display = "flex"; }
+})();
+</script>
 
 <script>
 const aromas = {

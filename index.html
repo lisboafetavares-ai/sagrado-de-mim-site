@@ -9,111 +9,168 @@
 <meta property="og:description" content="Descubra seu perfil aromático e crie um perfume 100% seu, feito à mão com carinho.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="assets/logo-cursiva.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap">
 <title>Sagrado de Mim — Perfumes Artesanais Personalizados</title>
 <style>
-  :root { --sage:#556238; --sage-soft:#eef1e6; --card:#fbf7f0; --line:rgba(61,58,52,0.2); --muted:#8a8676; --text:#332f28; --body:#4a463e; }
+  :root {
+    --fundo: #F6F1EA;
+    --fundo-2: #EFE6DA;
+    --foto: #E6D9C9;
+    --texto: #332f28;
+    --texto-2: #5A4A3F;
+    --verde: #556238;
+    --escuro: #3B2E26;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+  }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin:0; font-family: Georgia, 'Liberation Serif', serif; background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf); color: var(--text); min-height:100vh; }
-  [id] { scroll-margin-top: 84px; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font-family: var(--sans); font-size: 16px; line-height: 1.6; }
   a { color: inherit; }
+  img { max-width: 100%; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
+  .eyebrow { font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--verde); margin: 0; }
+  h1, h2 { font-family: var(--serif); font-weight: 500; line-height: 1.08; margin: 0; }
+  .btn { display: inline-block; text-decoration: none; padding: 14px 32px; border-radius: 999px; font-family: var(--sans); font-size: 15px; letter-spacing: 0.04em; border: 1px solid var(--verde); background: var(--verde); color: #fff; cursor: pointer; transition: opacity .15s; }
+  .btn:hover { opacity: .88; }
+  .btn.contorno { background: transparent; color: var(--texto); border-color: var(--texto); }
+  .btn.claro { background: var(--fundo); color: var(--escuro); border-color: var(--fundo); }
+  .preco { font-family: var(--serif); font-size: 36px; }
 
-  /* barra do topo */
-  .topbar { position: sticky; top:0; z-index:100; background: rgba(246,239,230,0.93); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom:1px solid var(--line); }
-  .topbar-in { max-width:1080px; margin:0 auto; padding:10px 20px; display:flex; align-items:center; gap:22px; }
-  .brand img { height:50px; width:auto; display:block; }
-  .nav-links { display:flex; gap:24px; margin-left:10px; font-family:Arial,sans-serif; font-size:13px; letter-spacing:0.4px; }
-  .nav-links a { color: var(--body); text-decoration:none; }
-  .nav-links a:hover { color: var(--sage); }
-  .actions { margin-left:auto; display:flex; gap:10px; align-items:center; position:relative; }
-  .btn { font-family:Arial,sans-serif; font-weight:700; font-size:13px; padding:10px 16px; border-radius:10px; border:1px solid transparent; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; line-height:1.2; }
-  .btn-primary { background:var(--sage); color:#fff; }
-  .btn-ghost { background:transparent; border-color:rgba(61,58,52,0.3); color:var(--text); }
-  .btn-lg { padding:14px 24px; font-size:14px; border-radius:12px; }
-  .badge { background:#fff; color:var(--sage); border-radius:999px; font-size:11px; padding:2px 7px; display:none; }
-  .panel { position:absolute; right:0; top:calc(100% + 10px); width:236px; background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:0 14px 34px rgba(61,58,52,0.16); padding:8px; display:none; flex-direction:column; }
-  .panel.open { display:flex; }
-  .panel a, .panel button { font-family:Arial,sans-serif; font-size:14px; padding:11px 12px; border-radius:8px; color:var(--text); text-decoration:none; text-align:left; background:none; border:none; cursor:pointer; }
-  .panel a:hover, .panel button:hover { background:var(--sage-soft); }
-  .panel .sep { height:1px; background:var(--line); margin:6px 4px; }
-  .p-site, .p-in, .p-out { display:flex; flex-direction:column; }
-  .lbl-m { display:none; }
+  /* fotos: mostram o rótulo até a foto real existir em assets/home/ */
+  .foto { background: var(--foto) center / cover no-repeat; display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; color: var(--texto-2); font-size: 13px; }
+  .foto.tem-foto > span { display: none; }
 
-  body.logged-in .p-out { display:none; }
-  body.logged-out .p-in { display:none; }
-  body.logged-in #btn-entrar { display:none; }
-  body.logged-out #btn-menu { display:none; }
+  .aviso { background: var(--verde); color: #fff; text-align: center; font-size: 13px; letter-spacing: 0.08em; padding: 10px 16px; margin: 0; }
 
-  /* faixas informativas */
-  .strip { max-width:1080px; margin:16px auto 0; padding:0 20px; }
-  .strip > a, .strip > div { display:block; text-decoration:none; background:var(--sage-soft); border:1px solid rgba(85,98,56,0.45); color:#3d4a33; padding:13px 18px; border-radius:12px; font-family:Arial,sans-serif; font-size:14px; text-align:center; }
-  #promo-strip { display:none; }
-  body.logged-out #promo-strip { display:block; }
-  #promo-strip a { color:var(--sage); font-weight:700; }
+  header.topo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-top: 16px; padding-bottom: 16px; }
+  header.topo .logo img { height: 64px; width: auto; display: block; }
+  header.topo nav { display: flex; flex-wrap: wrap; gap: 26px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  header.topo nav a { text-decoration: none; }
+  header.topo nav a:hover { color: var(--verde); }
+  .icones { display: flex; align-items: center; gap: 4px; }
+  .icones a { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; text-decoration: none; position: relative; }
+  .icones a:hover { color: var(--verde); }
+  .badge { position: absolute; top: 4px; right: 2px; background: var(--verde); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; display: none; align-items: center; justify-content: center; padding: 0 4px; }
+  .conta-links { display: flex; justify-content: flex-end; gap: 18px; font-size: 13px; }
+  .conta-links a { text-decoration: none; color: var(--texto-2); }
+  #admin-link { color: var(--verde); font-weight: 500; }
 
-  /* hero */
-  .hero { max-width:780px; margin:0 auto; padding:76px 20px 60px; text-align:center; }
-  .overline { font-family:Arial,sans-serif; font-size:12px; letter-spacing:2.5px; text-transform:uppercase; color:#5f6b52; margin:0 0 18px; }
-  .hero h1 { font-size:46px; font-weight:normal; line-height:1.15; margin:0 0 20px; letter-spacing:0.5px; }
-  .lead { font-family:Arial,sans-serif; font-size:16px; line-height:1.75; color:var(--body); margin:0 auto 32px; max-width:560px; }
-  .hero-cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .hero { display: flex; flex-wrap: wrap; align-items: center; gap: 56px; padding-top: 32px; padding-bottom: 96px; }
+  .hero > div { flex: 1 1 420px; min-width: 0; }
+  .hero h1 { font-size: clamp(42px, 6vw, 64px); margin: 16px 0 24px; }
+  .hero p.sub { margin: 0 0 36px; max-width: 460px; color: var(--texto-2); font-size: 18px; }
+  .hero .botoes { display: flex; flex-wrap: wrap; gap: 14px; }
+  .hero .arco { width: 100%; max-width: 480px; height: 560px; margin: 0 auto; border-radius: 240px 240px 24px 24px; }
 
-  /* seções */
-  .section { max-width:1080px; margin:0 auto; padding:0 20px 56px; }
-  .section-title { font-family:Arial,sans-serif; font-size:12px; letter-spacing:2.5px; text-transform:uppercase; color:var(--muted); text-align:center; margin:0 0 22px; }
-  .flagship { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:32px; box-shadow:0 8px 26px rgba(61,58,52,0.06); }
-  .flagship-head { text-align:center; margin-bottom:24px; }
-  .card-label { font-family:Arial,sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin:0 0 8px; }
-  .flagship h2 { font-size:28px; font-weight:normal; margin:0 0 6px; }
-  .paths { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .path { display:block; text-decoration:none; background:var(--sage-soft); border:1px solid rgba(85,98,56,0.25); border-radius:16px; padding:24px; transition: transform .15s, box-shadow .15s; }
-  .path:hover, .card:hover { transform: translateY(-2px); box-shadow:0 10px 26px rgba(61,58,52,0.1); }
-  .grid3 { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:18px; }
-  .card { display:flex; flex-direction:column; text-decoration:none; color:inherit; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px 24px; box-shadow:0 6px 20px rgba(61,58,52,0.06); transition: transform .15s, box-shadow .15s; }
-  .card-title { font-size:22px; margin:0 0 8px; }
-  .card-desc { font-family:Arial,sans-serif; font-size:14px; line-height:1.6; color:var(--body); margin:0; }
-  .card-cta { font-family:Arial,sans-serif; font-size:13px; font-weight:700; color:var(--sage); margin:auto 0 0; padding-top:16px; }
-  .card-price { font-family:Arial,sans-serif; font-weight:700; color:var(--sage); margin:12px 0 0; }
-  .linkbtn { background:none; border:none; padding:0; text-align:left; cursor:pointer; }
+  .faixa { background: var(--fundo-2); padding: 88px 0; }
+  .centro { text-align: center; }
+  .categorias h2 { font-size: 44px; margin: 8px 0 48px; }
+  .ovais { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 32px 24px; }
+  .oval { text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .oval .foto { width: 150px; height: 200px; border-radius: 999px; outline: 1px dashed #B9A68F; outline-offset: 6px; background-color: #E0D0BC; transition: transform .2s; }
+  .oval:hover .foto { transform: translateY(-4px); }
+  .oval strong { font-weight: 500; font-size: 16px; }
+  .oval small { display: block; color: var(--texto-2); font-size: 13px; margin-top: -10px; }
 
-  footer { border-top:1px solid var(--line); margin-top:10px; }
-  .foot-in { max-width:1080px; margin:0 auto; padding:34px 20px 30px; display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:24px; font-family:Arial,sans-serif; font-size:13px; color:var(--body); line-height:1.8; }
-  .foot-in img { height:44px; width:auto; display:block; margin-bottom:8px; }
-  .foot-in h4 { margin:0 0 6px; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-weight:700; }
-  .foot-in a { color:var(--body); }
-  .copy { text-align:center; font-family:Arial,sans-serif; font-size:12px; color:var(--muted); padding:0 20px 24px; }
+  .dupla { display: flex; flex-wrap: wrap; align-items: center; gap: 64px; padding-top: 104px; padding-bottom: 104px; }
+  .dupla > * { flex: 1 1 420px; min-width: 0; }
+  .dupla h2 { font-size: clamp(38px, 5vw, 52px); margin: 12px 0 20px; }
+  .dupla p { color: var(--texto-2); font-size: 18px; margin: 0 0 28px; }
+  .dupla .foto { height: 520px; border-radius: 24px; }
+  .passos { display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; }
+  .passos div { display: flex; gap: 18px; align-items: baseline; }
+  .passos span { font-family: var(--serif); font-size: 30px; color: var(--verde); width: 28px; }
+  .linha-preco { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; }
+  .alt-link { display: block; margin-top: 24px; font-size: 15px; color: var(--texto-2); }
+
+  .destaques { padding-bottom: 104px; }
+  .destaques .cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 40px; }
+  .destaques h2 { font-size: 44px; margin-top: 8px; }
+  .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px; }
+  .produto { display: flex; flex-direction: column; gap: 10px; text-decoration: none; }
+  .produto .foto { height: 300px; border-radius: 20px; background-color: var(--fundo-2); }
+  .produto .foto img.marca { width: 110px; opacity: .45; }
+  .produto .nome { font-family: var(--serif); font-size: 24px; line-height: 1.2; }
+  .produto .tam { color: var(--texto-2); font-size: 14px; margin-top: -8px; }
+  .produto .rodape { display: flex; justify-content: space-between; align-items: center; }
+  .produto .ver { font-size: 14px; border: 1px solid var(--texto); border-radius: 999px; padding: 8px 18px; }
+  .produto:hover .ver { background: var(--texto); color: var(--fundo); }
+
+  .velas { background: var(--escuro); color: var(--fundo); padding: 96px 0; }
+  .velas .dupla, .visita .dupla { padding-top: 0; padding-bottom: 0; }
+  .dupla p.eyebrow { font-size: 13px; margin: 0; color: var(--verde); }
+  .velas .dupla p.eyebrow { color: #D8C7AE; }
+  .velas .eyebrow { color: #D8C7AE; }
+  .velas p { color: #E6D9C9; }
+  .velas .foto { height: 440px; border-radius: 999px 999px 24px 24px; background-color: #574538; color: #E6D9C9; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
+  .chips span { border: 1px solid #8A7663; border-radius: 999px; padding: 6px 16px; font-size: 14px; }
+
+  .sobre .foto { height: 480px; }
+  .assinatura { height: 70px; width: auto; display: block; }
+
+  #testimonials-section { padding-top: 0; padding-bottom: 96px; }
+  #testimonials-section h2 { font-size: 40px; margin: 8px 0 40px; }
+
+  .visita .foto { height: 360px; border-radius: 24px; }
+  .visita .dados { margin: 0 0 4px; font-size: 18px; color: var(--texto); }
+  .visita .botoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+  footer.rodape { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 32px; padding-top: 56px; padding-bottom: 40px; font-size: 14px; }
+  footer.rodape .logo-rodape { height: 56px; width: auto; }
+  footer.rodape .cols { display: flex; flex-wrap: wrap; gap: 48px; }
+  footer.rodape .cols div { display: flex; flex-direction: column; gap: 8px; }
+  footer.rodape .cols strong { font-weight: 500; }
+  footer.rodape .cols a { text-decoration: none; color: var(--texto-2); }
+  footer.rodape .cols a:hover { color: var(--verde); }
+  .copy { text-align: center; color: var(--texto-2); font-size: 12px; padding: 0 20px 28px; margin: 0; }
+
+  @media (max-width: 720px) {
+    .wrap { padding-left: 20px; padding-right: 20px; }
+    header.topo { justify-content: center; }
+    header.topo nav { justify-content: center; gap: 16px; }
+    .hero { padding-bottom: 64px; }
+    .hero .arco { height: 420px; }
+    .dupla { padding-top: 72px; padding-bottom: 72px; gap: 36px; }
+    .dupla .foto { height: 360px; }
+    .velas .foto { height: 340px; }
+  }
 
   /* login (igual ao anterior) */
-  .auth-overlay { position:fixed; inset:0; background:rgba(50,45,38,0.55); display:flex; align-items:center; justify-content:center; z-index:1000; padding:20px; }
-  .auth-card { background:#fbf7f0; border:1px solid rgba(61,58,52,0.25); border-radius:18px; max-width:420px; width:100%; padding:40px 32px; box-shadow:0 20px 50px rgba(0,0,0,0.25); }
-  .auth-brand { text-align:center; margin-bottom:24px; }
-  .auth-brand h2 { font-size:24px; letter-spacing:4px; margin:0; font-weight:normal; }
-  .auth-tabs { display:flex; gap:8px; margin-bottom:20px; }
-  .auth-tab { flex:1; text-align:center; padding:10px; font-family:Arial,sans-serif; font-size:13px; font-weight:700; border-radius:8px; cursor:pointer; background:transparent; border:1px solid rgba(61,58,52,0.25); color:#8a8676; }
-  .auth-tab.active { background:#556238; color:#fff; border-color:#556238; }
-  .auth-card label { font-family:Arial,sans-serif; font-size:13px; font-weight:700; display:block; margin-bottom:4px; margin-top:12px; }
-  .auth-card input { width:100%; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); }
-  .auth-btn { width:100%; font-family:Arial,sans-serif; font-weight:700; font-size:15px; background:#556238; color:#fff; padding:14px; border-radius:10px; border:none; margin-top:20px; cursor:pointer; }
-  .auth-btn:disabled { opacity:0.6; }
-  .auth-error { font-family:Arial,sans-serif; color:#a3455a; font-size:13px; text-align:center; margin-top:12px; }
-  .auth-info { font-family:Arial,sans-serif; color:#556238; font-size:13px; text-align:center; margin-top:12px; }
-
-  @media (max-width: 860px) {
-    .nav-links { display:none; }
-    #btn-entrar { display:none; }
-    body.logged-out #btn-menu { display:inline-flex; }
-    .lbl-d { display:none; }
-    .lbl-m { display:inline; font-size:18px; line-height:1; }
-    .hero { padding:48px 20px 40px; }
-    .hero h1 { font-size:32px; }
-    .paths { grid-template-columns:1fr; }
-    .flagship { padding:20px; }
-    .path { padding:20px; }
-    .visit { grid-template-columns:1fr; padding:28px 22px; }
-    .foot-in { grid-template-columns:1fr; }
-    .btn-cart-lbl { display:none; }
+  .auth-overlay {
+    position: fixed; inset: 0; background: rgba(50,45,38,0.55);
+    display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
   }
-  @media (min-width: 861px) { .p-site { display:none; } }
+  .auth-card {
+    background: #fbf7f0; border: 1px solid rgba(61,58,52,0.25); border-radius: 18px;
+    max-width: 420px; width: 100%; padding: 40px 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .auth-brand { text-align: center; margin-bottom: 24px; }
+  .auth-brand h2 { font-size: 24px; letter-spacing: 4px; margin: 0; font-weight: normal; }
+  .auth-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .auth-tab {
+    flex: 1; text-align: center; padding: 10px; font-family: Arial, sans-serif; font-size: 13px;
+    font-weight: 700; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid rgba(61,58,52,0.25); color: #8a8676;
+  }
+  .auth-tab.active { background: #556238; color: #fff; border-color: #556238; }
+  .auth-card label { font-family: Arial, sans-serif; font-size: 13px; font-weight: 700; display: block; margin-bottom: 4px; margin-top: 12px; }
+  .auth-card input {
+    width: 100%; font-family: Arial, sans-serif; font-size: 14px; padding: 10px 12px;
+    border-radius: 8px; border: 1px solid rgba(61,58,52,0.3);
+  }
+  .auth-btn {
+    width: 100%; font-family: Arial, sans-serif; font-weight: 700; font-size: 15px;
+    background: #556238; color: #fff; padding: 14px; border-radius: 10px; border: none; margin-top: 20px; cursor: pointer;
+  }
+  .auth-btn:disabled { opacity: 0.6; }
+  .auth-error { font-family: Arial, sans-serif; color: #a3455a; font-size: 13px; text-align: center; margin-top: 12px; }
+  .auth-info { font-family: Arial, sans-serif; color: #556238; font-size: 13px; text-align: center; margin-top: 12px; }
+
+  .auth-card, .auth-tab, .auth-card label, .auth-card input, .auth-btn, .auth-error, .auth-info { font-family: var(--sans) !important; }
+  .auth-brand h2 { font-family: var(--serif); }
 </style>
 </head>
 <body>
@@ -139,118 +196,151 @@
       <p class="auth-info" id="auth-info-msg" style="display:none;"></p>
     </div>
   </div>
-  <div class="topbar">
-    <div class="topbar-in">
-      <a class="brand" href="#topo" aria-label="Sagrado de Mim, início"><img src="assets/logo-cursiva.png" alt="Sagrado de Mim"></a>
-      <nav class="nav-links">
-        <a href="#perfumes">Perfume personalizado</a>
+
+  <p class="aviso">Frete fixo de R$25 para todo o Brasil · Pagamento via Pix</p>
+
+  <div class="wrap">
+    <header class="topo">
+      <a href="index.html" class="logo"><img src="assets/logo-cursiva.png" alt="Sagrado de Mim"></a>
+      <nav aria-label="Principal">
         <a href="loja.html">Loja</a>
-        <a href="quiz-casa.html">Aroma para casa</a>
+        <a href="#perfume">Perfume Corporal</a>
+        <a href="#velas">Velas</a>
+        <a href="#sobre">Sobre</a>
       </nav>
-      <div class="actions">
-        <a class="btn btn-primary" href="carrinho.html">🛒 <span class="btn-cart-lbl">Carrinho</span> <span class="badge" id="cart-count">0</span></a>
-        <button type="button" class="btn btn-ghost" id="btn-entrar">Entrar</button>
-        <button type="button" class="btn btn-ghost" id="btn-menu" aria-haspopup="true"><span class="lbl-d">Minha conta ▾</span><span class="lbl-m">☰</span></button>
-        <div class="panel" id="menu-panel">
-          <div class="p-site">
-            <a href="#perfumes">Perfume personalizado</a>
-            <a href="loja.html">Loja</a>
-            <a href="quiz-casa.html">Aroma para casa</a>
-                <div class="sep"></div>
-          </div>
-          <div class="p-in">
-            <a href="meu-perfil.html">Meu perfil</a>
-            <a href="meus-pedidos.html">Meus pedidos</a>
-            <a href="admin.html" id="admin-link" style="display:none;">Painel da loja</a>
-            <div class="sep"></div>
-            <a href="#" id="logout-link">Sair</a>
-          </div>
-          <div class="p-out">
-            <a href="#" data-open-auth="login">Entrar</a>
-            <a href="#" data-open-auth="signup">Criar conta</a>
-          </div>
+      <div class="icones">
+        <a href="meu-perfil.html" aria-label="Meu perfil" title="Meu perfil"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></a>
+        <a href="meus-pedidos.html" aria-label="Meus pedidos" title="Meus pedidos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg></a>
+        <a href="carrinho.html" aria-label="Carrinho" title="Carrinho"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 8h14l-1.2 12H6.2L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="badge" id="cart-count"></span></a>
+      </div>
+    </header>
+    <div class="conta-links">
+      <a href="admin.html" id="admin-link" style="display:none;">Painel da loja</a>
+      <a href="#" id="logout-link">Sair</a>
+    </div>
+  </div>
+
+  <div id="cart-reminder" class="wrap" style="display:none; margin-top:16px;">
+    <a href="carrinho.html" style="display:block; text-decoration:none; background:#eef1e6; border:1px solid var(--verde); color:#3d4a33; padding:16px 20px; border-radius:14px; font-size:14px; text-align:center;">
+      Você tinha itens esperando no carrinho — <strong>continuar de onde parou →</strong>
+    </a>
+  </div>
+
+  <!-- HERO -->
+  <section class="wrap hero">
+    <div>
+      <p class="eyebrow">Aromas</p>
+      <h1>Aromas feitos à mão, com intenção.</h1>
+      <p class="sub">Perfumes, velas e cuidados artesanais, criados um a um. Descubra o aroma que conta quem você é.</p>
+      <div class="botoes">
+        <a href="quiz-corporal.html" class="btn">Descobrir meu perfume</a>
+        <a href="loja.html" class="btn contorno">Ver a loja</a>
+      </div>
+    </div>
+    <div>
+      <div class="foto arco" data-src="assets/home/hero.jpg"><span>[foto principal: produtos juntos ou o ateliê]</span></div>
+    </div>
+  </section>
+
+  <!-- CATEGORIAS -->
+  <section class="faixa categorias">
+    <div class="wrap centro">
+      <p class="eyebrow">Navegue por aqui</p>
+      <h2>O que você procura?</h2>
+      <div class="ovais">
+        <a class="oval" href="quiz-corporal.html"><div class="foto" data-src="assets/home/cat-perfume.jpg"><span>[foto]</span></div><strong>Perfume Corporal</strong><small>quiz personalizado</small></a>
+        <a class="oval" href="perfume-monte.html"><div class="foto" data-src="assets/home/cat-monte.jpg"><span>[foto]</span></div><strong>Monte seu Perfume</strong><small>escolha as notas</small></a>
+        <a class="oval" href="quiz-casa.html"><div class="foto" data-src="assets/home/cat-casa.jpg"><span>[foto]</span></div><strong>Aroma para Casa</strong><small>difusor ou home spray</small></a>
+        <a class="oval" href="loja.html?cat=Perfumaria%20%26%20Ambiente"><div class="foto" data-src="assets/home/cat-ambiente.jpg"><span>[foto]</span></div><strong>Perfumaria &amp; Ambiente</strong><small>difusores, velas, sprays</small></a>
+        <a class="oval" href="loja.html?cat=Corpo"><div class="foto" data-src="assets/home/cat-corpo.jpg"><span>[foto]</span></div><strong>Corpo</strong><small>hidratantes e manteigas</small></a>
+        <a class="oval" href="loja.html?cat=Banho%20%26%20Facial"><div class="foto" data-src="assets/home/cat-banho.jpg"><span>[foto]</span></div><strong>Banho &amp; Facial</strong><small>sabonetes e limpeza</small></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERFUME CORPORAL -->
+  <section id="perfume" class="wrap dupla">
+    <div class="foto" data-src="assets/home/perfume.jpg"><span>[foto: frasco de perfume com etiqueta personalizada]</span></div>
+    <div>
+      <p class="eyebrow">Descubra seu perfil aromático</p>
+      <h2>Perfume Corporal</h2>
+      <p>Uma fragrância feita para você: responda o quiz, escolha a tampa e crie sua própria etiqueta.</p>
+      <div class="passos">
+        <div><span>1</span>Quiz de perfil aromático</div>
+        <div><span>2</span>Tampa prata ou preta</div>
+        <div><span>3</span>Etiqueta com o nome que você escolher</div>
+      </div>
+      <div class="linha-preco">
+        <span class="preco">R$150</span>
+        <a href="quiz-corporal.html" class="btn">Fazer o quiz</a>
+      </div>
+      <a href="perfume-monte.html" class="alt-link">Já sabe o que quer? Monte seu perfume escolhendo as notas →</a>
+    </div>
+  </section>
+
+  <!-- DESTAQUES DA LOJA -->
+  <section class="wrap destaques">
+    <div class="cab">
+      <div>
+        <p class="eyebrow">Feitos à mão</p>
+        <h2>Destaques da loja</h2>
+      </div>
+      <a href="loja.html">Ver toda a loja →</a>
+    </div>
+    <div class="grade" id="destaques-grid"></div>
+  </section>
+
+  <!-- BLIND BOX -->
+  <section id="velas" class="velas">
+    <div class="wrap dupla">
+      <div>
+        <p class="eyebrow">Surpresa em cada latinha</p>
+        <h2>Blind box de velas</h2>
+        <p>Um aroma surpresa escolhido especialmente pra você, acompanhado de um cristal energizado que combina com a vibe da fragrância. Cada caixinha é única.</p>
+        <div class="chips">
+          <span>Lavanda</span><span>Incenso</span><span>Flor de Cerejeira</span><span>Figo com Bambu</span><span>Cascas e Folhas</span>
+        </div>
+        <div class="linha-preco">
+          <span class="preco">R$45</span>
+          <button type="button" class="btn claro blindbox-add">Quero a minha</button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="strip" id="promo-strip"><div>🎁 Cadastre-se e ganhe uma amostra surpresa no seu primeiro pedido · <a href="#" data-open-auth="signup">Criar conta</a></div></div>
-  <div class="strip" id="cart-reminder" style="display:none;"><a href="carrinho.html">🛒 Você tinha itens esperando no carrinho — <strong>continuar de onde parou →</strong></a></div>
-
-  <section class="hero" id="topo">
-    <p class="overline">Perfumes e cosméticos artesanais</p>
-    <h1>Uma fragrância feita para você</h1>
-    <p class="lead">Responda nosso quiz rápido e descubra o perfil aromático ideal para criarmos um perfume exclusivo, especialmente para você.</p>
-    <div class="hero-cta">
-      <a class="btn btn-primary btn-lg" href="quiz-corporal.html">Descobrir meu perfume</a>
-      <a class="btn btn-ghost btn-lg" href="loja.html">Ver a loja</a>
+      <div class="foto" data-src="assets/home/velas.jpg"><span>[foto: latinha de vela com o cristal ao lado]</span></div>
     </div>
   </section>
 
-  <section class="section" id="perfumes">
-    <p class="section-title">Comece por aqui</p>
-    <div class="flagship">
-      <div class="flagship-head">
-        <p class="card-label">Perfume personalizado · R$ 150,00</p>
-        <h2>Seu perfume, do seu jeito</h2>
-      </div>
-      <div class="paths">
-        <a class="path" href="quiz-corporal.html">
-          <p class="card-label">Descubra seu perfil aromático</p>
-          <p class="card-title">Pelo quiz</p>
-          <p class="card-desc">Um quiz rápido sobre personalidade, estilo e ocasião de uso para encontrar a fragrância que mais combina com você.</p>
-          <p class="card-cta" style="padding-top:14px;">Responder o quiz →</p>
-        </a>
-        <a class="path" href="perfume-monte.html">
-          <p class="card-label">Pra quem já sabe o que quer</p>
-          <p class="card-title">Monte seu perfume</p>
-          <p class="card-desc">Escolha você mesma as notas de saída, corpo e fundo da sua pirâmide olfativa e crie uma fórmula 100% sua.</p>
-          <p class="card-cta" style="padding-top:14px;">Montar meu perfume →</p>
-        </a>
-      </div>
+  <!-- SOBRE -->
+  <section id="sobre" class="wrap dupla sobre">
+    <div class="foto" style="border-radius:24px;" data-src="assets/home/rachel.jpg"><span>[foto: Rachel produzindo no ateliê]</span></div>
+    <div>
+      <img src="assets/logo-cursiva.png" alt="" class="assinatura">
+      <h2>Por trás de cada aroma</h2>
+      <p>Cada perfume, vela e sabonete da Sagrado de Mim é feito à mão, em pequenas quantidades, com tempo e cuidado.</p>
+      <p>[Espaço para a história da Rachel, em primeira pessoa: como começou, o que significa o nome Sagrado de Mim, o que ela coloca em cada peça.]</p>
     </div>
   </section>
 
-  <section class="section" id="explorar">
-    <p class="section-title">Explore também</p>
-    <div class="grid3">
-      <a class="card" href="quiz-casa.html">
-        <p class="card-label">Descubra o aroma ideal</p>
-        <p class="card-title">Aroma para Casa</p>
-        <p class="card-desc">Um quiz rápido sobre o ambiente e a sensação que você busca, pra descobrir o aroma perfeito — depois escolha entre difusor de varetas ou home spray.</p>
-        <p class="card-cta">Responder o quiz →</p>
-      </a>
-      <a class="card" href="loja.html">
-        <p class="card-label">Produtos prontos</p>
-        <p class="card-title">Loja</p>
-        <p class="card-desc">Difusores, home sprays, velas, hidratantes, sabonetes e mais — feitos à mão, prontos pra levar.</p>
-        <p class="card-cta">Ver produtos →</p>
-      </a>
-      <div class="card" style="cursor:default;">
-        <p class="card-label">Edição limitada</p>
-        <p class="card-title">Blind Box — Vela na Latinha</p>
-        <p class="card-desc">Um aroma surpresa escolhido especialmente pra você, acompanhado de um cristal energizado que combina com a vibe da fragrância. Cada caixinha é única.</p>
-        <p class="card-price">R$ 45,00</p>
-        <button type="button" class="card-cta linkbtn blindbox-add" style="padding-top:10px;">Adicionar ao carrinho →</button>
-      </div>
-    </div>
+  <!-- DEPOIMENTOS (aparece sozinho quando houver avaliações) -->
+  <section id="testimonials-section" class="wrap centro" style="display:none;">
+    <p class="eyebrow">O que nossas clientes dizem</p>
+    <h2>Depoimentos</h2>
+    <div id="testimonials-grid" style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center; text-align:left;"></div>
   </section>
 
-
-  <div id="testimonials-section" class="section" style="display:none;">
-    <p class="section-title">O que nossas clientes dizem</p>
-    <div id="testimonials-grid" style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;"></div>
-  </div>
-
-  <footer>
-    <div class="foot-in">
-      <div><img src="assets/logo-cursiva.png" alt="Sagrado de Mim"><div>Feito à mão, pensado para você.</div></div>
-      <div><h4>Contato</h4><a href="https://wa.me/5531999153132?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Sagrado%20de%20Mim." target="_blank">WhatsApp (31) 99915-3132</a></div>
-      <div><h4>Siga</h4><a href="https://instagram.com/sagrado_de_mim" target="_blank">@sagrado_de_mim</a></div>
+  <footer class="wrap rodape">
+    <div>
+      <img src="assets/logo-cursiva.png" alt="Sagrado de Mim" class="logo-rodape">
+      <p style="margin:6px 0 0; color:var(--texto-2);">Aromas</p>
     </div>
-    <p class="copy">© 2026 Sagrado de Mim</p>
+    <div class="cols">
+      <div><strong>Loja</strong><a href="quiz-corporal.html">Perfume Corporal</a><a href="perfume-monte.html">Monte seu Perfume</a><a href="quiz-casa.html">Aroma para Casa</a><a href="loja.html">Todos os produtos</a></div>
+      <div><strong>Minha conta</strong><a href="meu-perfil.html">Meu perfil</a><a href="meus-pedidos.html">Meus pedidos</a><a href="carrinho.html">Carrinho</a></div>
+      <div><strong>Contato</strong><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></div>
+    </div>
   </footer>
+  <p class="copy">Sagrado de Mim — feito à mão, pensado para você.</p>
 
+<script src="produtos.js"></script>
 <script>// ATENÇÃO: cole aqui a URL e a chave "anon public" do seu projeto Supabase (mesmas usadas nos outros arquivos)
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
@@ -309,7 +399,7 @@ function setSession(email, isAdmin) {
 
 function onLoggedIn(isAdmin) {
   document.getElementById("auth-overlay").style.display = "none";
-  applySessionUI();
+  if (isAdmin) document.getElementById("admin-link").style.display = "inline";
 }
 
 let authMode = "login";
@@ -402,7 +492,13 @@ document.getElementById("auth-submit-btn").addEventListener("click", async () =>
   }
 });
 
-applySessionUI();
+const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
+if (!session) {
+  document.getElementById("auth-overlay").style.display = "flex";
+}
+if (session && session.isAdmin) {
+  document.getElementById("admin-link").style.display = "inline";
+}
 
 document.getElementById("auth-close-btn").addEventListener("click", () => {
   document.getElementById("auth-overlay").style.display = "none";
@@ -453,6 +549,10 @@ document.getElementById("logout-link").addEventListener("click", (e) => {
   location.reload();
 });
 
+// ATENÇÃO: cole aqui o link de "Horário de agendamento" gerado no Google Calendar
+const SCHEDULE_LINK = "https://calendar.app.google/PxsDEXCZqpFExWSJA";
+if (document.getElementById("schedule-link")) document.getElementById("schedule-link").href = SCHEDULE_LINK.includes("COLE_AQUI") ? "#" : SCHEDULE_LINK;
+
 
 
 document.querySelector(".blindbox-add").addEventListener("click", () => {
@@ -465,43 +565,39 @@ document.querySelector(".blindbox-add").addEventListener("click", () => {
   localStorage.setItem("sagradoCart", JSON.stringify(cart));
   window.location.href = "carrinho.html";
 });
+</script>
+<script>
+// Fotos da home: basta salvar a foto em assets/home/ com o nome indicado em data-src
+document.querySelectorAll(".foto[data-src]").forEach(el => {
+  const img = new Image();
+  img.onload = () => { el.style.backgroundImage = 'url("' + el.dataset.src + '")'; el.classList.add("tem-foto"); };
+  img.src = el.dataset.src;
+});
 
-// ---------- Barra do topo ----------
-function applySessionUI() {
-  const s = JSON.parse(localStorage.getItem("sagradoSession") || "null");
-  document.body.classList.toggle("logged-in", !!s);
-  document.body.classList.toggle("logged-out", !s);
-  document.getElementById("admin-link").style.display = (s && s.isAdmin) ? "block" : "none";
-  updateCartCount();
-}
-
-function updateCartCount() {
+// Contador do carrinho no ícone
+(function () {
   const n = JSON.parse(localStorage.getItem("sagradoCart") || "[]").length;
-  const badge = document.getElementById("cart-count");
-  badge.textContent = n;
-  badge.style.display = n > 0 ? "inline-block" : "none";
-}
+  const b = document.getElementById("cart-count");
+  if (n > 0) { b.textContent = n; b.style.display = "flex"; }
+})();
 
-function openAuth(mode) {
-  setAuthMode(mode);
-  document.getElementById("auth-overlay").style.display = "flex";
-  closeMenu();
-}
-
-const menuPanel = document.getElementById("menu-panel");
-function closeMenu() { menuPanel.classList.remove("open"); }
-document.getElementById("btn-menu").addEventListener("click", (e) => {
-  e.stopPropagation();
-  menuPanel.classList.toggle("open");
-});
-document.addEventListener("click", (e) => {
-  if (!menuPanel.contains(e.target)) closeMenu();
-});
-menuPanel.querySelectorAll("a[href]").forEach(a => a.addEventListener("click", closeMenu));
-document.getElementById("btn-entrar").addEventListener("click", () => openAuth("login"));
-document.querySelectorAll("[data-open-auth]").forEach(el => {
-  el.addEventListener("click", (e) => { e.preventDefault(); openAuth(el.dataset.openAuth); });
-});
+// Destaques da loja (puxa de produtos.js; para trocar, mude os ids abaixo)
+const DESTAQUES = ["difusor-250", "home-spray-250", "body-splash-240", "hidratante-250"];
+(function () {
+  if (typeof PRODUTOS === "undefined") return;
+  const brl = v => "R$ " + v.toFixed(2).replace(".", ",");
+  document.getElementById("destaques-grid").innerHTML = DESTAQUES
+    .map(id => PRODUTOS.find(p => p.id === id)).filter(Boolean)
+    .map(p => {
+      const foto = p.img
+        ? '<div class="foto tem-foto" style="background-image:url(\'' + p.img + '\')"></div>'
+        : '<div class="foto"><img class="marca" src="assets/logo-cursiva.png" alt=""></div>';
+      return '<a class="produto" href="loja.html">' + foto +
+        '<span class="nome">' + p.nome + '</span>' +
+        '<span class="tam">' + (p.tamanho || "&nbsp;") + '</span>' +
+        '<span class="rodape"><span>' + brl(p.preco) + '</span><span class="ver">Ver na loja</span></span></a>';
+    }).join("");
+})();
 </script>
 </body>
 </html>

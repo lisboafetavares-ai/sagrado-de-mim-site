@@ -1,0 +1,60 @@
+/* Tema visual compartilhado das páginas internas (mesmo estilo da home) */
+:root {
+  --fundo: #F6F1EA; --fundo-2: #EFE6DA; --cartao: #FBF8F3; --texto: #332f28; --texto-2: #5A4A3F;
+  --verde: #556238; --serif: 'Cormorant Garamond', Georgia, serif; --sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { margin: 0 !important; padding: 0 !important; display: block !important; min-height: 100vh;
+  background: var(--fundo) !important; color: var(--texto); font-family: var(--sans) !important; line-height: 1.55; }
+
+/* textos que estavam em Arial passam para a fonte do site (a etiqueta continua igual) */
+[style*="font-family:Arial"]:not(#label-canvas *), [style*="font-family: Arial"]:not(#label-canvas *) { font-family: var(--sans) !important; }
+input, select, textarea, button { font-family: var(--sans); }
+
+/* topo */
+.sm-aviso { background: var(--verde); color: #fff; text-align: center; font-size: 13px; letter-spacing: .08em; padding: 10px 16px; margin: 0; }
+.sm-topo { max-width: 1240px; margin: 0 auto; padding: 16px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; box-sizing: border-box; }
+.sm-topo .sm-logo img { height: 64px; width: auto; display: block; }
+.sm-topo nav { display: flex; flex-wrap: wrap; gap: 26px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+.sm-topo nav a { text-decoration: none; color: var(--texto); }
+.sm-topo nav a:hover, .sm-icones a:hover { color: var(--verde); }
+.sm-icones { display: flex; gap: 4px; }
+.sm-icones a { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--texto); position: relative; text-decoration: none; }
+.sm-badge { position: absolute; top: 4px; right: 2px; background: var(--verde); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; display: none; align-items: center; justify-content: center; padding: 0 4px; }
+
+/* conteúdo das páginas */
+body > .card { margin: 32px auto 80px !important; background: var(--cartao) !important; border: 1px solid rgba(61,58,52,.12) !important;
+  border-radius: 28px !important; box-shadow: none !important; padding: 44px 40px !important; max-width: 600px !important; }
+body > .wrap { margin: 40px auto 80px !important; padding: 0 32px; box-sizing: border-box; }
+body > .card h1, body > .wrap > h1, .brand h1 { font-family: var(--serif) !important; font-weight: 500 !important;
+  font-size: 42px !important; letter-spacing: 0 !important; line-height: 1.1; margin: 0 0 10px !important; }
+body > .wrap > h1 { font-size: 52px !important; }
+.brand p, body > .wrap > .sub { color: var(--verde) !important; letter-spacing: .2em !important; font-size: 12px !important; }
+.brand { margin-bottom: 32px !important; }
+
+/* elementos comuns */
+.chip { border-radius: 999px; }
+.chip.active, .add-btn, .submit-btn, .btn, .auth-btn { border-radius: 999px !important; }
+.product { background: var(--cartao) !important; border-color: rgba(61,58,52,.12) !important; border-radius: 20px !important; }
+.product .name { font-family: var(--serif) !important; font-size: 22px !important; }
+.option { border-radius: 14px !important; }
+.section-title { color: var(--verde) !important; }
+
+/* rodapé */
+.sm-rodape { max-width: 1240px; margin: 0 auto; padding: 48px 32px 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px; font-size: 14px; box-sizing: border-box; border-top: 1px solid rgba(61,58,52,.12); }
+.sm-rodape img { height: 52px; width: auto; }
+.sm-rodape .cols { display: flex; flex-wrap: wrap; gap: 48px; }
+.sm-rodape .cols div { display: flex; flex-direction: column; gap: 8px; }
+.sm-rodape strong { font-weight: 500; }
+.sm-rodape a { text-decoration: none; color: var(--texto-2); }
+.sm-rodape a:hover { color: var(--verde); }
+.sm-copy { text-align: center; color: var(--texto-2); font-size: 12px; padding: 0 20px 28px; margin: 0; }
+
+@media (max-width: 720px) {
+  .sm-topo { justify-content: center; padding: 14px 20px; }
+  .sm-topo nav { justify-content: center; gap: 16px; }
+  body > .card { margin: 20px 14px 56px !important; padding: 32px 22px !important; }
+  body > .wrap { padding: 0 20px; }
+  body > .card h1, .brand h1 { font-size: 34px !important; }
+  body > .wrap > h1 { font-size: 40px !important; }
+}

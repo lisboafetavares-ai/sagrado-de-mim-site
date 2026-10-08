@@ -32,27 +32,46 @@
   .brand h1 { font-size: 24px; letter-spacing: 4px; margin: 0; font-weight: normal; }
   .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
   .tab {
-    flex: 1; text-align: center; padding: 10px; font-family: Arial, sans-serif; font-size: 13px;
+    flex: 1; text-align: center; padding: 10px; font-family: Jost, Arial, sans-serif; font-size: 13px;
     font-weight: 700; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid rgba(61,58,52,0.25); color: #8a8676;
   }
   .tab.active { background: #556238; color: #fff; border-color: #556238; }
-  label { font-family: Arial, sans-serif; font-size: 13px; font-weight: 700; display: block; margin-bottom: 4px; margin-top: 12px; }
+  label { font-family: Jost, Arial, sans-serif; font-size: 13px; font-weight: 700; display: block; margin-bottom: 4px; margin-top: 12px; }
   input {
-    width: 100%; font-family: Arial, sans-serif; font-size: 14px; padding: 10px 12px;
+    width: 100%; font-family: Jost, Arial, sans-serif; font-size: 14px; padding: 10px 12px;
     border-radius: 8px; border: 1px solid rgba(61,58,52,0.3);
   }
   .btn {
-    width: 100%; font-family: Arial, sans-serif; font-weight: 700; font-size: 15px;
+    width: 100%; font-family: Jost, Arial, sans-serif; font-weight: 700; font-size: 15px;
     background: #556238; color: #fff; padding: 14px; border-radius: 10px; border: none; margin-top: 20px; cursor: pointer;
   }
   .btn:disabled { opacity: 0.6; }
-  .error-msg { font-family: Arial, sans-serif; color: #a3455a; font-size: 13px; text-align: center; margin-top: 12px; }
-  .info-msg { font-family: Arial, sans-serif; color: #556238; font-size: 13px; text-align: center; margin-top: 12px; }
+  .error-msg { font-family: Jost, Arial, sans-serif; color: #a3455a; font-size: 13px; text-align: center; margin-top: 12px; }
+  .info-msg { font-family: Jost, Arial, sans-serif; color: #556238; font-size: 13px; text-align: center; margin-top: 12px; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap">
+<link rel="stylesheet" href="tema.css">
 </head>
 <body>
+<p class="sm-aviso">Frete fixo de R$25 para todo o Brasil · Pagamento via Pix</p>
+<header class="sm-topo">
+  <a href="index.html" class="sm-logo"><img src="assets/logo-cursiva.png" alt="Sagrado de Mim"></a>
+  <nav aria-label="Principal">
+    <a href="loja.html">Loja</a>
+    <a href="index.html#perfume">Perfume Corporal</a>
+    <a href="index.html#velas">Velas</a>
+    <a href="index.html#sobre">Sobre</a>
+  </nav>
+  <div class="sm-icones">
+    <a href="meu-perfil.html" aria-label="Meu perfil" title="Meu perfil"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></a>
+    <a href="meus-pedidos.html" aria-label="Meus pedidos" title="Meus pedidos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg></a>
+    <a href="carrinho.html" aria-label="Carrinho" title="Carrinho"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 8h14l-1.2 12H6.2L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="sm-badge" id="sm-cart-count"></span></a>
+  </div>
+</header>
   <div class="card">
-    <div class="brand"><h1>SAGRADO DE MIM</h1></div>
+    <div class="brand"><h1>Entrar</h1></div>
     <div class="tabs">
       <div class="tab active" id="tab-login">Entrar</div>
       <div class="tab" id="tab-signup">Criar conta</div>
@@ -70,6 +89,23 @@
     <p class="error-msg" id="error-msg" style="display:none;"></p>
     <p class="info-msg" id="info-msg" style="display:none;"></p>
   </div>
+
+<footer class="sm-rodape">
+  <div><img src="assets/logo-cursiva.png" alt="Sagrado de Mim"><p style="margin:6px 0 0; color:#5A4A3F;">Aromas</p></div>
+  <div class="cols">
+    <div><strong>Loja</strong><a href="quiz-corporal.html">Perfume Corporal</a><a href="perfume-monte.html">Monte seu Perfume</a><a href="quiz-casa.html">Aroma para Casa</a><a href="loja.html">Todos os produtos</a></div>
+    <div><strong>Minha conta</strong><a href="meu-perfil.html">Meu perfil</a><a href="meus-pedidos.html">Meus pedidos</a><a href="carrinho.html">Carrinho</a></div>
+    <div><strong>Contato</strong><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></div>
+  </div>
+</footer>
+<p class="sm-copy">Sagrado de Mim — feito à mão, pensado para você.</p>
+<script>
+(function () {
+  var n = JSON.parse(localStorage.getItem("sagradoCart") || "[]").length;
+  var b = document.getElementById("sm-cart-count");
+  if (b && n > 0) { b.textContent = n; b.style.display = "flex"; }
+})();
+</script>
 
 <script>
 // ATENÇÃO: cole aqui a URL e a chave "anon public" do seu projeto Supabase
