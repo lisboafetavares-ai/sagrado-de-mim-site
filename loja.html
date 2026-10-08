@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="assets/logo-cursiva.png">
+<meta name="description" content="Loja Sagrado de Mim — difusores, home sprays, velas, hidratantes, sabonetes e cosméticos artesanais.">
+<title>Sagrado de Mim — Loja</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 20px 60px;
+    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    font-family: Georgia, 'Liberation Serif', serif;
+    color: #332f28;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+  .back-link { display:block; text-align:center; font-family:Arial,sans-serif; font-size:12px; color:#8a8676; text-decoration:none; margin-bottom:12px; }
+  .top-nav { display:flex; justify-content:center; gap:18px; margin-bottom:18px; font-family:Arial,sans-serif; font-size:12px; }
+  .top-nav a { color:#8a8676; text-decoration:none; }
+  h1 { font-size: 26px; letter-spacing: 4px; text-align:center; margin: 0 0 6px; font-weight: normal; }
+  .sub { font-family:Arial,sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#5f6b52; text-align:center; margin:0 0 28px; }
+  .filters { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:28px; }
+  .chip {
+    font-family: Arial, sans-serif; font-size: 13px; padding: 9px 16px; border-radius: 999px;
+    border: 1px solid rgba(61,58,52,0.25); background: #fff; color: #332f28; cursor: pointer;
+  }
+  .chip.active { background: #556238; color: #fff; border-color: #556238; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .product {
+    background: #fbf7f0; border: 1px solid rgba(61,58,52,0.18); border-radius: 16px; overflow: hidden;
+    display:flex; flex-direction:column; box-shadow: 0 6px 18px rgba(61,58,52,0.06);
+  }
+  .photo { width:100%; aspect-ratio: 1 / 1; background:#f1e8da; display:flex; align-items:center; justify-content:center; }
+  .photo img.real { width:100%; height:100%; object-fit:cover; display:block; }
+  .photo img.placeholder { width:46%; opacity:0.35; }
+  .info { padding: 16px 18px 18px; display:flex; flex-direction:column; flex:1; }
+  .cat { font-family:Arial,sans-serif; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#8a8676; margin:0 0 6px; }
+  .name { font-size: 18px; margin: 0 0 4px; line-height:1.25; }
+  .size { font-family:Arial,sans-serif; font-size:12px; color:#6b6558; margin:0 0 10px; }
+  .price { font-family:Arial,sans-serif; font-weight:700; font-size:17px; color:#556238; margin: auto 0 10px; }
+  select.aroma {
+    width:100%; font-family:Arial,sans-serif; font-size:13px; padding:9px 10px; border-radius:8px;
+    border:1px solid rgba(61,58,52,0.3); margin-bottom:10px; background:#fff;
+  }
+  .add-btn {
+    width:100%; font-family:Arial,sans-serif; font-weight:700; font-size:14px; background:#556238; color:#fff;
+    padding:12px; border-radius:10px; border:none; cursor:pointer;
+  }
+  .add-btn:disabled { background:#b9b4a6; cursor:not-allowed; }
+  #toast {
+    position: fixed; left:50%; bottom: 26px; transform: translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
+    background:#332f28; color:#fff; font-family:Arial,sans-serif; font-size:14px; padding:14px 20px; border-radius:12px;
+    transition: all .25s; z-index: 50; display:flex; gap:14px; align-items:center;
+  }
+  #toast.show { opacity:1; transform: translateX(-50%) translateY(0); pointer-events:auto; }
+  #toast a { color:#d9e4c4; font-weight:700; text-decoration:none; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <a href="index.html" class="back-link">&larr; Voltar para o início</a>
+    <div class="top-nav">
+      <a href="carrinho.html">🛒 Carrinho</a>
+      <a href="meu-perfil.html">Meu perfil</a>
+      <a href="meus-pedidos.html">Meus pedidos</a>
+    </div>
+    <h1>LOJA</h1>
+    <p class="sub">Feito à mão, pensado para você</p>
+
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div id="toast"><span id="toast-text">Adicionado ao carrinho</span><a href="carrinho.html">Ver carrinho →</a></div>
+
+<script>
+// Aromas disponíveis para difusor, refil e home spray
+const AROMAS = ["Lavanda", "Canela", "Incenso", "Mirra com Arruda", "Bamboo Trouss", "Nerolia", "Chá Verde"];
+
+// Para colocar foto real: salvar em assets/produtos/ e preencher "img" (ex.: "assets/produtos/home-spray-500.jpg")
+const PRODUTOS = [
+  { id: "difusor-250", cat: "Perfumaria & Ambiente", nome: "Difusor de Varetas", tamanho: "250ml", preco: 168.50, aroma: true, img: null, disponivel: true },
+  { id: "refil-500", cat: "Perfumaria & Ambiente", nome: "Refil de Difusor de Varetas", tamanho: "500ml", preco: 175.00, aroma: true, img: null, disponivel: true },
+  { id: "refil-1l", cat: "Perfumaria & Ambiente", nome: "Refil de Difusor de Varetas", tamanho: "1L", preco: 346.90, aroma: true, img: null, disponivel: true },
+  { id: "aromatizador-100", cat: "Perfumaria & Ambiente", nome: "Aromatizador de Ambientes", tamanho: "100ml", preco: 26.90, aroma: false, img: null, disponivel: true },
+  { id: "home-spray-250", cat: "Perfumaria & Ambiente", nome: "Home Spray", tamanho: "250ml", preco: 45.00, aroma: true, img: null, disponivel: true },
+  { id: "home-spray-500", cat: "Perfumaria & Ambiente", nome: "Home Spray", tamanho: "500ml", preco: 85.00, aroma: true, img: null, disponivel: true },
+  { id: "neutralizador-70", cat: "Perfumaria & Ambiente", nome: "Neutralizador de Odores", tamanho: "70ml", preco: 29.90, aroma: false, img: null, disponivel: true },
+  { id: "vela-p", cat: "Perfumaria & Ambiente", nome: "Vela na Latinha — Pequena", tamanho: "", preco: 35.00, aroma: false, img: null, disponivel: true },
+  { id: "vela-g", cat: "Perfumaria & Ambiente", nome: "Vela na Latinha — Grande", tamanho: "", preco: 70.00, aroma: false, img: null, disponivel: true },
+  { id: "perfume-cabelo-40", cat: "Perfumaria Pessoal", nome: "Perfume para Cabelos", tamanho: "40ml", preco: 44.90, aroma: false, img: null, disponivel: true },
+  { id: "body-splash-240", cat: "Perfumaria Pessoal", nome: "Body Splash", tamanho: "240ml", preco: 89.90, aroma: false, img: null, disponivel: true },
+  { id: "hidratante-250", cat: "Corpo", nome: "Hidratante Corporal", tamanho: "250ml", preco: 79.90, aroma: false, img: null, disponivel: true },
+  { id: "hidratante-moldura-300", cat: "Corpo", nome: "Hidratante Corporal \"Moldura\"", tamanho: "300g", preco: 129.90, aroma: false, img: null, disponivel: true },
+  { id: "manteiga-200", cat: "Corpo", nome: "Manteiga Corporal", tamanho: "200g", preco: 149.90, aroma: false, img: null, disponivel: true },
+  { id: "creme-pes-100", cat: "Corpo", nome: "Creme para Tratamento dos Pés", tamanho: "100ml", preco: 89.90, aroma: false, img: null, disponivel: true },
+  { id: "passa-facil", cat: "Corpo", nome: "Passa Fácil", tamanho: "", preco: 29.90, aroma: false, img: null, disponivel: true },
+  { id: "sabonete-fatia-125", cat: "Banho & Facial", nome: "Sabonete Fatia", tamanho: "125g", preco: 32.00, aroma: false, img: null, disponivel: true },
+  { id: "sabonete-gel-250", cat: "Banho & Facial", nome: "Sabonete em Gel", tamanho: "250ml", preco: 123.60, aroma: false, img: null, disponivel: true },
+  { id: "espuma-facial-70", cat: "Banho & Facial", nome: "Espuma de Limpeza Facial", tamanho: "70ml", preco: 62.00, aroma: false, img: null, disponivel: true }
+];
+
+const CATEGORIAS = ["Todos", "Perfumaria & Ambiente", "Perfumaria Pessoal", "Corpo", "Banho & Facial"];
+let categoriaAtiva = "Todos";
+
+function brl(v) { return "R$ " + v.toFixed(2).replace(".", ","); }
+
+function renderFiltros() {
+  const el = document.getElementById("filters");
+  el.innerHTML = CATEGORIAS.map(c =>
+    '<button type="button" class="chip' + (c === categoriaAtiva ? ' active' : '') + '" data-cat="' + c + '">' + c + '</button>'
+  ).join('');
+  el.querySelectorAll(".chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+      categoriaAtiva = btn.dataset.cat;
+      renderFiltros();
+      renderGrid();
+    });
+  });
+}
+
+function renderGrid() {
+  const lista = PRODUTOS.filter(p => categoriaAtiva === "Todos" || p.cat === categoriaAtiva);
+  const grid = document.getElementById("grid");
+  grid.innerHTML = lista.map(p => {
+    const foto = p.img
+      ? '<img class="real" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">'
+      : '<img class="placeholder" src="assets/logo-cursiva.png" alt="">';
+    const aroma = p.aroma
+      ? '<select class="aroma" data-id="' + p.id + '"><option value="">Escolha o aroma...</option>' +
+        AROMAS.map(a => '<option value="' + a + '">' + a + '</option>').join('') + '</select>'
+      : '';
+    return '<div class="product">' +
+      '<div class="photo">' + foto + '</div>' +
+      '<div class="info">' +
+        '<p class="cat">' + p.cat + '</p>' +
+        '<p class="name">' + p.nome + '</p>' +
+        '<p class="size">' + (p.tamanho || "&nbsp;") + '</p>' +
+        '<p class="price">' + brl(p.preco) + '</p>' +
+        aroma +
+        '<button type="button" class="add-btn" data-id="' + p.id + '"' + (p.disponivel ? '' : ' disabled') + '>' +
+          (p.disponivel ? 'Adicionar ao carrinho' : 'Indisponível') + '</button>' +
+      '</div></div>';
+  }).join('');
+
+  grid.querySelectorAll(".add-btn").forEach(btn => {
+    btn.addEventListener("click", () => adicionar(btn.dataset.id));
+  });
+}
+
+function adicionar(id) {
+  const p = PRODUTOS.find(x => x.id === id);
+  const detalhes = {};
+  if (p.tamanho) detalhes["Tamanho"] = p.tamanho;
+  if (p.aroma) {
+    const sel = document.querySelector('select.aroma[data-id="' + id + '"]');
+    if (!sel || !sel.value) {
+      alert("Escolha um aroma antes de adicionar ao carrinho.");
+      return;
+    }
+    detalhes["Aroma"] = sel.value;
+  }
+  const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
+  cart.push({ tipo: p.nome, preco: p.preco, detalhes: detalhes });
+  localStorage.setItem("sagradoCart", JSON.stringify(cart));
+
+  const toast = document.getElementById("toast");
+  document.getElementById("toast-text").textContent = p.nome + " adicionado ao carrinho";
+  toast.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
+}
+
+renderFiltros();
+renderGrid();
+</script>
+</body>
+</html>
