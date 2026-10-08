@@ -7,13 +7,13 @@ const ETIQUETA_FUNDO = "#F3EEE4";        // bege da paleta
 const ETIQUETA_SELO_FUNDO = "#DCDDCB";   // sage bem claro
 
 const ETIQUETAS_CORPO = {
-  "sabonete-fatia-125": { tipo: "SABONETE ARTESANAL", modo: "Molhe o sabonete e a pele, faça espuma, massageie e enxágue bem.", ingredientes: "" },
-  "sabonete-gel-250": { tipo: "SABONETE EM GEL", modo: "Aplique uma pequena quantidade na pele molhada, faça espuma e enxágue.", ingredientes: "" },
-  "espuma-facial-70": { tipo: "ESPUMA DE LIMPEZA FACIAL", modo: "Aplique no rosto úmido, massageie suavemente evitando a área dos olhos e enxágue.", ingredientes: "" },
-  "hidratante-250": { tipo: "HIDRATANTE CORPORAL", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "" },
-  "hidratante-moldura-300": { tipo: "HIDRATANTE MOLDURA", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "" },
-  "manteiga-200": { tipo: "MANTEIGA CORPORAL", modo: "Aplique pequenas quantidades na pele, massageando até absorver. Ideal após o banho.", ingredientes: "" },
-  "creme-pes-100": { tipo: "CREME PARA OS PÉS", modo: "Aplique nos pés limpos e secos, massageando principalmente as áreas ressecadas.", ingredientes: "" }
+  "sabonete-fatia-125": { tipo: "SABONETE ARTESANAL", modo: "Molhe o sabonete e a pele, faça espuma, massageie e enxágue bem.", ingredientes: "", meses: 12 },
+  "sabonete-gel-250": { tipo: "SABONETE EM GEL", modo: "Aplique uma pequena quantidade na pele molhada, faça espuma e enxágue.", ingredientes: "", meses: 12 },
+  "espuma-facial-70": { tipo: "ESPUMA DE LIMPEZA FACIAL", modo: "Aplique no rosto úmido, massageie suavemente evitando a área dos olhos e enxágue.", ingredientes: "", meses: 12 },
+  "hidratante-250": { tipo: "HIDRATANTE CORPORAL", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "", meses: 12 },
+  "hidratante-moldura-300": { tipo: "HIDRATANTE MOLDURA", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "", meses: 12 },
+  "manteiga-200": { tipo: "MANTEIGA CORPORAL", modo: "Aplique pequenas quantidades na pele, massageando até absorver. Ideal após o banho.", ingredientes: "", meses: 12 },
+  "creme-pes-100": { tipo: "CREME PARA OS PÉS", modo: "Aplique nos pés limpos e secos, massageando principalmente as áreas ressecadas.", ingredientes: "", meses: 12 }
 };
 
 function etqEsc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
@@ -45,6 +45,22 @@ function etiquetasDoPedido(order) {
   return { corpo, semModelo, faltaIngred: [...faltaIngred] };
 }
 
+
+// Ícone "válido X meses depois de aberto" (pote aberto com o número de meses)
+function etqIconePAO(meses) {
+  return '<svg class="pao" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg" aria-label="Válido ' + meses + ' meses depois de aberto">' +
+    '<g fill="none" stroke="#2E2A25" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">' +
+    '<path d="M12 44 L14 74 Q50 90 86 74 L88 44"/>' +
+    '<path d="M12 44 Q50 58 88 44"/>' +
+    '<path d="M12 44 Q16 36 34 33"/>' +
+    '<path d="M13.2 52 Q50 64 86.8 52"/>' +
+    '<ellipse cx="54" cy="20" rx="38" ry="12" transform="rotate(-9 54 20)"/>' +
+    '<path d="M16.6 26 L17.4 32 Q22 44 58 40 Q88 36 92.4 20 L91.6 14"/>' +
+    '</g>' +
+    '<text x="50" y="76.5" text-anchor="middle" font-family="Jost, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#2E2A25" letter-spacing="1">' + meses + ' M</text>' +
+    '</svg>';
+}
+
 function etqHtmlCorpo(e, logoUrl) {
   const aroma = (e.aroma || "").toLowerCase().replace(/ e /g, " & ");
   const ingred = e.cfg.ingredientes
@@ -62,8 +78,8 @@ function etqHtmlCorpo(e, logoUrl) {
       '<div class="linha"></div>' +
       '<div class="txt"><b>INGREDIENTES:</b> ' + ingred + '</div>' +
       '<div class="txt"><b>MODO DE USO:</b> ' + etqEsc(e.cfg.modo) + '</div>' +
-      '<div class="txt pequeno">Uso externo. Evite contato com os olhos. Em caso de irritação, suspenda o uso.</div>' +
-      '<div class="rodape"><span><span class="vol">' + etqEsc(e.p.tamanho) + '</span><br>Validade: ______ · Lote: ______</span>' +
+      '<div class="txt pequeno">Uso externo. Evite contato com os olhos.</div>' +
+      '<div class="rodape"><span class="pao-box">' + etqIconePAO(e.cfg.meses || 12) + '<span class="vol">' + etqEsc(e.p.tamanho) + '</span></span>' +
       '<span style="text-align:right">sagradodemim.com.br<br>(31) 99915-3132</span></div>' +
     '</div>' +
   '</div>';
@@ -90,9 +106,9 @@ body { margin: 0; font-family: Jost, 'Helvetica Neue', Arial, sans-serif; color:
 .corpo .aroma { font-family: 'Gloock', Georgia, serif; font-size: 34px; line-height: 1.05; }
 .corpo .lema { font-size: 8.5px; letter-spacing: .14em; line-height: 1.5; text-transform: uppercase; border-top: 1px solid #2E2A25; border-bottom: 1px solid #2E2A25; padding: 4px 10px; }
 .corpo .lateral { position: absolute; left: 63mm; top: 0; width: 36mm; height: 67.7mm; background: ${ETIQUETA_COR_LATERAL}; }
-.corpo .girado { position: absolute; left: 47.15mm; top: 15.85mm; width: 67.7mm; height: 36mm; transform: rotate(-90deg); padding: 3.2mm 4.2mm 2.6mm; display: flex; flex-direction: column; gap: 5px; }
+.corpo .girado { position: absolute; left: 47.15mm; top: 15.85mm; width: 67.7mm; height: 36mm; transform: rotate(-90deg); padding: 3mm 4.2mm 2.4mm; display: flex; flex-direction: column; gap: 3px; }
 .corpo .marca { display: flex; align-items: flex-end; gap: 8px; }
-.corpo .marca img { height: 30px; width: auto; display: block; }
+.corpo .marca img { height: 24px; width: auto; display: block; }
 .corpo .marca span { font-size: 7px; letter-spacing: .16em; padding-bottom: 3px; }
 .corpo .linha { height: 1px; background: #2E2A25; }
 .corpo .txt { font-size: 7px; line-height: 1.35; }
@@ -100,6 +116,8 @@ body { margin: 0; font-family: Jost, 'Helvetica Neue', Arial, sans-serif; color:
 .corpo .pequeno { font-size: 6.5px; }
 .corpo .rodape { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; font-size: 7px; line-height: 1.35; }
 .corpo .vol { font-size: 9px; font-weight: 500; }
+.corpo .pao-box { display: flex; align-items: flex-end; gap: 7px; }
+.corpo .pao { width: 8.5mm; height: auto; display: block; }
 .selo { width: 67.7mm; height: 99mm; background: ${ETIQUETA_SELO_FUNDO}; }
 .selo .frase { position: absolute; right: 8mm; top: 7.4mm; text-align: right; font-family: 'Bodoni Moda', Georgia, serif; font-size: 27px; line-height: 1.05; }
 .selo .frase .it { font-style: italic; padding-right: 14px; }
