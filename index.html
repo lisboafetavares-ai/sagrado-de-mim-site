@@ -188,17 +188,6 @@
     </a>
   </div>
 
-  <div style="max-width:720px; margin:24px auto 0; padding:0 20px;">
-    <button type="button" id="visit-toggle" style="width:100%; font-family:Georgia,serif; font-size:16px; letter-spacing:1px; background:#556238; color:#fff; border:none; padding:16px; border-radius:12px; cursor:pointer;">Viva essa experiência conosco. Agende sua visita.</button>
-    <div id="visit-details" style="display:none; background:#fbf7f0; border:1px solid rgba(61,58,52,0.25); border-radius:12px; padding:22px 24px; margin-top:10px; font-family:Arial,sans-serif;">
-      <p style="margin:0 0 6px; font-weight:700; font-size:14px;">Endereço</p>
-      <p style="margin:0 0 12px; font-size:14px; color:#4a463e;">Rua Gonçalves Dias, 707</p>
-      <p style="margin:0 0 6px; font-weight:700; font-size:14px;">Telefone / WhatsApp</p>
-      <p style="margin:0 0 16px; font-size:14px; color:#4a463e;">(31) 99915-3132</p>
-      <a href="#" id="schedule-link" target="_blank" style="display:block; text-align:center; text-decoration:none; background:#556238; color:#fff; font-weight:700; padding:12px; border-radius:8px; font-size:14px; margin-bottom:10px;">Escolher horário na agenda</a>
-      <a href="https://wa.me/5531999153132?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20uma%20visita%20ao%20ateli%C3%AA%20Sagrado%20de%20Mim." target="_blank" style="display:block; text-align:center; text-decoration:none; background:#25D366; color:#fff; font-weight:700; padding:12px; border-radius:8px; font-size:14px;">💬 Ou mande uma mensagem no WhatsApp</a>
-    </div>
-  </div>
 
   <p style="text-align:right; max-width:960px; margin:0 auto; padding:0 20px; display:flex; justify-content:flex-end; gap:18px; flex-wrap:wrap;">
     <a href="admin.html" id="admin-link" style="display:none; font-family:Arial,sans-serif; font-size:13px; color:#556238; text-decoration:none; font-weight:700;">Painel da loja</a>
@@ -274,7 +263,8 @@
   </div>
 
   <footer>
-    Sagrado de Mim — feito à mão, pensado para você.
+    Sagrado de Mim — feito à mão, pensado para você.<br>
+    <a href="https://wa.me/5531999153132?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Sagrado%20de%20Mim." target="_blank" style="color:#556238; text-decoration:underline;">Dúvidas? Fale com a gente no WhatsApp</a>
   </footer>
 
 <script>// ATENÇÃO: cole aqui a URL e a chave "anon public" do seu projeto Supabase (mesmas usadas nos outros arquivos)
@@ -485,14 +475,7 @@ document.getElementById("logout-link").addEventListener("click", (e) => {
   location.reload();
 });
 
-// ATENÇÃO: cole aqui o link de "Horário de agendamento" gerado no Google Calendar
-const SCHEDULE_LINK = "https://calendar.app.google/PxsDEXCZqpFExWSJA";
-document.getElementById("schedule-link").href = SCHEDULE_LINK.includes("COLE_AQUI") ? "#" : SCHEDULE_LINK;
 
-document.getElementById("visit-toggle").addEventListener("click", () => {
-  const details = document.getElementById("visit-details");
-  details.style.display = details.style.display === "none" ? "block" : "none";
-});
 
 document.querySelector(".blindbox-add").addEventListener("click", () => {
   const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
