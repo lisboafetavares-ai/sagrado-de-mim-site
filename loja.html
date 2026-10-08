@@ -176,7 +176,7 @@ function renderGrid() {
     let status = "";
     if (p.aroma) {
       aroma = '<select class="aroma" data-id="' + p.id + '"><option value="">Escolha o aroma...</option>' +
-        AROMAS.map(a => {
+        aromasDe(p).map(a => {
           const q = qtdEstoque(p.id, a);
           const rotulo = q === null ? a : a + (q > 0 ? " · pronta entrega" : " · sob encomenda");
           return '<option value="' + a + '">' + rotulo + '</option>';

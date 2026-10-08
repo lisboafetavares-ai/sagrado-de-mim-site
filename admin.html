@@ -436,7 +436,7 @@ async function renderEstoque() {
   }
 
   box.innerHTML = PRODUTOS.map(p => {
-    const linhas = p.aroma ? AROMAS : [""];
+    const linhas = p.aroma ? aromasDe(p) : [""];
     const campos = linhas.map(a =>
       '<label style="display:flex; align-items:center; justify-content:space-between; gap:10px; font-family:Arial,sans-serif; font-size:13px; margin:0;">' +
         '<span>' + (a || "Quantidade") + '</span>' +
