@@ -71,6 +71,7 @@
   <div style="display:flex; gap:10px; padding:14px 28px 0; border-bottom:1px solid rgba(61,58,52,0.1); align-items:center;">
     <button type="button" id="tab-pedidos" class="admin-tab" style="background:#556238; color:#fff; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Pedidos</button>
     <button type="button" id="tab-etiqueta" class="admin-tab" style="background:#eef1e6; color:#556238; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Personalizar Etiqueta</button>
+    <button type="button" id="tab-estoque" class="admin-tab" style="background:#eef1e6; color:#556238; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Estoque</button>
     <button type="button" id="backup-btn" style="margin-left:auto; background:none; border:1px solid rgba(61,58,52,0.25); color:#8a8676; padding:8px 14px; border-radius:8px; font-family:Arial,sans-serif; font-weight:700; font-size:12px; cursor:pointer;">⬇ Baixar backup de pedidos</button>
   </div>
 
@@ -81,11 +82,18 @@
     </div>
   </div>
 
+  <div id="view-estoque" style="display:none; max-width:900px; margin:0 auto; padding:28px 24px;">
+    <p style="font-family:Arial,sans-serif; font-size:13px; color:#6b6558; margin:0 0 6px;">Quantidade <strong>pronta entrega</strong> de cada produto. Com <strong>0</strong>, o produto aparece como <strong>sob encomenda (5 dias de produção)</strong>. Cada pedido novo desconta daqui automaticamente.</p>
+    <p style="font-family:Arial,sans-serif; font-size:12px; color:#8a8676; margin:0 0 20px;">Ao salvar, o painel pede o código de administração (o mesmo que você definiu no SQL do estoque).</p>
+    <div id="estoque-lista"><p style="font-family:Arial,sans-serif; font-size:13px;">Carregando…</p></div>
+  </div>
+
   <div id="view-etiqueta" style="display:none; max-width:600px; margin:0 auto; padding:32px 24px;">
     <p style="font-family:Arial,sans-serif; font-size:14px; color:#8a8676; margin:0 0 20px;">Use essa área pra criar uma etiqueta na hora, com quem estiver aqui no ateliê.</p>
     <div id="atelier-editor"></div>
   </div>
 
+<script src="produtos.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
@@ -184,13 +192,25 @@ function renderMainPanel(codigo) {
     ? '<p style="background:#eef1e6; color:#556238; font-family:Arial,sans-serif; font-weight:700; font-size:13px; padding:10px 14px; border-radius:8px; margin:8px 0;">🎁 Primeira compra dessa cliente — inclua a amostra de boas-vindas!</p>'
     : '';
 
+  const itensEstoque = (data.itens || []).filter(i => i.produto_id);
+  const itensEncomenda = itensEstoque.filter(i => i.entrega === "encomenda");
+  const encomendaHtml = itensEncomenda.length
+    ? '<p style="background:#fbf1dc; border:1px solid #d9a23a; color:#6b4a14; font-family:Arial,sans-serif; font-weight:700; font-size:13px; padding:10px 14px; border-radius:8px; margin:8px 0;">⏳ SOB ENCOMENDA (5 dias de produção) — produzir: ' +
+      itensEncomenda.map(i => i.tipo + (i.aroma_estoque ? ' ' + i.aroma_estoque : '')).join(', ') + '</p>'
+    : '';
+  const devolverHtml = itensEstoque.length
+    ? '<p style="margin:6px 0 0;"><button type="button" class="btn" id="devolver-estoque-btn" style="font-size:12px; padding:7px 12px; background:#8a8676;">Pedido cancelado? Devolver itens ao estoque</button></p>'
+    : '';
+
   main.innerHTML =
     '<p class="order-title">' + codigo + '</p>' +
     '<p class="order-meta">Cliente: ' + (data.cliente || "—") + ' · E-mail: ' + (data.email || "—") + ' · Total: R$ ' + (data.total ? Number(data.total).toFixed(2).replace('.',',') : "—") + '</p>' +
     (enderecoCompleto ? '<p class="order-meta" style="margin-top:-14px;">Endereço: ' + enderecoCompleto + '</p>' : '') +
     primeiraCompraHtml +
+    encomendaHtml +
     reviewHtml +
     itensHtml +
+    devolverHtml +
     '<div class="row" style="margin-top:20px;">' +
       '<div>' +
         '<label>Pagamento</label>' +
@@ -231,6 +251,24 @@ function renderMainPanel(codigo) {
     setTimeout(() => { document.getElementById("save-msg").style.display = "none"; }, 2000);
     renderSidebar();
   });
+
+  const devolverBtn = document.getElementById("devolver-estoque-btn");
+  if (devolverBtn) {
+    devolverBtn.addEventListener("click", async () => {
+      if (!confirm("Devolver ao estoque os itens do pedido " + codigo + "? Use só se o pedido foi cancelado ou não foi pago.")) return;
+      const cod = codigoEstoque(false);
+      if (!cod) return;
+      devolverBtn.disabled = true;
+      try {
+        const n = await rpcAdmin("admin_devolver_estoque", { p_codigo: cod, p_order_code: codigo });
+        alert(n > 0 ? (n + " unidade(s) devolvida(s) ao estoque.") : "Nada a devolver (já foi devolvido, ou o pedido não tirou nada do estoque).");
+      } catch (err) {
+        if (err.codigoInvalido) sessionStorage.removeItem("codigoEstoque");
+        alert(err.codigoInvalido ? "Código incorreto." : ("Não foi possível devolver: " + err.message));
+      }
+      devolverBtn.disabled = false;
+    });
+  }
 
   main.querySelectorAll(".regen-label-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -283,8 +321,8 @@ async function regenerateLabel(perfumeName, iconsPosicionados, fontId) {
         '</div>' +
       '</div>' +
       '<div style="flex:1; text-align:center;">' +
-        '<p style="font-family:'Playfair Display',serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000000;">SAGRADO DE MIM</p>' +
-        '<p style="font-family:'Playfair Display',serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
+        '<p style="font-family:Playfair Display,serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000000;">SAGRADO DE MIM</p>' +
+        '<p style="font-family:Playfair Display,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
         '<p style="font-family:' + font.family + '; font-style:' + font.style + '; font-weight:' + font.weight + '; font-size:19px; margin:0; color:#000000;">' + perfumeName + '</p>' +
       '</div>' +
       placedHtml +
@@ -343,24 +381,101 @@ document.getElementById("backup-btn").addEventListener("click", async () => {
   btn.textContent = "⬇ Baixar backup de pedidos";
 });
 
-document.getElementById("tab-pedidos").addEventListener("click", () => {
-  document.getElementById("view-pedidos").style.display = "flex";
-  document.getElementById("view-etiqueta").style.display = "none";
-  document.getElementById("tab-pedidos").style.background = "#556238";
-  document.getElementById("tab-pedidos").style.color = "#fff";
-  document.getElementById("tab-etiqueta").style.background = "#eef1e6";
-  document.getElementById("tab-etiqueta").style.color = "#556238";
-});
+function mostrarAba(nome) {
+  const abas = { pedidos: "view-pedidos", estoque: "view-estoque", etiqueta: "view-etiqueta" };
+  Object.entries(abas).forEach(([k, viewId]) => {
+    const ativa = k === nome;
+    document.getElementById(viewId).style.display = ativa ? (k === "pedidos" ? "flex" : "block") : "none";
+    const tab = document.getElementById("tab-" + k);
+    tab.style.background = ativa ? "#556238" : "#eef1e6";
+    tab.style.color = ativa ? "#fff" : "#556238";
+  });
+  if (nome === "etiqueta") renderAtelierEditor();
+  if (nome === "estoque") renderEstoque();
+}
+document.getElementById("tab-pedidos").addEventListener("click", () => mostrarAba("pedidos"));
+document.getElementById("tab-estoque").addEventListener("click", () => mostrarAba("estoque"));
+document.getElementById("tab-etiqueta").addEventListener("click", () => mostrarAba("etiqueta"));
 
-document.getElementById("tab-etiqueta").addEventListener("click", () => {
-  document.getElementById("view-pedidos").style.display = "none";
-  document.getElementById("view-etiqueta").style.display = "block";
-  document.getElementById("tab-etiqueta").style.background = "#556238";
-  document.getElementById("tab-etiqueta").style.color = "#fff";
-  document.getElementById("tab-pedidos").style.background = "#eef1e6";
-  document.getElementById("tab-pedidos").style.color = "#556238";
-  renderAtelierEditor();
-});
+// ---------- Estoque ----------
+function codigoEstoque(forcarNovo) {
+  let c = forcarNovo ? null : sessionStorage.getItem("codigoEstoque");
+  if (!c) {
+    c = prompt("Código de administração do estoque:");
+    if (c) sessionStorage.setItem("codigoEstoque", c);
+  }
+  return c;
+}
+
+async function rpcAdmin(nome, corpo) {
+  const res = await fetch(SUPABASE_URL + "/rest/v1/rpc/" + nome, {
+    method: "POST", headers: sbHeaders(), body: JSON.stringify(corpo)
+  });
+  const texto = await res.text();
+  if (!res.ok) {
+    let msg = texto;
+    try { msg = JSON.parse(texto).message || texto; } catch (e) {}
+    const err = new Error(msg);
+    if (/codigo invalido/i.test(msg)) err.codigoInvalido = true;
+    throw err;
+  }
+  try { return JSON.parse(texto); } catch (e) { return texto; }
+}
+
+async function renderEstoque() {
+  const box = document.getElementById("estoque-lista");
+  box.innerHTML = '<p style="font-family:Arial,sans-serif; font-size:13px;">Carregando…</p>';
+  let mapa = {};
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/stock?select=product_id,aroma,estoque", { headers: sbHeaders() });
+    if (!res.ok) throw new Error("estoque nao configurado");
+    (await res.json()).forEach(r => { mapa[r.product_id + "|" + r.aroma] = r.estoque; });
+  } catch (e) {
+    box.innerHTML = '<p style="font-family:Arial,sans-serif; font-size:13px; color:#a3455a;">Não consegui ler o estoque. Rode o SQL do estoque no Supabase (arquivo estoque.sql) e recarregue.</p>';
+    return;
+  }
+
+  box.innerHTML = PRODUTOS.map(p => {
+    const linhas = p.aroma ? AROMAS : [""];
+    const campos = linhas.map(a =>
+      '<label style="display:flex; align-items:center; justify-content:space-between; gap:10px; font-family:Arial,sans-serif; font-size:13px; margin:0;">' +
+        '<span>' + (a || "Quantidade") + '</span>' +
+        '<input type="number" min="0" step="1" class="est-input" data-pid="' + p.id + '" data-aroma="' + a + '" value="' + (mapa[p.id + "|" + a] ?? 0) + '" data-orig="' + (mapa[p.id + "|" + a] ?? 0) + '" style="width:80px; padding:6px 8px; border:1px solid rgba(61,58,52,0.3); border-radius:6px;">' +
+      '</label>'
+    ).join('');
+    return '<div style="background:#fbf7f0; border:1px solid rgba(61,58,52,0.18); border-radius:12px; padding:16px 18px; margin-bottom:14px;">' +
+      '<p style="font-family:Georgia,serif; font-size:16px; margin:0 0 10px;">' + p.nome + (p.tamanho ? ' <span style="color:#8a8676; font-size:13px;">' + p.tamanho + '</span>' : '') + '</p>' +
+      '<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:8px 24px;">' + campos + '</div>' +
+      '<div style="margin-top:12px;"><button type="button" class="btn est-salvar" data-pid="' + p.id + '" style="font-size:13px; padding:8px 16px;">Salvar</button> <span class="est-msg" data-pid="' + p.id + '" style="font-family:Arial,sans-serif; font-size:12px; margin-left:8px;"></span></div>' +
+    '</div>';
+  }).join('');
+
+  box.querySelectorAll(".est-salvar").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const pid = btn.dataset.pid;
+      const msg = box.querySelector('.est-msg[data-pid="' + pid + '"]');
+      const alterados = Array.from(box.querySelectorAll('.est-input[data-pid="' + pid + '"]'))
+        .filter(i => i.value !== i.dataset.orig);
+      if (!alterados.length) { msg.style.color = "#8a8676"; msg.textContent = "Nada alterado."; return; }
+      const codigo = codigoEstoque(false);
+      if (!codigo) return;
+      btn.disabled = true; msg.style.color = "#8a8676"; msg.textContent = "Salvando…";
+      try {
+        for (const inp of alterados) {
+          const qtd = parseInt(inp.value, 10);
+          if (isNaN(qtd) || qtd < 0) throw new Error("Quantidade inválida");
+          await rpcAdmin("admin_definir_estoque", { p_codigo: codigo, p_product_id: pid, p_aroma: inp.dataset.aroma, p_qtd: qtd });
+          inp.dataset.orig = String(qtd);
+        }
+        msg.style.color = "#556238"; msg.textContent = "Salvo ✓";
+      } catch (err) {
+        if (err.codigoInvalido) sessionStorage.removeItem("codigoEstoque");
+        msg.style.color = "#a3455a"; msg.textContent = err.codigoInvalido ? "Código incorreto — tente de novo." : ("Erro: " + err.message);
+      }
+      btn.disabled = false;
+    });
+  });
+}
 
 // ---------- Editor de etiqueta pro ateliê ----------
 const atelierIconOptions = [
@@ -431,8 +546,8 @@ function atelierRenderLabel(interactive) {
       '</div>' +
     '</div>' +
     '<div style="flex:1; text-align:center; pointer-events:none;">' +
-    '<p style="font-family:'Playfair Display',serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000000;">SAGRADO DE MIM</p>' +
-    '<p style="font-family:'Playfair Display',serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
+    '<p style="font-family:Playfair Display,serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000000;">SAGRADO DE MIM</p>' +
+    '<p style="font-family:Playfair Display,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
     '<p style="font-family:' + atelierSelectedFont.family + '; font-style:' + atelierSelectedFont.style + '; font-weight:' + atelierSelectedFont.weight + '; font-size:19px; margin:0; color:#000000;">' + (atelierPerfumeName || "Nome do perfume") + '</p>' +
     '</div>' +
     placedHtml +

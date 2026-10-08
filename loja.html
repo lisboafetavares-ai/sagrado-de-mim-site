@@ -40,7 +40,8 @@
   .cat { font-family:Arial,sans-serif; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#8a8676; margin:0 0 6px; }
   .name { font-size: 18px; margin: 0 0 4px; line-height:1.25; }
   .size { font-family:Arial,sans-serif; font-size:12px; color:#6b6558; margin:0 0 10px; }
-  .price { font-family:Arial,sans-serif; font-weight:700; font-size:17px; color:#556238; margin: auto 0 10px; }
+  .info .status { margin-top:auto; }
+  .price { font-family:Arial,sans-serif; font-weight:700; font-size:17px; color:#556238; margin: 0 0 10px; }
   select.aroma {
     width:100%; font-family:Arial,sans-serif; font-size:13px; padding:9px 10px; border-radius:8px;
     border:1px solid rgba(61,58,52,0.3); margin-bottom:10px; background:#fff;
@@ -49,7 +50,10 @@
     width:100%; font-family:Arial,sans-serif; font-weight:700; font-size:14px; background:#556238; color:#fff;
     padding:12px; border-radius:10px; border:none; cursor:pointer;
   }
-  .add-btn:disabled { background:#b9b4a6; cursor:not-allowed; }
+  .status { font-family:Arial,sans-serif; font-size:12px; color:#6b6558; margin:0 0 6px; min-height:16px; }
+  .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
+  .dot.ok { background:#6a9a4a; }
+  .dot.enc { background:#d9a23a; }
   #toast {
     position: fixed; left:50%; bottom: 26px; transform: translateX(-50%) translateY(20px); opacity:0; pointer-events:none;
     background:#332f28; color:#fff; font-family:Arial,sans-serif; font-size:14px; padding:14px 20px; border-radius:12px;
@@ -76,32 +80,40 @@
 
   <div id="toast"><span id="toast-text">Adicionado ao carrinho</span><a href="carrinho.html">Ver carrinho →</a></div>
 
+<script src="produtos.js"></script>
 <script>
-// Aromas disponíveis para difusor, refil e home spray
-const AROMAS = ["Lavanda", "Canela", "Incenso", "Mirra com Arruda", "Bamboo Trouss", "Nerolia", "Chá Verde"];
+const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
 
-// Para colocar foto real: salvar em assets/produtos/ e preencher "img" (ex.: "assets/produtos/home-spray-500.jpg")
-const PRODUTOS = [
-  { id: "difusor-250", cat: "Perfumaria & Ambiente", nome: "Difusor de Varetas", tamanho: "250ml", preco: 168.50, aroma: true, img: null, disponivel: true },
-  { id: "refil-500", cat: "Perfumaria & Ambiente", nome: "Refil de Difusor de Varetas", tamanho: "500ml", preco: 175.00, aroma: true, img: null, disponivel: true },
-  { id: "refil-1l", cat: "Perfumaria & Ambiente", nome: "Refil de Difusor de Varetas", tamanho: "1L", preco: 346.90, aroma: true, img: null, disponivel: true },
-  { id: "aromatizador-100", cat: "Perfumaria & Ambiente", nome: "Aromatizador de Ambientes", tamanho: "100ml", preco: 26.90, aroma: false, img: null, disponivel: true },
-  { id: "home-spray-250", cat: "Perfumaria & Ambiente", nome: "Home Spray", tamanho: "250ml", preco: 45.00, aroma: true, img: null, disponivel: true },
-  { id: "home-spray-500", cat: "Perfumaria & Ambiente", nome: "Home Spray", tamanho: "500ml", preco: 85.00, aroma: true, img: null, disponivel: true },
-  { id: "neutralizador-70", cat: "Perfumaria & Ambiente", nome: "Neutralizador de Odores", tamanho: "70ml", preco: 29.90, aroma: false, img: null, disponivel: true },
-  { id: "vela-p", cat: "Perfumaria & Ambiente", nome: "Vela na Latinha — Pequena", tamanho: "", preco: 35.00, aroma: false, img: null, disponivel: true },
-  { id: "vela-g", cat: "Perfumaria & Ambiente", nome: "Vela na Latinha — Grande", tamanho: "", preco: 70.00, aroma: false, img: null, disponivel: true },
-  { id: "perfume-cabelo-40", cat: "Perfumaria Pessoal", nome: "Perfume para Cabelos", tamanho: "40ml", preco: 44.90, aroma: false, img: null, disponivel: true },
-  { id: "body-splash-240", cat: "Perfumaria Pessoal", nome: "Body Splash", tamanho: "240ml", preco: 89.90, aroma: false, img: null, disponivel: true },
-  { id: "hidratante-250", cat: "Corpo", nome: "Hidratante Corporal", tamanho: "250ml", preco: 79.90, aroma: false, img: null, disponivel: true },
-  { id: "hidratante-moldura-300", cat: "Corpo", nome: "Hidratante Corporal \"Moldura\"", tamanho: "300g", preco: 129.90, aroma: false, img: null, disponivel: true },
-  { id: "manteiga-200", cat: "Corpo", nome: "Manteiga Corporal", tamanho: "200g", preco: 149.90, aroma: false, img: null, disponivel: true },
-  { id: "creme-pes-100", cat: "Corpo", nome: "Creme para Tratamento dos Pés", tamanho: "100ml", preco: 89.90, aroma: false, img: null, disponivel: true },
-  { id: "passa-facil", cat: "Corpo", nome: "Passa Fácil", tamanho: "", preco: 29.90, aroma: false, img: null, disponivel: true },
-  { id: "sabonete-fatia-125", cat: "Banho & Facial", nome: "Sabonete Fatia", tamanho: "125g", preco: 32.00, aroma: false, img: null, disponivel: true },
-  { id: "sabonete-gel-250", cat: "Banho & Facial", nome: "Sabonete em Gel", tamanho: "250ml", preco: 123.60, aroma: false, img: null, disponivel: true },
-  { id: "espuma-facial-70", cat: "Banho & Facial", nome: "Espuma de Limpeza Facial", tamanho: "70ml", preco: 62.00, aroma: false, img: null, disponivel: true }
-];
+// ESTOQUE: mapa "produto|aroma" -> quantidade. null = nao foi possivel ler (a loja continua funcionando, sem status).
+let ESTOQUE = null;
+
+async function carregarEstoque() {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 4000);
+    const res = await fetch(SUPABASE_URL + "/rest/v1/stock?select=product_id,aroma,estoque", {
+      headers: { "apikey": SUPABASE_ANON_KEY }, signal: ctrl.signal
+    });
+    clearTimeout(t);
+    if (!res.ok) return;
+    const rows = await res.json();
+    ESTOQUE = {};
+    rows.forEach(r => { ESTOQUE[r.product_id + "|" + r.aroma] = r.estoque; });
+  } catch (e) { /* sem estoque: segue sem status */ }
+}
+
+function qtdEstoque(id, aroma) {
+  if (ESTOQUE === null) return null;
+  return ESTOQUE[id + "|" + (aroma || "")] || 0;
+}
+
+function statusHtml(qtd) {
+  if (qtd === null) return "";
+  return qtd > 0
+    ? '<span class="dot ok"></span>Pronta entrega'
+    : '<span class="dot enc"></span>Sob encomenda · 5 dias de produção';
+}
 
 const CATEGORIAS = ["Todos", "Perfumaria & Ambiente", "Perfumaria Pessoal", "Corpo", "Banho & Facial"];
 let categoriaAtiva = "Todos";
@@ -129,25 +141,42 @@ function renderGrid() {
     const foto = p.img
       ? '<img class="real" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">'
       : '<img class="placeholder" src="assets/logo-cursiva.png" alt="">';
-    const aroma = p.aroma
-      ? '<select class="aroma" data-id="' + p.id + '"><option value="">Escolha o aroma...</option>' +
-        AROMAS.map(a => '<option value="' + a + '">' + a + '</option>').join('') + '</select>'
-      : '';
+    let aroma = "";
+    let status = "";
+    if (p.aroma) {
+      aroma = '<select class="aroma" data-id="' + p.id + '"><option value="">Escolha o aroma...</option>' +
+        AROMAS.map(a => {
+          const q = qtdEstoque(p.id, a);
+          const rotulo = q === null ? a : a + (q > 0 ? " · pronta entrega" : " · sob encomenda");
+          return '<option value="' + a + '">' + rotulo + '</option>';
+        }).join('') + '</select>';
+      status = ESTOQUE === null ? "" : "Escolha o aroma para ver a disponibilidade";
+    } else {
+      status = statusHtml(qtdEstoque(p.id, ""));
+    }
     return '<div class="product">' +
       '<div class="photo">' + foto + '</div>' +
       '<div class="info">' +
         '<p class="cat">' + p.cat + '</p>' +
         '<p class="name">' + p.nome + '</p>' +
         '<p class="size">' + (p.tamanho || "&nbsp;") + '</p>' +
+        '<p class="status" data-status-id="' + p.id + '">' + status + '</p>' +
         '<p class="price">' + brl(p.preco) + '</p>' +
         aroma +
-        '<button type="button" class="add-btn" data-id="' + p.id + '"' + (p.disponivel ? '' : ' disabled') + '>' +
-          (p.disponivel ? 'Adicionar ao carrinho' : 'Indisponível') + '</button>' +
+        '<button type="button" class="add-btn" data-id="' + p.id + '">Adicionar ao carrinho</button>' +
       '</div></div>';
   }).join('');
 
   grid.querySelectorAll(".add-btn").forEach(btn => {
     btn.addEventListener("click", () => adicionar(btn.dataset.id));
+  });
+  grid.querySelectorAll("select.aroma").forEach(sel => {
+    sel.addEventListener("change", () => {
+      const id = sel.dataset.id;
+      const el = document.querySelector('[data-status-id="' + id + '"]');
+      if (!el) return;
+      el.innerHTML = sel.value ? statusHtml(qtdEstoque(id, sel.value)) : (ESTOQUE === null ? "" : "Escolha o aroma para ver a disponibilidade");
+    });
   });
 }
 
@@ -155,16 +184,26 @@ function adicionar(id) {
   const p = PRODUTOS.find(x => x.id === id);
   const detalhes = {};
   if (p.tamanho) detalhes["Tamanho"] = p.tamanho;
+  let aromaSel = "";
   if (p.aroma) {
     const sel = document.querySelector('select.aroma[data-id="' + id + '"]');
     if (!sel || !sel.value) {
       alert("Escolha um aroma antes de adicionar ao carrinho.");
       return;
     }
-    detalhes["Aroma"] = sel.value;
+    aromaSel = sel.value;
+    detalhes["Aroma"] = aromaSel;
   }
   const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
-  cart.push({ tipo: p.nome, preco: p.preco, detalhes: detalhes });
+
+  // Se ja existem unidades iguais no carrinho, elas contam no estoque antes desta.
+  const q = qtdEstoque(p.id, aromaSel);
+  if (q !== null) {
+    const jaNoCarrinho = cart.filter(i => i.produtoId === p.id && (i.aromaEstoque || "") === aromaSel).length;
+    detalhes["Entrega"] = jaNoCarrinho < q ? "Pronta entrega" : "Sob encomenda — 5 dias de produção";
+  }
+
+  cart.push({ tipo: p.nome, preco: p.preco, detalhes: detalhes, produtoId: p.id, aromaEstoque: aromaSel });
   localStorage.setItem("sagradoCart", JSON.stringify(cart));
 
   const toast = document.getElementById("toast");
@@ -174,8 +213,7 @@ function adicionar(id) {
   window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
 }
 
-renderFiltros();
-renderGrid();
+carregarEstoque().then(() => { renderFiltros(); renderGrid(); });
 </script>
 </body>
 </html>
