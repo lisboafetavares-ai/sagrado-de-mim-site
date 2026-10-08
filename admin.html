@@ -162,6 +162,7 @@ function etiquetasPainelHtml(data) {
   if (typeof etiquetasDoPedido === "undefined") return "";
   const info = etiquetasDoPedido(data);
   const partes = [];
+  if (info.casa.length) partes.push(info.casa.length + " de difusor/home spray personalizado");
   if (info.corpo.length) partes.push(info.corpo.length + " etiqueta(s) de produto");
   partes.push("1 selo da caixa");
   const avisos = [];

@@ -31,8 +31,13 @@ function etqAromaDoItem(item) {
 
 // Lista o que vai sair na folha e o que ainda falta
 function etiquetasDoPedido(order) {
-  const corpo = [], semModelo = [], faltaIngred = new Set();
+  const corpo = [], casa = [], semModelo = [], faltaIngred = new Set();
   (order.itens || []).forEach(item => {
+    const d = item.detalhes || {};
+    if (d["Nome do aroma"] && ETQ_CASA[item.tipo]) {
+      casa.push({ item, cfg: ETQ_CASA[item.tipo], nome: d["Nome do aroma"], base: d["Base aromática"] || "" });
+      return;
+    }
     const p = etqProdutoDoItem(item);
     const cfg = p && ETIQUETAS_CORPO[p.id];
     if (cfg) {
@@ -42,7 +47,7 @@ function etiquetasDoPedido(order) {
       semModelo.push(item.tipo);
     }
   });
-  return { corpo, semModelo, faltaIngred: [...faltaIngred] };
+  return { corpo, casa, semModelo, faltaIngred: [...faltaIngred] };
 }
 
 
@@ -85,6 +90,25 @@ function etqHtmlCorpo(e, logoUrl) {
   '</div>';
 }
 
+
+// ---- Difusor / Home Spray do quiz "Aroma para Casa" (mesmo modelo da aba Personalizar Etiqueta) ----
+const ETQ_CASA = {
+  "Difusor de Varetas": { nome: "DIFUSOR DE VARETAS", ingredientes: "Óleo Mineral, Fragrância, Álcool, Corante.", volume: "250mL" },
+  "Home Spray": { nome: "HOME SPRAY", ingredientes: "Água, Álcool, Fragrância, Glicerina.", volume: "200mL" }
+};
+
+function etqHtmlCasa(e, logoUrl) {
+  return '<div class="etq casa">' +
+    '<div class="ing"><div class="ing-txt"><span><b>Ingredientes:</b> ' + etqEsc(e.cfg.ingredientes) + ' <b>· Aroma: ' + etqEsc(e.base) + '</b> (peça um refil informando esse nome)</span></div></div>' +
+    '<div class="meio">' +
+      '<img src="' + logoUrl + '" alt="">' +
+      '<div class="moldura">' + etqEsc(e.nome) + '</div>' +
+      '<div class="produto">' + etqEsc(e.cfg.nome) + '</div>' +
+      '<div class="vol">' + etqEsc(e.cfg.volume) + '</div>' +
+    '</div>' +
+  '</div>';
+}
+
 function etqHtmlSelo(logoUrl) {
   return '<div class="etq selo">' +
     '<div class="frase"><div>um aroma</div><div class="it">feito</div><div>para você</div></div>' +
@@ -118,6 +142,14 @@ body { margin: 0; font-family: Jost, 'Helvetica Neue', Arial, sans-serif; color:
 .corpo .vol { font-size: 9px; font-weight: 500; }
 .corpo .pao-box { display: flex; align-items: flex-end; gap: 7px; }
 .corpo .pao { width: 8.5mm; height: auto; display: block; }
+.casa { width: 99mm; height: 67.7mm; background: #fff; color: #1a1a1a; display: flex; align-items: center; gap: 2.4mm; padding: 3.2mm 3.6mm; }
+.casa .ing { position: relative; width: 8.8mm; height: 61.2mm; flex-shrink: 0; }
+.casa .ing-txt { position: absolute; top: 50%; left: 50%; width: 59.2mm; height: 8.8mm; transform: translate(-50%,-50%) rotate(-90deg); font-family: Arial, sans-serif; font-weight: 700; font-size: 6.8px; line-height: 1.4; display: flex; align-items: center; }
+.casa .meio { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: Georgia, serif; }
+.casa .meio img { width: 28mm; margin-bottom: 2.8mm; }
+.casa .moldura { border: 1.5px solid #1a1a1a; padding: 2.4mm 3.6mm; text-align: center; margin-bottom: 2.4mm; min-width: 48mm; font-size: 22.7px; letter-spacing: 1px; }
+.casa .produto { font-size: 18px; letter-spacing: 1px; text-align: center; margin-bottom: 1.6mm; }
+.casa .vol { font-family: Arial, sans-serif; font-size: 12px; }
 .selo { width: 67.7mm; height: 99mm; background: ${ETIQUETA_SELO_FUNDO}; }
 .selo .frase { position: absolute; right: 8mm; top: 7.4mm; text-align: right; font-family: 'Bodoni Moda', Georgia, serif; font-size: 27px; line-height: 1.05; }
 .selo .frase .it { font-style: italic; padding-right: 14px; }
@@ -131,7 +163,7 @@ function imprimirEtiquetasPedido(codigo, order, opcoes) {
   const op = Object.assign({ selo: true }, opcoes || {});
   const info = etiquetasDoPedido(order);
   const logoUrl = new URL("assets/logo-cursiva.png", location.href).href;
-  if (!info.corpo.length && !op.selo) { alert("Esse pedido não tem etiquetas automáticas ainda."); return; }
+  if (!info.corpo.length && !info.casa.length && !op.selo) { alert("Esse pedido não tem etiquetas automáticas ainda."); return; }
   const w = window.open("", "_blank");
   if (!w) { alert("O navegador bloqueou a janela de impressão. Permita pop-ups para este site e tente de novo."); return; }
   const avisos = [];
@@ -141,7 +173,7 @@ function imprimirEtiquetasPedido(codigo, order, opcoes) {
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Gloock&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&display=swap">' +
     '<style>' + ETQ_CSS + '</style></head><body>' +
     '<div class="aviso">Pedido ' + etqEsc(codigo) + ' · imprima em <b>tamanho real (100%)</b>, papel A4, sem "ajustar à página".' + (avisos.length ? '<br>' + avisos.map(etqEsc).join('<br>') : '') + '</div>' +
-    '<div class="folha">' + info.corpo.map(e => etqHtmlCorpo(e, logoUrl)).join('') + (op.selo ? etqHtmlSelo(logoUrl) : '') + '</div>' +
+    '<div class="folha">' + info.casa.map(e => etqHtmlCasa(e, logoUrl)).join('') + info.corpo.map(e => etqHtmlCorpo(e, logoUrl)).join('') + (op.selo ? etqHtmlSelo(logoUrl) : '') + '</div>' +
     '<script>(async function(){try{await document.fonts.ready;}catch(e){}' +
     'await Promise.all([...document.images].map(function(i){return i.complete?0:new Promise(function(r){i.onload=i.onerror=r;});}));' +
     'setTimeout(function(){window.print();},300);})();<\/script>' +
