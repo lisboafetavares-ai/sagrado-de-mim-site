@@ -92,9 +92,9 @@
 <footer class="sm-rodape">
   <div><img src="assets/logo-cursiva.png" alt="Sagrado de Mim"><p style="margin:6px 0 0; color:#5A4A3F;">Aromas</p></div>
   <div class="cols">
-    <div><strong>Loja</strong><a href="quiz-corporal.html">Perfume Corporal</a><a href="perfume-monte.html">Monte seu Perfume</a><a href="quiz-casa.html">Aroma para Casa</a><a href="loja.html">Todos os produtos</a></div>
+    <div><strong>Comprar</strong><a href="quiz-corporal.html">Perfume personalizado (quiz)</a><a href="perfume-monte.html">Monte seu perfume</a><a href="quiz-casa.html">Aroma para casa</a><a href="loja.html">Loja completa</a></div>
     <div><strong>Minha conta</strong><a href="meu-perfil.html">Meu perfil</a><a href="meus-pedidos.html">Meus pedidos</a><a href="carrinho.html">Carrinho</a></div>
-    <div><strong>Contato</strong><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></div>
+    <div><strong>Fale com a gente</strong><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp: (31) 99915-3132</a><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></div>
   </div>
 </footer>
 <p class="sm-copy">Sagrado de Mim — feito à mão, pensado para você.</p>
@@ -106,11 +106,55 @@
 })();
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xzepqvng";
 const PIX_KEY = "5531999153132";
+const PIX_KEY_EXIBIR = "(31) 99915-3132";
+// Dados que aparecem no QR Code (o banco mostra o nome cadastrado na chave de qualquer jeito)
+const PIX_CHAVE_QR = "+5531999153132";
+const PIX_NOME = "SAGRADO DE MIM";
+const PIX_CIDADE = "BELO HORIZONTE";
+let PIX_CODIGO_ATUAL = "";
+
+function pixCampo(id, valor) { return id + String(valor.length).padStart(2, "0") + valor; }
+function pixCRC16(str) {
+  let crc = 0xFFFF;
+  for (let i = 0; i < str.length; i++) {
+    crc ^= str.charCodeAt(i) << 8;
+    for (let j = 0; j < 8; j++) crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+  }
+  return crc.toString(16).toUpperCase().padStart(4, "0");
+}
+function pixSemAcento(t) { return t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase(); }
+function gerarPix(valor, txid) {
+  const conta = pixCampo("00", "br.gov.bcb.pix") + pixCampo("01", PIX_CHAVE_QR);
+  let p = pixCampo("00", "01") +
+    pixCampo("26", conta) +
+    pixCampo("52", "0000") +
+    pixCampo("53", "986") +
+    pixCampo("54", valor.toFixed(2)) +
+    pixCampo("58", "BR") +
+    pixCampo("59", pixSemAcento(PIX_NOME).slice(0, 25)) +
+    pixCampo("60", pixSemAcento(PIX_CIDADE).slice(0, 15)) +
+    pixCampo("62", pixCampo("05", (txid || "***").replace(/[^A-Za-z0-9]/g, "").slice(0, 25) || "***"));
+  p += "6304";
+  return p + pixCRC16(p);
+}
+function atualizarPix(total, txid) {
+  const valor = Math.round(total * 100) / 100;
+  PIX_CODIGO_ATUAL = gerarPix(valor, txid);
+  const el = document.getElementById("pix-qr");
+  if (!el) return;
+  if (typeof qrcode === "undefined") { el.style.display = "none"; return; }
+  const qr = qrcode(0, "M");
+  qr.addData(PIX_CODIGO_ATUAL);
+  qr.make();
+  el.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  const svg = el.querySelector("svg"); if (svg) { svg.style.width = "100%"; svg.style.height = "100%"; }
+}
 
 const session = JSON.parse(localStorage.getItem("sagradoSession") || "null");
 
@@ -270,14 +314,7 @@ function render() {
   const orderCode = "SDM-" + Date.now().toString().slice(-6);
 
   content.innerHTML =
-    '<p class="section-title">Pagamento via Pix</p>' +
-    '<div class="pix-box">' +
-      '<p style="margin:0; font-family:Arial,sans-serif; font-size:13px;">Chave Pix</p>' +
-      '<p class="pix-key">' + PIX_KEY + '</p>' +
-      '<p style="margin:0; font-family:Arial,sans-serif; font-size:12px; color:#5f6b52;">Faça o Pix no valor total abaixo e anexe o comprovante</p>' +
-    '</div>' +
-
-    '<p class="section-title" style="margin-top:16px;">Cupom de desconto (opcional)</p>' +
+    '<p class="section-title">Cupom de desconto (opcional)</p>' +
     '<div style="display:flex; gap:8px; margin-bottom:8px;">' +
       '<input type="text" id="cupom-input" placeholder="Ex: BEMVINDA10" style="flex:1; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3);">' +
       '<button type="button" id="aplicar-cupom-btn" style="font-family:Arial,sans-serif; font-weight:700; font-size:13px; background:#556238; color:#fff; border:none; padding:0 16px; border-radius:8px; cursor:pointer;">Aplicar</button>' +
@@ -293,6 +330,16 @@ function render() {
       ? '<p style="background:#fbf1dc; border:1px solid #d9a23a; color:#6b4a14; font-family:Arial,sans-serif; font-size:13px; line-height:1.45; padding:12px 14px; border-radius:10px; margin:0 0 12px;">⏳ Seu pedido tem item(ns) <strong>sob encomenda</strong>: levam <strong>5 dias de produção</strong> antes do envio.</p>'
       : '') +
     '<p class="total-box" id="total-box">Total: R$ '+ (subtotal + frete).toFixed(2).replace('.',',') + '</p>' +
+
+    '<p class="section-title">Pagamento via Pix</p>' +
+    '<div class="pix-box">' +
+      '<p style="margin:0 0 4px; font-size:14px;">Abra o app do seu banco, escolha <strong>Pix › Ler QR Code</strong> e aponte a câmera. O valor já vem preenchido.</p>' +
+      '<div id="pix-qr" style="width:220px; height:220px; margin:12px auto; background:#fff; padding:10px; border-radius:12px; box-sizing:content-box;"></div>' +
+      '<p style="margin:0 0 6px; font-size:13px;">Está pelo celular? Use o <strong>Pix Copia e Cola</strong>:</p>' +
+      '<button type="button" id="pix-copiar" style="font-weight:700; font-size:14px; background:#556238; color:#fff; border:none; padding:12px 22px; border-radius:999px; cursor:pointer;">Copiar código Pix</button>' +
+      '<p id="pix-copiado" style="margin:8px 0 0; font-size:12px; color:#556238; min-height:16px;"></p>' +
+      '<p style="margin:10px 0 0; font-size:12px; color:#5f6b52;">Ou faça pela chave (celular): <strong>' + PIX_KEY_EXIBIR + '</strong>. Depois anexe o comprovante abaixo.</p>' +
+    '</div>' +
 
     '<form id="order-form">' +
       '<p class="section-title">Dados para entrega</p>' +
@@ -328,8 +375,16 @@ function render() {
       total = total * (1 - appliedCoupon.desconto_percentual / 100);
     }
     document.getElementById("total-box").textContent = "Total: R$ " + total.toFixed(2).replace('.', ',');
+    atualizarPix(total, orderCode);
     return total;
   }
+
+  recalcularTotal();
+  document.getElementById("pix-copiar").addEventListener("click", async () => {
+    const msg = document.getElementById("pix-copiado");
+    try { await navigator.clipboard.writeText(PIX_CODIGO_ATUAL); msg.textContent = "Código copiado! Agora cole no app do banco, em Pix Copia e Cola."; }
+    catch (e) { window.prompt("Copie o código abaixo:", PIX_CODIGO_ATUAL); }
+  });
 
   document.getElementById("embrulho-check").addEventListener("change", (e) => {
     document.getElementById("embrulho-mensagem").style.display = e.target.checked ? "block" : "none";
