@@ -19,7 +19,7 @@ input, select, textarea, button { font-family: var(--sans); }
 .sm-topo nav a { text-decoration: none; color: var(--texto); }
 .sm-topo nav a:hover, .sm-icones a:hover { color: var(--verde); }
 .sm-icones { display: flex; gap: 4px; }
-.sm-icones a { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--texto); position: relative; text-decoration: none; }
+.sm-icones a { min-width: 52px; height: 52px; flex-direction: column; gap: 2px; display: flex; align-items: center; justify-content: center; color: var(--texto); position: relative; text-decoration: none; }
 .sm-badge { position: absolute; top: 4px; right: 2px; background: var(--verde); color: #fff; font-size: 11px; min-width: 18px; height: 18px; border-radius: 9px; display: none; align-items: center; justify-content: center; padding: 0 4px; }
 
 /* conteúdo das páginas */
@@ -58,3 +58,5 @@ body > .wrap > h1 { font-size: 52px !important; }
   body > .card h1, .brand h1 { font-size: 34px !important; }
   body > .wrap > h1 { font-size: 40px !important; }
 }
+
+.sm-icones .rotulo, .icones .rotulo { font-size: 11px; letter-spacing: .02em; line-height: 1; }
