@@ -195,6 +195,8 @@
   <p class="contato"><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp (31) 99915-3132</a><span>·</span><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></p>
 </footer>
 <script src="selo-cruelty.js" charset="utf-8"></script>
+<script src="aromas-info.js" charset="utf-8"></script>
+<script src="etiqueta-perfume.js" charset="utf-8"></script>
 <script>
 (function () {
   var n = JSON.parse(localStorage.getItem("sagradoCart") || "[]").length;
@@ -701,24 +703,14 @@ function renderCapQuestion() {
 
 function renderLabelPreview(interactive) {
   const placedHtml = placedIcons.map((p, idx) =>
-    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:26px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
+    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:24px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
   ).join('');
-
-  // Tamanho real da etiqueta: 65mm x 34mm (formato paisagem)
-  return '<div id="label-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:9px 10px; box-sizing:border-box; width:325px; height:170px; display:flex; align-items:center; justify-content:center; gap:8px; margin:0 auto 20px; ' + (interactive ? 'cursor:crosshair;' : '') + '">' +
-    '<div style="position:relative; width:48px; height:150px; flex-shrink:0; pointer-events:none;">' +
-      '<div style="position:absolute; top:50%; left:50%; width:150px; height:48px; transform:translate(-50%,-50%) rotate(-90deg); font-family:Arial,sans-serif; font-weight:700; font-size:7px; line-height:1.35; color:#000000; display:flex; align-items:center;">' +
-        '<span><strong>PERFUME</strong> — Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético. NÃO INGERIR. EVITAR CONTATO COM OS OLHOS. USO EXTERNO. <strong>PRODUTO ARTESANAL</strong> · Válido por 1 ano</span>' +
-      '</div>' +
-    '</div>' +
-    '<div style="flex:1; text-align:center; pointer-events:none;">' +
-    '<p style="font-family:Playfair Display,serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000000;">SAGRADO DE MIM</p>' +
-    '<p style="font-family:Playfair Display,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
-    '<p style="font-family:' + selectedFont.family + '; font-style:' + selectedFont.style + '; font-weight:' + selectedFont.weight + '; font-size:19px; margin:0; color:#000000;">' + (perfumeName || "Nome do perfume") + '</p>' +
-    '</div>' +
-    '<div style="position:absolute; right:6px; bottom:6px; pointer-events:none;">' + seloCrueltyFree('30px', '#1a1a1a') + '</div>' +
-    placedHtml +
-  '</div>';
+  // Família dominante do quiz -> aroma e notas da etiqueta
+  const ordem = Object.entries(scores || {}).sort((a, b) => b[1] - a[1]);
+  const familia = ordem.length && profiles[ordem[0][0]] ? profiles[ordem[0][0]].nome : "";
+  const fam = familia ? notasDaFamilia(familia) : { aroma: "", notas: {} };
+  // Tamanho real da etiqueta: 70mm x 50mm
+  return etiquetaPerfumeHtml({ canvasId: "label-canvas", nome: perfumeName, fonte: selectedFont, aroma: fam.aroma, notas: fam.notas, iconesHtml: placedHtml, interactive: interactive });
 }
 
 function renderLabelEditor() {
