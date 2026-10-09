@@ -8,7 +8,7 @@ const ETIQUETA_SELO_FUNDO = "#DCDDCB";   // sage bem claro
 
 const ETIQUETAS_CORPO = {
   "sabonete-fatia-125": { tipo: "SABONETE ARTESANAL", modo: "Molhe o sabonete e a pele, faça espuma, massageie e enxágue bem.", ingredientes: "", meses: 12 },
-  "sabonete-gel-250": { tipo: "SABONETE EM GEL", modo: "Aplique uma pequena quantidade na pele molhada, faça espuma e enxágue.", ingredientes: "", meses: 12 },
+  "sabonete-gel-250": { tipo: "SABONETE LÍQUIDO", modo: "Aplique uma pequena quantidade na pele molhada, faça espuma e enxágue.", ingredientes: "", meses: 12 },
   "espuma-facial-70": { tipo: "ESPUMA DE LIMPEZA FACIAL", modo: "Aplique no rosto úmido, massageie suavemente evitando a área dos olhos e enxágue.", ingredientes: "", meses: 12 },
   "hidratante-250": { tipo: "HIDRATANTE CORPORAL", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "", meses: 12 },
   "hidratante-moldura-300": { tipo: "HIDRATANTE MOLDURA", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "", meses: 12 },

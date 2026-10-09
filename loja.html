@@ -208,7 +208,7 @@ function renderFiltros() {
 function renderGrid() {
   const aromasAntes = {};
   document.querySelectorAll("select.aroma").forEach(s => { if (s.value) aromasAntes[s.dataset.id] = s.value; });
-  const lista = PRODUTOS.filter(p => p.preco != null && (categoriaAtiva === "Todos" || p.cat === categoriaAtiva));
+  const lista = PRODUTOS.filter(p => p.preco != null && !p.oculto && (categoriaAtiva === "Todos" || p.cat === categoriaAtiva));
   const grid = document.getElementById("grid");
   grid.innerHTML = lista.map(p => {
     const foto = p.img
