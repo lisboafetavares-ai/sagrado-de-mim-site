@@ -97,6 +97,7 @@
 <script src="selo-cruelty.js" charset="utf-8"></script>
 <script src="aromas-info.js" charset="utf-8"></script>
 <script src="etiqueta-perfume.js" charset="utf-8"></script>
+<script src="elementos.js" charset="utf-8"></script>
 <script src="etiquetas.js" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -506,17 +507,7 @@ async function renderEstoque() {
 }
 
 // ---------- Editor de etiqueta pro ateliê ----------
-const atelierIconOptions = [
-  {id:"coracao", char:"♥"},
-  {id:"coracao-vazio", char:"♡"},
-  {id:"estrela", char:"★"},
-  {id:"sol", char:"☼"},
-  {id:"lua", char:"☾"},
-  {id:"flor", char:"❀"},
-  {id:"flor-fina", char:"✽"},
-  {id:"infinito", char:"∞"},
-  {id:"estrela-clara", char:"✩"}
-];
+const atelierIconOptions = ELEMENTOS_ETIQUETA.map(e => ({ id: e.id, char: e.svg }));
 let atelierPerfumeName = "";
 let atelierPerfumeEssencia = "";
 const atelierFontOptions = [

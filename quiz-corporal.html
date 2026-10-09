@@ -197,6 +197,7 @@
 <script src="selo-cruelty.js" charset="utf-8"></script>
 <script src="aromas-info.js" charset="utf-8"></script>
 <script src="etiqueta-perfume.js" charset="utf-8"></script>
+<script src="elementos.js" charset="utf-8"></script>
 <script>
 (function () {
   var n = JSON.parse(localStorage.getItem("sagradoCart") || "[]").length;
@@ -671,17 +672,7 @@ const fontOptions = [
 let selectedFont = fontOptions[0];
 let placedIcons = []; // {id, char, xPct, yPct}
 let selectedPaletteId = null;
-const iconOptions = [
-  {id:"coracao", char:"♥"},
-  {id:"coracao-vazio", char:"♡"},
-  {id:"estrela", char:"★"},
-  {id:"sol", char:"☼"},
-  {id:"lua", char:"☾"},
-  {id:"flor", char:"❀"},
-  {id:"flor-fina", char:"✽"},
-  {id:"infinito", char:"∞"},
-  {id:"estrela-clara", char:"✩"}
-];
+const iconOptions = ELEMENTOS_ETIQUETA.map(e => ({ id: e.id, char: e.svg }));
 
 let referenceAnswer = "";
 

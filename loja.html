@@ -222,6 +222,7 @@
 <script src="produtos.js"></script>
 <script src="aromas-info.js"></script>
 <script src="selo-cruelty.js"></script>
+<script src="elementos.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
@@ -482,7 +483,7 @@ const FONTES_ETQ = [
   {id:"elegante", label:"Elegante", family:"'Playfair Display',serif", style:"italic", weight:"400"},
   {id:"moderno", label:"Moderno", family:"'Montserrat',sans-serif", style:"normal", weight:"700"}
 ];
-const ICONES_ETQ = ["♥","♡","★","☼","☾","❀","✽","∞","✩"];
+const ICONES_ETQ = ELEMENTOS_ETIQUETA.map(e => e.svg);
 const PERSO = {}; // id do produto -> { img, nome, fonte }
 let edit = null;  // estado do editor aberto
 
@@ -543,7 +544,7 @@ function desenharPerso() {
     if (e.target.classList.contains("etq-ic")) { edit.icones.splice(+e.target.dataset.i, 1); desenharPerso(); return; }
     if (!edit.icone) return;
     const r = cv.getBoundingClientRect();
-    edit.icones.push({ c: edit.icone, x: (e.clientX - r.left) / r.width * 100, y: (e.clientY - r.top) / r.height * 100 });
+    edit.icones.push({ c: ICONES_ETQ[+edit.icone], x: (e.clientX - r.left) / r.width * 100, y: (e.clientY - r.top) / r.height * 100 });
     desenharPerso();
   });
   document.querySelectorAll("#perso-fontes button").forEach(b => b.classList.toggle("sel", b.dataset.f === edit.fonte));
@@ -567,8 +568,8 @@ function fecharPerso() { document.getElementById("perso-modal").classList.remove
 
 document.getElementById("perso-fontes").innerHTML = FONTES_ETQ.map(f =>
   '<button type="button" data-f="' + f.id + '" style="font-family:' + f.family + '; font-style:' + f.style + '; font-weight:' + f.weight + '; font-size:16px;">' + f.label + '</button>').join("");
-document.getElementById("perso-icones").innerHTML = ICONES_ETQ.map(c =>
-  '<button type="button" data-c="' + c + '" style="font-size:24px; line-height:1; color:#556238; min-width:48px;" aria-label="Elemento ' + c + '">' + c + '</button>').join("");
+document.getElementById("perso-icones").innerHTML = ICONES_ETQ.map((c, i) =>
+  '<button type="button" data-c="' + i + '" style="font-size:26px; line-height:1; color:#556238; min-width:48px; min-height:48px;" aria-label="Elemento ' + (i + 1) + '">' + c + '</button>').join("");
 document.querySelectorAll("#perso-fontes button").forEach(b => b.addEventListener("click", () => { edit.fonte = b.dataset.f; desenharPerso(); }));
 document.querySelectorAll("#perso-icones button").forEach(b => b.addEventListener("click", () => { edit.icone = edit.icone === b.dataset.c ? null : b.dataset.c; desenharPerso(); }));
 document.getElementById("perso-nome").addEventListener("input", e => { edit.nome = e.target.value; desenharPerso(); });
