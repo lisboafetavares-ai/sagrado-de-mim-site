@@ -87,6 +87,7 @@ function etqHtmlCorpo(e, logoUrl) {
       '<div class="rodape"><span class="pao-box">' + etqIconePAO(e.cfg.meses || 12) + '<span class="vol">' + etqEsc(e.p.tamanho) + '</span></span>' +
       '<span style="text-align:right">sagradodemim.com.br<br>(31) 99915-3132</span></div>' +
     '</div>' +
+    '<div style="position:absolute; left:2.6mm; bottom:2.6mm;">' + seloCrueltyFree('8mm') + '</div>' +
   '</div>';
 }
 
@@ -106,6 +107,7 @@ function etqHtmlCasa(e, logoUrl) {
       '<div class="produto">' + etqEsc(e.cfg.nome) + '</div>' +
       '<div class="vol">' + etqEsc(e.cfg.volume) + '</div>' +
     '</div>' +
+    '<div style="position:absolute; right:3.4mm; bottom:3.4mm;">' + seloCrueltyFree('9mm', '#1a1a1a') + '</div>' +
   '</div>';
 }
 
@@ -142,7 +144,7 @@ body { margin: 0; font-family: Jost, 'Helvetica Neue', Arial, sans-serif; color:
 .corpo .vol { font-size: 9px; font-weight: 500; }
 .corpo .pao-box { display: flex; align-items: flex-end; gap: 7px; }
 .corpo .pao { width: 8.5mm; height: auto; display: block; }
-.casa { width: 99mm; height: 67.7mm; background: #fff; color: #1a1a1a; display: flex; align-items: center; gap: 2.4mm; padding: 3.2mm 3.6mm; }
+.casa { position: relative; width: 99mm; height: 67.7mm; background: #fff; color: #1a1a1a; display: flex; align-items: center; gap: 2.4mm; padding: 3.2mm 3.6mm; }
 .casa .ing { position: relative; width: 8.8mm; height: 61.2mm; flex-shrink: 0; }
 .casa .ing-txt { position: absolute; top: 50%; left: 50%; width: 59.2mm; height: 8.8mm; transform: translate(-50%,-50%) rotate(-90deg); font-family: Arial, sans-serif; font-weight: 700; font-size: 6.8px; line-height: 1.4; display: flex; align-items: center; }
 .casa .meio { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: Georgia, serif; }

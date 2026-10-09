@@ -194,6 +194,7 @@
   <nav aria-label="Rodapé"><a href="loja.html">Loja</a><a href="quiz-corporal.html">Perfume personalizado</a><a href="quiz-casa.html">Aroma para casa</a><a href="meus-pedidos.html">Meus pedidos</a></nav>
   <p class="contato"><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp (31) 99915-3132</a><span>·</span><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></p>
 </footer>
+<script src="selo-cruelty.js" charset="utf-8"></script>
 <script>
 (function () {
   var n = JSON.parse(localStorage.getItem("sagradoCart") || "[]").length;
@@ -715,6 +716,7 @@ function renderLabelPreview(interactive) {
     '<p style="font-family:Playfair Display,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
     '<p style="font-family:' + selectedFont.family + '; font-style:' + selectedFont.style + '; font-weight:' + selectedFont.weight + '; font-size:19px; margin:0; color:#000000;">' + (perfumeName || "Nome do perfume") + '</p>' +
     '</div>' +
+    '<div style="position:absolute; right:6px; bottom:6px; pointer-events:none;">' + seloCrueltyFree('30px', '#1a1a1a') + '</div>' +
     placedHtml +
   '</div>';
 }

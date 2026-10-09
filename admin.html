@@ -94,6 +94,7 @@
   </div>
 
 <script src="produtos.js"></script>
+<script src="selo-cruelty.js" charset="utf-8"></script>
 <script src="etiquetas.js" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -556,6 +557,7 @@ function atelierRenderAromaLabel() {
       '<p style="font-size:24px; margin:0 0 8px; letter-spacing:1px; text-align:center;">' + produtoNome + '</p>' +
       '<p style="font-family:Arial,sans-serif; font-size:16px; text-align:center; margin:0;">' + volume + '</p>' +
     '</div>' +
+    '<div style="position:absolute; right:16px; bottom:16px;">' + seloCrueltyFree('45px', '#1a1a1a') + '</div>' +
   '</div>';
 }
 
@@ -575,6 +577,7 @@ function atelierRenderLabel(interactive) {
     '<p style="font-family:Playfair Display,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
     '<p style="font-family:' + atelierSelectedFont.family + '; font-style:' + atelierSelectedFont.style + '; font-weight:' + atelierSelectedFont.weight + '; font-size:19px; margin:0; color:#000000;">' + (atelierPerfumeName || "Nome do perfume") + '</p>' +
     '</div>' +
+    '<div style="position:absolute; right:6px; bottom:6px; pointer-events:none;">' + seloCrueltyFree('30px', '#1a1a1a') + '</div>' +
     placedHtml +
   '</div>';
 }
