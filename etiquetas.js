@@ -11,7 +11,7 @@ const ETIQUETAS_CORPO = {
   "sabonete-gel-250": { tipo: "SABONETE LÍQUIDO", modo: "Aplique uma pequena quantidade na pele molhada, faça espuma e enxágue.", ingredientes: "", meses: 12 },
   "espuma-facial-70": { tipo: "ESPUMA DE LIMPEZA FACIAL", modo: "Aplique no rosto úmido, massageie suavemente evitando a área dos olhos e enxágue.", ingredientes: "", meses: 12 },
   "hidratante-250": { tipo: "HIDRATANTE CORPORAL", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "", meses: 12 },
-  "hidratante-moldura-300": { tipo: "HIDRATANTE MOLDURA", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "", meses: 12 },
+  "hidratante-moldura-300": { tipo: "HIDRATANTE CORPORAL", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "", meses: 12 },
   "manteiga-200": { tipo: "MANTEIGA CORPORAL", modo: "Aplique pequenas quantidades na pele, massageando até absorver. Ideal após o banho.", ingredientes: "", meses: 12 },
   "creme-pes-100": { tipo: "CREME PARA OS PÉS", modo: "Aplique nos pés limpos e secos, massageando principalmente as áreas ressecadas.", ingredientes: "", meses: 12 }
 };
