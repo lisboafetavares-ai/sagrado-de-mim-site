@@ -88,6 +88,7 @@ function etqHtmlCorpo(e, logoUrl) {
       '<span style="text-align:right">sagradodemim.com.br<br>(31) 99915-3132</span></div>' +
     '</div>' +
     '<div style="position:absolute; left:2.6mm; bottom:2.6mm;">' + seloCrueltyFree('8mm') + '</div>' +
+    '<div style="position:absolute; left:2.6mm; bottom:11.4mm;">' + seloFeitoAMao('8mm') + '</div>' +
   '</div>';
 }
 
@@ -108,6 +109,7 @@ function etqHtmlCasa(e, logoUrl) {
       '<div class="vol">' + etqEsc(e.cfg.volume) + '</div>' +
     '</div>' +
     '<div style="position:absolute; right:3.4mm; bottom:3.4mm;">' + seloCrueltyFree('9mm', '#1a1a1a') + '</div>' +
+    '<div style="position:absolute; right:13.6mm; bottom:3.4mm;">' + seloFeitoAMao('9mm', '#1a1a1a') + '</div>' +
   '</div>';
 }
 

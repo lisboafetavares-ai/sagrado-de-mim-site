@@ -53,7 +53,7 @@ function etiquetaPerfumeHtml(o) {
       '</div>' +
       '<div style="grid-column:1 / span 3; grid-row:2 / span 2; border-right:' + L + '; border-bottom:' + L + '; padding:6px 10px; font-size:6.6px; letter-spacing:0.1em; line-height:1.65; display:flex; flex-direction:column; justify-content:center; text-transform:uppercase;">' + notasHtml + '</div>' +
       '<div style="grid-column:4 / span 3; border-bottom:' + L + '; ' + celula + ' font-size:8.5px; letter-spacing:0.22em;">PERFUME CORPORAL</div>' +
-      '<div style="grid-column:4; border-right:' + L + '; border-bottom:' + L + '; ' + celula + ' font-size:6.5px; letter-spacing:0.12em; line-height:1.3;">FEITO<br>À MÃO</div>' +
+      '<div style="grid-column:4; border-right:' + L + '; border-bottom:' + L + '; ' + celula + '">' + (typeof seloFeitoAMao === "function" ? seloFeitoAMao('26px') : 'FEITO<br>À MÃO') + '</div>' +
       '<div style="grid-column:5; border-right:' + L + '; border-bottom:' + L + '; ' + celula + '">' + epIconePAO(12) + '</div>' +
       '<div style="grid-column:6; border-bottom:' + L + '; ' + celula + '">' + (typeof seloCrueltyFree === "function" ? seloCrueltyFree('26px') : '') + '</div>' +
       '<div style="grid-column:1 / span 3; border-right:' + L + '; ' + celula + ' font-size:8px; letter-spacing:0.2em; text-transform:uppercase; padding:0 6px;">' + epEsc(o.aroma || "") + '</div>' +
