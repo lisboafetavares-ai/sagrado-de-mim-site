@@ -35,3 +35,49 @@ function htmlInfoAroma(nome) {
   return '<div class="aroma-info">' + (i.desc ? '<p>' + i.desc + '</p>' : '') +
     linha("Saída", i.saida) + linha("Corpo", i.corpo) + linha("Fundo", i.fundo) + '</div>';
 }
+
+// Descrição, modo de uso e ingredientes de cada produto (aparecem nas abas da janela do produto).
+// Ingredientes vazios aparecem como "em breve".
+const PRODUTOS_INFO = {
+  "difusor-250": { desc: "Perfuma o ambiente de forma contínua e delicada, sem precisar de chama ou tomada. Feito à mão, em vidro, com varetas que espalham o aroma pela casa.",
+    modo: "Retire a tampa, coloque as varetas no frasco e espere algumas horas para que absorvam o líquido. Vire as varetas a cada 2 ou 3 dias para renovar a intensidade. Mantenha longe do sol e de fontes de calor.",
+    ingredientes: "Óleo Mineral, Fragrância, Álcool, Corante." },
+  "refil-500": { desc: "Refil para o seu difusor de varetas, pra continuar com o mesmo aroma na sua casa.",
+    modo: "Complete o frasco do difusor quando o líquido estiver no fim. Se quiser, troque as varetas para renovar a difusão.",
+    ingredientes: "Óleo Mineral, Fragrância, Álcool, Corante." },
+  "refil-1l": { desc: "Refil grande para o seu difusor de varetas, pra continuar com o mesmo aroma por muito mais tempo.",
+    modo: "Complete o frasco do difusor quando o líquido estiver no fim. Se quiser, troque as varetas para renovar a difusão.",
+    ingredientes: "Óleo Mineral, Fragrância, Álcool, Corante." },
+  "home-spray-250": { desc: "Um toque de perfume imediato nos ambientes, tecidos e cortinas.",
+    modo: "Agite antes de usar. Borrife no ar, a cerca de 1 metro de distância, em direção ao ambiente, cortinas ou almofadas. Evite borrifar em tecidos delicados ou superfícies envernizadas.",
+    ingredientes: "Água, Álcool, Fragrância, Glicerina." },
+  "home-spray-500": { desc: "Um toque de perfume imediato nos ambientes, tecidos e cortinas, no tamanho econômico.",
+    modo: "Agite antes de usar. Borrife no ar, a cerca de 1 metro de distância, em direção ao ambiente, cortinas ou almofadas. Evite borrifar em tecidos delicados ou superfícies envernizadas.",
+    ingredientes: "Água, Álcool, Fragrância, Glicerina." },
+  "agua-lencol": { desc: "Perfuma lençóis, fronhas e roupas de cama pra um sono mais aconchegante.",
+    modo: "Borrife sobre a roupa de cama a cerca de 30 cm de distância, antes de deitar ou ao passar. Faça um teste antes em tecidos delicados." },
+  "neutralizador-70": { desc: "Neutraliza odores do banheiro e deixa um perfume agradável no lugar.",
+    modo: "Antes de usar o vaso sanitário, borrife de 3 a 5 vezes direto na água. Dê a descarga normalmente depois." },
+  "passa-facil": { desc: "Facilita na hora de passar a roupa e deixa as peças perfumadas.",
+    modo: "Borrife sobre a roupa antes de passar, a cerca de 20 cm de distância, e passe normalmente. Faça um teste antes em tecidos delicados." },
+  "vela-p": { desc: "Vela aromática artesanal na latinha, pra deixar a casa perfumada e aconchegante.",
+    modo: "Na primeira vez, deixe acesa até a cera derreter por toda a superfície. Apare o pavio antes de acender de novo. Nunca deixe a vela acesa sem supervisão e mantenha longe de crianças, animais e objetos inflamáveis." },
+  "vela-g": { desc: "Vela aromática artesanal na latinha grande, pra deixar a casa perfumada e aconchegante por mais tempo.",
+    modo: "Na primeira vez, deixe acesa até a cera derreter por toda a superfície. Apare o pavio antes de acender de novo. Nunca deixe a vela acesa sem supervisão e mantenha longe de crianças, animais e objetos inflamáveis." },
+  "body-splash-250": { desc: "Perfume leve para o corpo, pra usar a qualquer hora do dia.",
+    modo: "Borrife sobre a pele limpa, nos pulsos, pescoço e colo. Pode reaplicar ao longo do dia." },
+  "body-shimmer-225": { desc: "Perfuma e deixa um brilho suave na pele.",
+    modo: "Agite antes de usar e borrife sobre a pele limpa e seca, nos braços, colo e ombros." },
+  "hidratante-250": { desc: "Hidratação diária com toque leve e o perfume do aroma que você escolher.",
+    modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver." },
+  "hidratante-moldura-300": { desc: "Hidratação diária com toque leve e o perfume do aroma que você escolher.",
+    modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver." },
+  "sabonete-fatia-125": { desc: "Sabonete artesanal em fatia, feito à mão em pequenas quantidades.",
+    modo: "Molhe o sabonete e a pele, faça espuma, massageie e enxágue bem. Guarde em saboneteira seca entre os usos." },
+  "sabonete-gel-250": { desc: "Sabonete líquido artesanal, perfumado e delicado com a pele.",
+    modo: "Aplique uma pequena quantidade na pele molhada, faça espuma e enxágue." },
+  "espuma-facial-70": { desc: "Espuma de limpeza facial suave, para o dia a dia.",
+    modo: "Aplique no rosto úmido, massageie suavemente evitando a área dos olhos e enxágue." },
+  "caixa-misteriosa": { desc: "Uma seleção surpresa de produtos Sagrado de Mim, montada à mão. Edição limitada: você só descobre o que tem dentro quando abrir." }
+};
+function infoProduto(id) { return (typeof PRODUTOS_INFO !== "undefined" && PRODUTOS_INFO[id]) || {}; }
