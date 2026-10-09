@@ -82,6 +82,9 @@
   #perso-salvar { background:#556238; color:#fff; border:none; }
   #perso-cancelar { background:transparent; border:1px solid #332f28; color:#332f28; }
   .perso-preview-wrap { overflow-x:auto; padding:4px 0 8px; }
+  .aroma-info { font-family:Jost,Arial,sans-serif; font-size:12px; line-height:1.45; color:#4a463e; background:#f3eee4; border-radius:10px; padding:8px 10px; margin:-4px 0 10px; }
+  .aroma-info p { margin:0 0 4px; font-style:italic; }
+  .aroma-info b { font-weight:500; color:#556238; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -151,6 +154,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="produtos.js"></script>
+<script src="aromas-info.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
@@ -222,7 +226,7 @@ function renderGrid() {
           const q = qtdEstoque(p.id, a);
           const rotulo = q === null ? a : a + (q > 0 ? " · pronta entrega" : " · sob encomenda");
           return '<option value="' + a + '">' + rotulo + '</option>';
-        }).join('') + '</select>';
+        }).join('') + '</select><div class="aroma-info-box" data-info-id="' + p.id + '"></div>';
       status = ESTOQUE === null ? "" : "Escolha o aroma para ver a disponibilidade";
     } else if (p.limitado) {
       const q = qtdEstoque(p.id, "");
@@ -257,6 +261,8 @@ function renderGrid() {
   grid.querySelectorAll("select.aroma").forEach(sel => {
     sel.addEventListener("change", () => {
       const id = sel.dataset.id;
+      const box = document.querySelector('[data-info-id="' + id + '"]');
+      if (box) box.innerHTML = sel.value && typeof htmlInfoAroma === "function" ? htmlInfoAroma(sel.value) : "";
       const el = document.querySelector('[data-status-id="' + id + '"]');
       if (!el) return;
       el.innerHTML = sel.value ? statusHtml(qtdEstoque(id, sel.value)) : (ESTOQUE === null ? "" : "Escolha o aroma para ver a disponibilidade");
