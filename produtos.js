@@ -6,7 +6,7 @@
 // O estoque NÃO fica aqui: fica na tabela "stock" do Supabase.
 
 // Aromas de Home Spray e Difusor (lista geral)
-const AROMAS = ["Bamboo Trouss", "Nerolia", "Vetiver", "Incenso Spicy", "Lavanda", "Verbena", "Herbeus", "Meson Vert", "Bobo & Jabuticaba", "Alecrim"];
+const AROMAS = ["Bamboo Trouss", "Nerolia Vetiver", "Incenso Spicy", "Lavanda", "Verbena", "Herbeus", "Maison Vert", "Bobo & Jabuticaba", "Alecrim"];
 
 const AROMAS_HIDRATANTE = ["Aveia e Mel", "Chá Branco", "Mademoiselle", "Rosa Chá"];
 const AROMAS_SABONETE = ["Alecrim Blanc", "Rosa Mosqueta", "Algas", "Chá Verde"];
