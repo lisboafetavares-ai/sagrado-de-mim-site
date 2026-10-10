@@ -11,13 +11,13 @@
   body {
     margin: 0;
     padding: 40px 20px;
-    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    background: radial-gradient(circle at 30% 20%, #F7EFDF, #D8C8A9);
     font-family: Georgia, 'Liberation Serif', serif;
     color: #332f28;
     min-height: 100vh;
   }
   .card {
-    background: #fbf7f0;
+    background: #F7EFDF;
     border: 1px solid rgba(61,58,52,0.25);
     border-radius: 18px;
     max-width: 560px;
@@ -40,16 +40,16 @@
   .row { display: flex; gap: 10px; }
   .row > div { flex: 1; }
   .pix-box {
-    background: #eef1e6; border-radius: 12px; padding: 16px 18px; font-family: Jost, Arial, sans-serif;
+    background: #D8C8A9; border-radius: 12px; padding: 16px 18px; font-family: Jost, Arial, sans-serif;
     text-align: center; margin-bottom: 6px;
   }
-  .pix-key { font-size: 18px; font-weight: 700; color: #556238; margin: 6px 0; word-break: break-all; }
+  .pix-key { font-size: 18px; font-weight: 700; color: #667449; margin: 6px 0; word-break: break-all; }
   .total-box {
     font-family: Jost, Arial, sans-serif; text-align: center; font-size: 18px; font-weight: 700; margin: 14px 0 20px;
   }
   .submit-btn {
     width: 100%; font-family: Jost, Arial, sans-serif; font-weight: 700; font-size: 15px;
-    background: #556238; color: #fff; padding: 14px; border-radius: 10px; border: none; margin-top: 22px; cursor: pointer;
+    background: #667449; color: #fff; padding: 14px; border-radius: 10px; border: none; margin-top: 22px; cursor: pointer;
   }
   .submit-btn:disabled { opacity: 0.6; cursor: default; }
   .note {
@@ -57,9 +57,9 @@
   }
   .empty { font-family: Jost, Arial, sans-serif; text-align: center; color: #8a8676; padding: 30px 0; }
   .success { font-family: Jost, Arial, sans-serif; text-align: center; padding: 20px 10px; }
-  .success h2 { font-family: Georgia, serif; font-size: 20px; color: #556238; margin-bottom: 10px; }
+  .success h2 { font-family: Georgia, serif; font-size: 20px; color: #667449; margin-bottom: 10px; }
   .success .code-box {
-    background: #eef1e6; border-radius: 10px; padding: 14px; margin: 16px 0; font-size: 18px; font-weight: 700; color: #556238;
+    background: #D8C8A9; border-radius: 10px; padding: 14px; margin: 16px 0; font-size: 18px; font-weight: 700; color: #667449;
   }
   .error-msg { font-family: Jost, Arial, sans-serif; color: #a3455a; font-size: 13px; text-align: center; margin-top: 10px; }
 </style>
@@ -318,7 +318,7 @@ function render() {
     '<p class="section-title">Cupom de desconto (opcional)</p>' +
     '<div style="display:flex; gap:8px; margin-bottom:8px;">' +
       '<input type="text" id="cupom-input" placeholder="Ex: BEMVINDA10" style="flex:1; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3);">' +
-      '<button type="button" id="aplicar-cupom-btn" style="font-family:Arial,sans-serif; font-weight:700; font-size:13px; background:#556238; color:#fff; border:none; padding:0 16px; border-radius:8px; cursor:pointer;">Aplicar</button>' +
+      '<button type="button" id="aplicar-cupom-btn" style="font-family:Arial,sans-serif; font-weight:700; font-size:13px; background:#667449; color:#fff; border:none; padding:0 16px; border-radius:8px; cursor:pointer;">Aplicar</button>' +
     '</div>' +
     '<p id="cupom-msg" style="font-family:Arial,sans-serif; font-size:12px; margin:0 0 10px;"></p>' +
 
@@ -328,7 +328,7 @@ function render() {
     '<textarea id="embrulho-mensagem" placeholder="Mensagem pro presente (opcional)" rows="2" style="display:none; width:100%; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:14px; resize:vertical;"></textarea>' +
 
     (temEncomenda
-      ? '<p style="background:#fbf1dc; border:1px solid #d9a23a; color:#6b4a14; font-family:Arial,sans-serif; font-size:13px; line-height:1.45; padding:12px 14px; border-radius:10px; margin:0 0 12px;">⏳ Seu pedido tem item(ns) <strong>sob encomenda</strong>: levam <strong>5 dias de produção</strong> antes do envio.</p>'
+      ? '<p style="background:#F7EFDF; border:1px solid #8F9A6C; color:#6b4a14; font-family:Arial,sans-serif; font-size:13px; line-height:1.45; padding:12px 14px; border-radius:10px; margin:0 0 12px;">⏳ Seu pedido tem item(ns) <strong>sob encomenda</strong>: levam <strong>5 dias de produção</strong> antes do envio.</p>'
       : '') +
     '<p class="total-box" id="total-box">Total: R$ '+ (subtotal + frete).toFixed(2).replace('.',',') + '</p>' +
 
@@ -337,9 +337,9 @@ function render() {
       '<p style="margin:0 0 4px; font-size:14px;">Abra o app do seu banco, escolha <strong>Pix › Ler QR Code</strong> e aponte a câmera. O valor já vem preenchido.</p>' +
       '<div id="pix-qr" style="width:220px; height:220px; margin:12px auto; background:#fff; padding:10px; border-radius:12px; box-sizing:content-box;"></div>' +
       '<p style="margin:0 0 6px; font-size:13px;">Está pelo celular? Use o <strong>Pix Copia e Cola</strong>:</p>' +
-      '<button type="button" id="pix-copiar" style="font-weight:700; font-size:14px; background:#556238; color:#fff; border:none; padding:12px 22px; border-radius:999px; cursor:pointer;">Copiar código Pix</button>' +
-      '<p id="pix-copiado" style="margin:8px 0 0; font-size:12px; color:#556238; min-height:16px;"></p>' +
-      '<p style="margin:10px 0 0; font-size:12px; color:#5f6b52;">Ou faça pela chave (celular): <strong>' + PIX_KEY_EXIBIR + '</strong>. Depois anexe o comprovante abaixo.</p>' +
+      '<button type="button" id="pix-copiar" style="font-weight:700; font-size:14px; background:#667449; color:#fff; border:none; padding:12px 22px; border-radius:999px; cursor:pointer;">Copiar código Pix</button>' +
+      '<p id="pix-copiado" style="margin:8px 0 0; font-size:12px; color:#667449; min-height:16px;"></p>' +
+      '<p style="margin:10px 0 0; font-size:12px; color:#667449;">Ou faça pela chave (celular): <strong>' + PIX_KEY_EXIBIR + '</strong>. Depois anexe o comprovante abaixo.</p>' +
     '</div>' +
 
     '<form id="order-form">' +
@@ -401,7 +401,7 @@ function render() {
       const rows = await res.json();
       if (rows[0]) {
         appliedCoupon = rows[0];
-        msg.style.color = "#556238";
+        msg.style.color = "#667449";
         msg.textContent = "Cupom aplicado! " + rows[0].desconto_percentual + "% de desconto.";
       } else {
         appliedCoupon = null;
@@ -469,7 +469,7 @@ function render() {
           '<p>Guarde este código para acompanhar seu pedido:</p>' +
           '<div class="code-box">' + orderCode + '</div>' +
           '<p>Assim que confirmarmos o pagamento, vamos começar a preparar seu perfume com todo carinho.</p>' +
-          (avisoEncomenda ? '<p style="background:#fbf1dc; border:1px solid #d9a23a; color:#6b4a14; padding:10px 12px; border-radius:10px; font-size:13px;">⏳ Seu pedido tem item(ns) sob encomenda, com 5 dias de produção antes do envio.</p>' : '') +
+          (avisoEncomenda ? '<p style="background:#F7EFDF; border:1px solid #8F9A6C; color:#6b4a14; padding:10px 12px; border-radius:10px; font-size:13px;">⏳ Seu pedido tem item(ns) sob encomenda, com 5 dias de produção antes do envio.</p>' : '') +
           '<a href="meus-pedidos.html" class="submit-btn" style="display:block; text-decoration:none; margin-top:16px;">Acompanhar meu pedido</a>' +
           '</div>';
       } else {

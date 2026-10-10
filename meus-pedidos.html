@@ -11,13 +11,13 @@
   body {
     margin: 0;
     padding: 40px 20px;
-    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    background: radial-gradient(circle at 30% 20%, #F7EFDF, #D8C8A9);
     font-family: Georgia, 'Liberation Serif', serif;
     color: #332f28;
     min-height: 100vh;
   }
   .card {
-    background: #fbf7f0;
+    background: #F7EFDF;
     border: 1px solid rgba(61,58,52,0.25);
     border-radius: 18px;
     max-width: 560px;
@@ -47,7 +47,7 @@
     width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
     font-size: 13px; flex-shrink: 0;
   }
-  .timeline-dot.done { background: #556238; color: #fff; }
+  .timeline-dot.done { background: #667449; color: #fff; }
   .timeline-dot.pending { background: #fff; border: 2px solid rgba(61,58,52,0.25); color: transparent; }
   .timeline-line { width: 2px; flex: 1; background: rgba(61,58,52,0.2); min-height: 24px; }
   .timeline-content { padding-bottom: 18px; }
@@ -136,7 +136,7 @@ function renderTimeline(status) {
     if (stageLabel === "Postado" && idx === currentIndex) {
       const transp = status.transportadora ? '<p class="timeline-detail"><strong>' + status.transportadora + '</strong></p>' : '';
       const rastreio = status.rastreio ? '<p class="timeline-detail">Código: <strong>' + status.rastreio + '</strong></p>' : '';
-      const linkRastreio = status.rastreio ? '<a href="https://rastreamento.correios.com.br/app/index.php?objetos=' + encodeURIComponent(status.rastreio) + '" target="_blank" style="display:inline-block; margin-top:6px; font-family:Arial,sans-serif; font-size:12px; font-weight:700; color:#556238; text-decoration:none;">Rastrear objeto →</a>' : '';
+      const linkRastreio = status.rastreio ? '<a href="https://rastreamento.correios.com.br/app/index.php?objetos=' + encodeURIComponent(status.rastreio) + '" target="_blank" style="display:inline-block; margin-top:6px; font-family:Arial,sans-serif; font-size:12px; font-weight:700; color:#667449; text-decoration:none;">Rastrear objeto →</a>' : '';
       detail = transp + rastreio + linkRastreio;
     }
     return step(stageLabel, isDone, detail, isLast);
@@ -170,15 +170,15 @@ async function render() {
       const itemsHtml = (order.itens || []).map(item => '<p class="order-item">• ' + item.tipo + '</p>').join('');
       const nota = order.avaliacao_nota || 0;
       const starsHtml = [1,2,3,4,5].map(n =>
-        '<span class="review-star" data-order="' + order.order_code + '" data-value="' + n + '" style="cursor:pointer; font-size:22px; color:' + (n <= nota ? '#c9a24a' : '#d8d2c4') + ';">★</span>'
+        '<span class="review-star" data-order="' + order.order_code + '" data-value="' + n + '" style="cursor:pointer; font-size:22px; color:' + (n <= nota ? '#667449' : '#D8C8A9') + ';">★</span>'
       ).join('');
       const jaAvaliou = order.avaliacao_nota ? true : false;
       const reviewBox = '<div class="review-box" style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(61,58,52,0.15);">' +
         '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Seu perfume já chegou? Conte pra gente como foi!</p>' +
         '<div class="stars-row" data-order="' + order.order_code + '">' + starsHtml + '</div>' +
         '<textarea class="review-comment" data-order="' + order.order_code + '" placeholder="Escreva sua experiência (opcional)" style="width:100%; margin-top:8px; font-family:Arial,sans-serif; font-size:13px; padding:8px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); resize:vertical; min-height:50px;">' + (order.avaliacao_comentario || '') + '</textarea>' +
-        '<button type="button" class="btn review-submit" data-order="' + order.order_code + '" style="margin-top:8px; font-family:Arial,sans-serif; font-size:13px; font-weight:700; background:#556238; color:#fff; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">' + (jaAvaliou ? 'Atualizar avaliação' : 'Enviar avaliação') + '</button>' +
-        '<span class="review-saved" data-order="' + order.order_code + '" style="display:none; margin-left:10px; font-family:Arial,sans-serif; font-size:12px; color:#556238;">Obrigada pelo carinho! 🌿</span>' +
+        '<button type="button" class="btn review-submit" data-order="' + order.order_code + '" style="margin-top:8px; font-family:Arial,sans-serif; font-size:13px; font-weight:700; background:#667449; color:#fff; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">' + (jaAvaliou ? 'Atualizar avaliação' : 'Enviar avaliação') + '</button>' +
+        '<span class="review-saved" data-order="' + order.order_code + '" style="display:none; margin-left:10px; font-family:Arial,sans-serif; font-size:12px; color:#667449;">Obrigada pelo carinho! 🌿</span>' +
       '</div>';
       return '<div class="order-card">' +
         '<div class="order-header">' +
@@ -208,7 +208,7 @@ function attachReviewHandlers() {
         const value = parseInt(star.dataset.value);
         selectedRatings[orderCode] = value;
         row.querySelectorAll(".review-star").forEach(s => {
-          s.style.color = parseInt(s.dataset.value) <= value ? "#c9a24a" : "#d8d2c4";
+          s.style.color = parseInt(s.dataset.value) <= value ? "#667449" : "#D8C8A9";
         });
       });
     });

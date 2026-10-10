@@ -1,7 +1,7 @@
 /* Tema visual compartilhado das páginas internas (mesmo estilo da home) */
 :root {
-  --fundo: #F6F1EA; --fundo-2: #EFE6DA; --cartao: #FBF8F3; --texto: #332f28; --texto-2: #5A4A3F;
-  --verde: #556238; --serif: 'Cormorant Garamond', Georgia, serif; --sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --fundo: #F7EFDF; --fundo-2: #D8C8A9; --cartao: #F7EFDF; --texto: #332f28; --texto-2: #5A4A3F;
+  --verde: #667449; --serif: 'Cormorant Garamond', Georgia, serif; --sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
 }
 html { scroll-behavior: smooth; }
 body { margin: 0 !important; padding: 0 !important; display: block !important; min-height: 100vh;
@@ -67,5 +67,5 @@ body > .wrap > h1 { font-size: 52px !important; }
 .sm-rodape2 .lema { margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 19px; color: #5A4A3F; }
 .sm-rodape2 nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 28px; font-size: 14px; margin-top: 6px; }
 .sm-rodape2 a { color: #5A4A3F; text-decoration: none; }
-.sm-rodape2 a:hover { color: #556238; }
+.sm-rodape2 a:hover { color: #667449; }
 .sm-rodape2 .contato { margin: 0; font-size: 13px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; color: #5A4A3F; }

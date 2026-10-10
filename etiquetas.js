@@ -2,9 +2,9 @@
 // Para mudar textos de um produto (tipo, modo de uso, ingredientes), edite ETIQUETAS_CORPO abaixo.
 // Medidas: etiqueta de produto 99 x 67,7 mm (deitada) · selo da caixa 67,7 x 99 mm (em pé).
 
-const ETIQUETA_COR_LATERAL = "#A2A285"; // verde sage (oliva claro) da paleta
-const ETIQUETA_FUNDO = "#F3EEE4";        // bege da paleta
-const ETIQUETA_SELO_FUNDO = "#DCDDCB";   // sage bem claro
+const ETIQUETA_COR_LATERAL = "#8F9A6C"; // verde sage (oliva claro) da paleta
+const ETIQUETA_FUNDO = "#F7EFDF";        // bege da paleta
+const ETIQUETA_SELO_FUNDO = "#D8C8A9";   // sage bem claro
 
 const ETIQUETAS_CORPO = {
   "sabonete-fatia-125": { tipo: "SABONETE ARTESANAL", modo: "Molhe o sabonete e a pele, faça espuma, massageie e enxágue bem.", ingredientes: "", meses: 12 },
@@ -124,10 +124,10 @@ const ETQ_CSS = `
 @page { size: A4; margin: 10mm; }
 * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { margin: 0; font-family: Jost, 'Helvetica Neue', Arial, sans-serif; color: #2E2A25; background: #fff; }
-.aviso { font-size: 13px; background: #eef1e6; color: #3d4a33; padding: 10px 14px; border-radius: 8px; margin: 10px; }
+.aviso { font-size: 13px; background: #D8C8A9; color: #667449; padding: 10px 14px; border-radius: 8px; margin: 10px; }
 @media print { .aviso { display: none; } }
 .folha { display: flex; flex-wrap: wrap; gap: 4mm; align-content: flex-start; }
-.etq { position: relative; overflow: hidden; outline: 0.2mm dashed #c9c2b6; break-inside: avoid; page-break-inside: avoid; }
+.etq { position: relative; overflow: hidden; outline: 0.2mm dashed #D8C8A9; break-inside: avoid; page-break-inside: avoid; }
 .corpo { width: 99mm; height: 67.7mm; background: ${ETIQUETA_FUNDO}; }
 .corpo .frente { position: absolute; left: 0; top: 0; width: 63mm; height: 67.7mm; padding: 5.8mm 5.3mm 5.3mm; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; }
 .corpo .tipo { font-size: 9px; letter-spacing: .16em; border-bottom: 1px solid #2E2A25; padding: 0 6px 3px; }

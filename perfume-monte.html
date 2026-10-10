@@ -13,7 +13,7 @@
   body {
     margin: 0;
     padding: 40px 20px;
-    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    background: radial-gradient(circle at 30% 20%, #F7EFDF, #D8C8A9);
     font-family: Georgia, 'Liberation Serif', serif;
     color: #332f28;
     min-height: 100vh;
@@ -22,7 +22,7 @@
     justify-content: center;
   }
   .card {
-    background: #fbf7f0;
+    background: #F7EFDF;
     border: 1px solid rgba(61,58,52,0.25);
     border-radius: 18px;
     max-width: 560px;
@@ -34,11 +34,11 @@
   .brand h1 { font-size: 26px; letter-spacing: 4px; margin: 0; font-weight: normal; }
   .brand p {
     font-family: Jost, Arial, sans-serif; font-size: 12px; letter-spacing: 2px;
-    color: #5f6b52; margin: 6px 0 0; text-transform: uppercase;
+    color: #667449; margin: 6px 0 0; text-transform: uppercase;
   }
   .progress { display: flex; gap: 6px; margin-bottom: 28px; }
-  .progress div { flex: 1; height: 4px; border-radius: 2px; background: #e3dbca; transition: background 0.3s; }
-  .progress div.done { background: #7d9169; }
+  .progress div { flex: 1; height: 4px; border-radius: 2px; background: #D8C8A9; transition: background 0.3s; }
+  .progress div.done { background: #8F9A6C; }
   .question { font-family: Jost, Arial, sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 6px; line-height: 1.4; }
   .question-sub { font-family: Jost, Arial, sans-serif; font-size: 13px; color: #8a8676; margin-bottom: 18px; }
   .options { display: flex; flex-direction: column; gap: 10px; }
@@ -47,7 +47,7 @@
     border: 1px solid rgba(61,58,52,0.25); background: #ffffff; color: #332f28; font-size: 15px;
     cursor: pointer; transition: all 0.15s;
   }
-  .option:hover { border-color: #7d9169; background: #f2efe5; }
+  .option:hover { border-color: #8F9A6C; background: #D8C8A9; }
   .step-label { font-family: Jost, Arial, sans-serif; font-size: 12px; color: #8a8676; margin-top: 16px; text-align: right; }
   .result-title {
     font-family: Jost, Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
@@ -55,18 +55,18 @@
   }
   .profile-card {
     display: flex; gap: 14px; align-items: flex-start; border-radius: 14px;
-    padding: 18px 20px; margin-bottom: 14px; background: #eef1e6;
+    padding: 18px 20px; margin-bottom: 14px; background: #D8C8A9;
   }
-  .profile-name { font-family: Jost, Arial, sans-serif; font-weight: 700; font-size: 15px; margin: 0 0 4px; color: #556238; }
+  .profile-name { font-family: Jost, Arial, sans-serif; font-weight: 700; font-size: 15px; margin: 0 0 4px; color: #667449; }
   .profile-desc { font-family: Jost, Arial, sans-serif; font-size: 14px; line-height: 1.55; margin: 0; color: #4a463e; }
   .restart {
     font-family: Jost, Arial, sans-serif; width: 100%; padding: 13px; border-radius: 10px;
     border: 1px solid rgba(61,58,52,0.3); background: transparent; color: #332f28; font-size: 14px; cursor: pointer; margin-top: 8px;
   }
-  .restart:hover { background: #f2efe5; }
+  .restart:hover { background: #D8C8A9; }
   .hidden { display: none; }
   .pyramid-summary { font-family: Jost, Arial, sans-serif; font-size: 14px; margin: 0 0 6px; }
-  .pyramid-summary strong { color: #556238; }
+  .pyramid-summary strong { color: #667449; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -215,26 +215,26 @@ function renderPyramidSummary() {
     '<p class="result-title" style="text-align:center;">Sua pirâmide olfativa</p>' +
     '<div style="display:flex; align-items:center; justify-content:center; gap:4px; margin-bottom:20px;">' +
       '<div style="position:relative; width:220px; height:190px; flex-shrink:0;">' +
-        '<div style="position:absolute; inset:0; background:#eef1e6; clip-path:polygon(50% 0%, 33.33% 33.3%, 66.67% 33.3%);"></div>' +
-        '<div style="position:absolute; inset:0; background:#c3d1ab; clip-path:polygon(33.33% 33.3%, 66.67% 33.3%, 83.33% 66.7%, 16.67% 66.7%);"></div>' +
-        '<div style="position:absolute; inset:0; background:#8a9c68; clip-path:polygon(16.67% 66.7%, 83.33% 66.7%, 100% 100%, 0% 100%);"></div>' +
+        '<div style="position:absolute; inset:0; background:#D8C8A9; clip-path:polygon(50% 0%, 33.33% 33.3%, 66.67% 33.3%);"></div>' +
+        '<div style="position:absolute; inset:0; background:#D8C8A9; clip-path:polygon(33.33% 33.3%, 66.67% 33.3%, 83.33% 66.7%, 16.67% 66.7%);"></div>' +
+        '<div style="position:absolute; inset:0; background:#8F9A6C; clip-path:polygon(16.67% 66.7%, 83.33% 66.7%, 100% 100%, 0% 100%);"></div>' +
       '</div>' +
       '<div style="display:flex; flex-direction:column; justify-content:space-between; height:190px; padding:6px 0; font-family:Arial,sans-serif;">' +
         '<div>' +
           '<p style="margin:0; font-weight:700; font-size:12px; letter-spacing:0.5px; color:#332f28;">NOTAS DE SAÍDA</p>' +
-          '<p style="margin:2px 0 0; font-size:12px; color:#3d4a33;">' + notas.saida.nome + '</p>' +
+          '<p style="margin:2px 0 0; font-size:12px; color:#667449;">' + notas.saida.nome + '</p>' +
         '</div>' +
         '<div>' +
           '<p style="margin:0; font-weight:700; font-size:12px; letter-spacing:0.5px; color:#332f28;">NOTAS DE CORPO</p>' +
-          '<p style="margin:2px 0 0; font-size:12px; color:#3d4a33;">' + notas.corpo.nome + '</p>' +
+          '<p style="margin:2px 0 0; font-size:12px; color:#667449;">' + notas.corpo.nome + '</p>' +
         '</div>' +
         '<div>' +
           '<p style="margin:0; font-weight:700; font-size:12px; letter-spacing:0.5px; color:#332f28;">NOTAS DE FUNDO</p>' +
-          '<p style="margin:2px 0 0; font-size:12px; color:#3d4a33;">' + notas.fundo.nome + '</p>' +
+          '<p style="margin:2px 0 0; font-size:12px; color:#667449;">' + notas.fundo.nome + '</p>' +
         '</div>' +
       '</div>' +
     '</div>' +
-    '<button type="button" class="restart" id="continue-btn" style="border-color:#556238; color:#556238; font-weight:700;">Continuar para personalizar meu perfume →</button>' +
+    '<button type="button" class="restart" id="continue-btn" style="border-color:#667449; color:#667449; font-weight:700;">Continuar para personalizar meu perfume →</button>' +
     '<button type="button" class="restart" id="restart-btn">Recomeçar</button>';
 
   document.getElementById("continue-btn").addEventListener("click", renderCapQuestion);
@@ -279,7 +279,7 @@ function renderCapQuestion() {
 
 function renderLabelPreview(interactive) {
   const placedHtml = placedIcons.map((p, idx) =>
-    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:24px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
+    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:24px; color:#667449; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
   ).join('');
   const nt = { saida: notas.saida ? notas.saida.nome : "", corpo: notas.corpo ? notas.corpo.nome : "", fundo: notas.fundo ? notas.fundo.nome : "" };
   const aroma = [nt.saida, nt.corpo, nt.fundo].filter(Boolean).join(" · ");
@@ -300,10 +300,10 @@ function renderLabelEditor() {
     '</div>' +
     '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Escolha um elemento e clique na etiqueta para posicioná-lo</p>' +
     '<div class="options" style="flex-direction:row; flex-wrap:wrap; gap:8px; margin-bottom:8px;">' +
-    iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:12px 18px; font-size:34px; line-height:1; color:#556238;">' + o.char + '</button>').join('') +
+    iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:12px 18px; font-size:34px; line-height:1; color:#667449;">' + o.char + '</button>').join('') +
     '</div>' +
     '<p class="step-label" style="text-align:left; margin:0 0 16px;">Clique num elemento acima, depois clique na etiqueta pra posicioná-lo. Clique num elemento já colocado para removê-lo.</p>' +
-    '<button type="button" class="restart" id="finish-btn" style="border-color:#556238; color:#556238; font-weight:700;">Concluir personalização</button>';
+    '<button type="button" class="restart" id="finish-btn" style="border-color:#667449; color:#667449; font-weight:700;">Concluir personalização</button>';
 
   const updatePreview = () => {
     document.getElementById("label-preview").innerHTML = renderLabelPreview(true);
@@ -342,8 +342,8 @@ function renderLabelEditor() {
     btn.addEventListener("click", () => {
       selectedFont = fontOptions.find(f => f.id === btn.dataset.id);
       resultArea.querySelectorAll(".font-palette").forEach(b => { b.style.background = ""; b.style.borderColor = ""; });
-      btn.style.background = "#f2efe5";
-      btn.style.borderColor = "#7d9169";
+      btn.style.background = "#D8C8A9";
+      btn.style.borderColor = "#8F9A6C";
       updatePreview();
     });
   });
@@ -355,8 +355,8 @@ function renderLabelEditor() {
         selectedPaletteId = null;
       } else {
         selectedPaletteId = btn.dataset.id;
-        btn.style.background = "#f2efe5";
-        btn.style.borderColor = "#7d9169";
+        btn.style.background = "#D8C8A9";
+        btn.style.borderColor = "#8F9A6C";
       }
     });
   });
@@ -367,7 +367,7 @@ function renderLabelEditor() {
     finishBtn.textContent = "Gerando etiqueta...";
     try {
       const canvasEl = document.getElementById("label-canvas");
-      const canvas = await html2canvas(canvasEl, {backgroundColor: "#fdfbf7", scale: 5});
+      const canvas = await html2canvas(canvasEl, {backgroundColor: "#F7EFDF", scale: 5});
       const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
       const formData = new FormData();
       formData.append("file", blob);
@@ -418,7 +418,7 @@ function renderFinalSummary() {
     '<p class="profile-desc"><strong>Perfume Personalizado</strong> — R$ 150,00</p>' +
     '<p class="profile-desc"><strong>Saída:</strong> ' + notas.saida.nome + ' · <strong>Corpo:</strong> ' + notas.corpo.nome + ' · <strong>Fundo:</strong> ' + notas.fundo.nome + '</p>' +
     '<p class="profile-desc"><strong>Tampa:</strong> ' + capAnswer + '</p>' +
-    '<a href="carrinho.html" class="restart" style="display:block; text-align:center; text-decoration:none; border-color:#556238; color:#556238; font-weight:700; margin-top:14px;">Ir para o carrinho →</a>' +
+    '<a href="carrinho.html" class="restart" style="display:block; text-align:center; text-decoration:none; border-color:#667449; color:#667449; font-weight:700; margin-top:14px;">Ir para o carrinho →</a>' +
     '<button type="button" class="restart" id="restart-final" style="margin-top:10px;">Montar outro perfume</button>';
 
   document.getElementById("restart-final").addEventListener("click", () => {

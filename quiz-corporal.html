@@ -13,7 +13,7 @@
   body {
     margin: 0;
     padding: 40px 20px;
-    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    background: radial-gradient(circle at 30% 20%, #F7EFDF, #D8C8A9);
     font-family: Georgia, 'Liberation Serif', serif;
     color: #332f28;
     min-height: 100vh;
@@ -22,7 +22,7 @@
     justify-content: center;
   }
   .card {
-    background: #fbf7f0;
+    background: #F7EFDF;
     border: 1px solid rgba(61,58,52,0.25);
     border-radius: 18px;
     max-width: 560px;
@@ -44,7 +44,7 @@
     font-family: Jost, Arial, sans-serif;
     font-size: 12px;
     letter-spacing: 2px;
-    color: #5f6b52;
+    color: #667449;
     margin: 6px 0 0;
     text-transform: uppercase;
   }
@@ -57,11 +57,11 @@
     flex: 1;
     height: 4px;
     border-radius: 2px;
-    background: #e3dbca;
+    background: #D8C8A9;
     transition: background 0.3s;
   }
   .progress div.done {
-    background: #7d9169;
+    background: #8F9A6C;
   }
   .question {
     font-family: Jost, Arial, sans-serif;
@@ -88,8 +88,8 @@
     transition: all 0.15s;
   }
   .option:hover {
-    border-color: #7d9169;
-    background: #f2efe5;
+    border-color: #8F9A6C;
+    background: #D8C8A9;
   }
   .step-label {
     font-family: Jost, Arial, sans-serif;
@@ -144,12 +144,12 @@
     cursor: pointer;
     margin-top: 8px;
   }
-  .restart:hover { background: #f2efe5; }
+  .restart:hover { background: #D8C8A9; }
   .hidden { display: none; }
   .cta-note {
     font-family: Jost, Arial, sans-serif;
     font-size: 13px;
-    color: #5f6b52;
+    color: #667449;
     text-align: center;
     margin-top: 20px;
     line-height: 1.5;
@@ -458,57 +458,57 @@ const profiles = {
   floral: {
     nome: "Floral",
     icon: "❁",
-    cor: "#6b5480",
-    bg: "#f2ecf6",
+    cor: "#667449",
+    bg: "#F7EFDF",
     desc: "Sensível e presente. Aromas de flores brancas, rosas ou jasmim traduzem sua delicadeza sem perder força."
   },
   amadeirado: {
     nome: "Amadeirado",
     icon: "🌿",
-    cor: "#556238",
-    bg: "#eef1e6",
+    cor: "#667449",
+    bg: "#D8C8A9",
     desc: "Presença marcante e enraizada. Notas de cedro, sândalo e âmbar reforçam sua confiança natural."
   },
   citrico: {
     nome: "Cítrico",
     icon: "☼",
     cor: "#a06a1a",
-    bg: "#faf1de",
+    bg: "#F7EFDF",
     desc: "Energia e vivacidade. Notas de laranja, limão-siciliano e bergamota refletem sua disposição contagiante."
   },
   doce: {
     nome: "Doce",
     icon: "◐",
     cor: "#8f5c22",
-    bg: "#f8efe2",
+    bg: "#F7EFDF",
     desc: "Afetiva e acolhedora. Baunilha, mel e especiarias doces trazem o conforto que você transmite."
   },
   frutado: {
     nome: "Frutado",
     icon: "❀",
     cor: "#a3455a",
-    bg: "#f8eaec",
+    bg: "#F7EFDF",
     desc: "Espontânea e cheia de vida. Notas de pêssego, framboesa ou maçã acompanham seu jeito leve e divertido."
   },
   gourmand: {
     nome: "Gourmand",
     icon: "◆",
-    cor: "#6b3d29",
-    bg: "#f2e6df",
+    cor: "#667449",
+    bg: "#F7EFDF",
     desc: "Indulgente e envolvente. Notas de chocolate, café ou baunilha intensa traduzem sua sedução natural."
   },
   aquatico: {
     nome: "Aquático",
     icon: "〜",
-    cor: "#2f6b76",
-    bg: "#e7f2f3",
+    cor: "#667449",
+    bg: "#F7EFDF",
     desc: "Serena e renovadora. Notas marinhas e aquáticas trazem a sensação de leveza e frescor que você transmite."
   },
   especiado: {
     nome: "Especiado",
     icon: "✷",
-    cor: "#7d3320",
-    bg: "#f7e9e3",
+    cor: "#667449",
+    bg: "#F7EFDF",
     desc: "Intensa e magnética. Pimenta-rosa, canela e cravo traduzem sua presença marcante por onde passa."
   }
 };
@@ -643,7 +643,7 @@ function renderResult() {
     '</div>';
   });
   html += '<button type="button" class="restart" id="restart-btn">Refazer o quiz</button>';
-  html += '<button type="button" class="restart" id="continue-btn" style="border-color:#556238; color:#556238; font-weight:700; margin-top:10px;">Continuar para personalizar meu perfume →</button>';
+  html += '<button type="button" class="restart" id="continue-btn" style="border-color:#667449; color:#667449; font-weight:700; margin-top:10px;">Continuar para personalizar meu perfume →</button>';
 
   resultArea.innerHTML = html;
   document.getElementById("continue-btn").addEventListener("click", renderCapQuestion);
@@ -694,7 +694,7 @@ function renderCapQuestion() {
 
 function renderLabelPreview(interactive) {
   const placedHtml = placedIcons.map((p, idx) =>
-    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:24px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
+    '<span class="placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:24px; color:#667449; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
   ).join('');
   // Família dominante do quiz -> aroma e notas da etiqueta
   const ordem = Object.entries(scores || {}).sort((a, b) => b[1] - a[1]);
@@ -717,12 +717,12 @@ function renderLabelEditor() {
     '</div>' +
     '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Escolha um elemento e clique na etiqueta para posicioná-lo</p>' +
     '<div class="options" style="flex-direction:row; flex-wrap:wrap; gap:8px; margin-bottom:8px;">' +
-    iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:12px 18px; font-size:34px; line-height:1; color:#556238;">' + o.char + '</button>').join('') +
+    iconOptions.map(o => '<button type="button" class="option icon-palette" data-id="' + o.id + '" style="width:auto; padding:12px 18px; font-size:34px; line-height:1; color:#667449;">' + o.char + '</button>').join('') +
     '</div>' +
     '<p class="step-label" style="text-align:left; margin:0 0 16px;">Clique num elemento acima, depois clique na etiqueta pra posicioná-lo. Clique num elemento já colocado para removê-lo.</p>' +
     '<p class="profile-desc" style="margin-bottom:6px; font-weight:700;">Você tem um perfume preferido ou de referência? (opcional)</p>' +
     '<textarea id="reference-input" placeholder="Ex: Sou fã de perfumes amadeirados tipo Malbec, ou já usei um floral da Natura que amei..." rows="3" style="width:100%; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px; resize:vertical;"></textarea>' +
-    '<button type="button" class="restart" id="finish-btn" style="border-color:#556238; color:#556238; font-weight:700;">Concluir personalização</button>';
+    '<button type="button" class="restart" id="finish-btn" style="border-color:#667449; color:#667449; font-weight:700;">Concluir personalização</button>';
 
   const updatePreview = () => {
     document.getElementById("label-preview").innerHTML = renderLabelPreview(true);
@@ -761,8 +761,8 @@ function renderLabelEditor() {
     btn.addEventListener("click", () => {
       selectedFont = fontOptions.find(f => f.id === btn.dataset.id);
       resultArea.querySelectorAll(".font-palette").forEach(b => { b.style.background = ""; b.style.borderColor = ""; });
-      btn.style.background = "#f2efe5";
-      btn.style.borderColor = "#7d9169";
+      btn.style.background = "#D8C8A9";
+      btn.style.borderColor = "#8F9A6C";
       updatePreview();
     });
   });
@@ -774,8 +774,8 @@ function renderLabelEditor() {
         selectedPaletteId = null;
       } else {
         selectedPaletteId = btn.dataset.id;
-        btn.style.background = "#f2efe5";
-        btn.style.borderColor = "#7d9169";
+        btn.style.background = "#D8C8A9";
+        btn.style.borderColor = "#8F9A6C";
       }
     });
   });
@@ -787,7 +787,7 @@ function renderLabelEditor() {
     finishBtn.textContent = "Gerando etiqueta...";
     try {
       const canvasEl = document.getElementById("label-canvas");
-      const canvas = await html2canvas(canvasEl, {backgroundColor: "#fdfbf7", scale: 5});
+      const canvas = await html2canvas(canvasEl, {backgroundColor: "#F7EFDF", scale: 5});
       const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
 
       if (CLOUDINARY_CLOUD_NAME.includes("COLE_AQUI")) {
@@ -853,7 +853,7 @@ function renderFinalSummary() {
     '<p class="profile-desc"><strong>Perfil aromático dominante:</strong> ' + topProfile + '</p>' +
     (secondProfile ? '<p class="profile-desc"><strong>Perfil aromático secundário:</strong> ' + secondProfile + '</p>' : '') +
     '<p class="profile-desc"><strong>Tampa:</strong> ' + capAnswer + '</p>' +
-    '<a href="carrinho.html" class="restart" style="display:block; text-align:center; text-decoration:none; border-color:#556238; color:#556238; font-weight:700; margin-top:14px;">Ir para o carrinho →</a>' +
+    '<a href="carrinho.html" class="restart" style="display:block; text-align:center; text-decoration:none; border-color:#667449; color:#667449; font-weight:700; margin-top:14px;">Ir para o carrinho →</a>' +
     '<button type="button" class="restart" id="restart-final" style="margin-top:10px;">Fazer outro perfume</button>';
 
   document.getElementById("restart-final").addEventListener("click", () => {

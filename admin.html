@@ -13,7 +13,7 @@
   body {
     margin: 0;
     font-family: Georgia, 'Liberation Serif', serif;
-    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    background: radial-gradient(circle at 30% 20%, #F7EFDF, #D8C8A9);
     color: #332f28;
     min-height: 100vh;
   }
@@ -22,7 +22,7 @@
     padding: 18px 28px; border-bottom: 1px solid rgba(61,58,52,0.15);
   }
   .top-bar h1 { font-size: 20px; letter-spacing: 2px; margin: 0; font-weight: normal; }
-  .top-bar a { font-family: Arial, sans-serif; font-size: 13px; color: #556238; text-decoration: none; font-weight: 700; margin-left: 18px; }
+  .top-bar a { font-family: Arial, sans-serif; font-size: 13px; color: #667449; text-decoration: none; font-weight: 700; margin-left: 18px; }
   .layout { display: flex; max-width: 1200px; margin: 0 auto; min-height: calc(100vh - 70px); }
   .sidebar {
     width: 320px; flex-shrink: 0; border-right: 1px solid rgba(61,58,52,0.15);
@@ -30,14 +30,14 @@
   }
   .sidebar-item {
     font-family: Arial, sans-serif; padding: 14px 16px; border-radius: 10px; cursor: pointer;
-    margin-bottom: 8px; border: 1px solid rgba(61,58,52,0.15); background: #fbf7f0;
+    margin-bottom: 8px; border: 1px solid rgba(61,58,52,0.15); background: #F7EFDF;
   }
-  .sidebar-item.active { border-color: #556238; background: #eef1e6; }
+  .sidebar-item.active { border-color: #667449; background: #D8C8A9; }
   .sidebar-item .code { font-weight: 700; font-size: 14px; }
   .sidebar-item .meta { font-size: 12px; color: #8a8676; margin-top: 4px; }
   .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
   .status-dot.pendente { background: #a3455a; }
-  .status-dot.confirmado { background: #556238; }
+  .status-dot.confirmado { background: #667449; }
   .main-panel { flex: 1; padding: 32px 40px; }
   label { font-family: Arial, sans-serif; font-size: 13px; font-weight: 700; display: block; margin-bottom: 6px; margin-top: 18px; }
   input[type="text"], select {
@@ -46,11 +46,11 @@
   }
   .btn {
     font-family: Arial, sans-serif; font-weight: 700; font-size: 15px;
-    background: #556238; color: #fff; padding: 14px 22px; border-radius: 10px; border: none; cursor: pointer;
+    background: #667449; color: #fff; padding: 14px 22px; border-radius: 10px; border: none; cursor: pointer;
   }
   .row { display: flex; gap: 16px; }
   .row > div { flex: 1; }
-  .save-msg { font-size: 13px; color: #556238; margin-top: 8px; display: none; }
+  .save-msg { font-size: 13px; color: #667449; margin-top: 8px; display: none; }
   .empty { font-family: Arial, sans-serif; text-align: center; color: #8a8676; padding: 60px 20px; font-size: 15px; }
   .label-img { max-width: 340px; border: 1px solid rgba(61,58,52,0.2); border-radius: 8px; margin: 12px 0; display: block; }
   .order-title { font-size: 26px; margin: 0 0 6px; }
@@ -69,10 +69,10 @@
   </div>
 
   <div style="display:flex; gap:10px; padding:14px 28px 0; border-bottom:1px solid rgba(61,58,52,0.1); align-items:center;">
-    <button type="button" id="tab-pedidos" class="admin-tab" style="background:#556238; color:#fff; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Pedidos</button>
-    <button type="button" id="tab-etiqueta" class="admin-tab" style="background:#eef1e6; color:#556238; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Personalizar Etiqueta</button>
-    <button type="button" id="tab-estoque" class="admin-tab" style="background:#eef1e6; color:#556238; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Estoque</button>
-    <button type="button" id="tab-kits" class="admin-tab" style="background:#eef1e6; color:#556238; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Kits</button>
+    <button type="button" id="tab-pedidos" class="admin-tab" style="background:#667449; color:#fff; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Pedidos</button>
+    <button type="button" id="tab-etiqueta" class="admin-tab" style="background:#D8C8A9; color:#667449; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Personalizar Etiqueta</button>
+    <button type="button" id="tab-estoque" class="admin-tab" style="background:#D8C8A9; color:#667449; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Estoque</button>
+    <button type="button" id="tab-kits" class="admin-tab" style="background:#D8C8A9; color:#667449; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Kits</button>
     <button type="button" id="backup-btn" style="margin-left:auto; background:none; border:1px solid rgba(61,58,52,0.25); color:#8a8676; padding:8px 14px; border-radius:8px; font-family:Arial,sans-serif; font-weight:700; font-size:12px; cursor:pointer;">⬇ Baixar backup de pedidos</button>
   </div>
 
@@ -180,7 +180,7 @@ function etiquetasPainelHtml(data) {
   const avisos = [];
   if (info.faltaIngred.length) avisos.push("Faltam ingredientes de: " + info.faltaIngred.join(", "));
   if (info.semModelo.length) avisos.push("Ainda sem etiqueta automática: " + info.semModelo.join(", "));
-  return '<div style="background:#f3eee4; border:1px solid rgba(61,58,52,0.2); border-radius:12px; padding:14px 16px; margin:10px 0 16px;">' +
+  return '<div style="background:#F7EFDF; border:1px solid rgba(61,58,52,0.2); border-radius:12px; padding:14px 16px; margin:10px 0 16px;">' +
     '<p style="margin:0 0 8px; font-weight:700; font-size:14px;">Etiquetas para imprimir: ' + partes.join(" + ") + '</p>' +
     (avisos.length ? '<p style="margin:0 0 10px; font-size:12px; color:#6b4a14;">' + avisos.join("<br>") + '</p>' : '') +
     '<button type="button" class="btn" id="imprimir-etiquetas-btn" style="font-size:13px; padding:10px 16px;">🖨️ Imprimir etiquetas do pedido</button>' +
@@ -219,19 +219,19 @@ function renderMainPanel(codigo) {
 
   const enderecoCompleto = [data.endereco, data.cidade, data.estado, data.cep].filter(Boolean).join(' · ');
   const reviewHtml = data.avaliacao_nota
-    ? '<p class="order-meta" style="margin-top:-14px; color:#c9a24a;">Avaliação: ' + '★'.repeat(data.avaliacao_nota) + '☆'.repeat(5 - data.avaliacao_nota) + (data.avaliacao_comentario ? ' — "' + data.avaliacao_comentario + '"' : '') + '</p>'
+    ? '<p class="order-meta" style="margin-top:-14px; color:#667449;">Avaliação: ' + '★'.repeat(data.avaliacao_nota) + '☆'.repeat(5 - data.avaliacao_nota) + (data.avaliacao_comentario ? ' — "' + data.avaliacao_comentario + '"' : '') + '</p>'
     : '';
 
   const pedidosDesseEmail = Object.values(ordersCache).filter(o => o.email === data.email).length;
   const isPrimeiraCompra = pedidosDesseEmail <= 1;
   const primeiraCompraHtml = isPrimeiraCompra
-    ? '<p style="background:#eef1e6; color:#556238; font-family:Arial,sans-serif; font-weight:700; font-size:13px; padding:10px 14px; border-radius:8px; margin:8px 0;">🎁 Primeira compra dessa cliente — inclua a amostra de boas-vindas!</p>'
+    ? '<p style="background:#D8C8A9; color:#667449; font-family:Arial,sans-serif; font-weight:700; font-size:13px; padding:10px 14px; border-radius:8px; margin:8px 0;">🎁 Primeira compra dessa cliente — inclua a amostra de boas-vindas!</p>'
     : '';
 
   const itensEstoque = (data.itens || []).filter(i => i.produto_id);
   const itensEncomenda = itensEstoque.filter(i => i.entrega === "encomenda");
   const encomendaHtml = itensEncomenda.length
-    ? '<p style="background:#fbf1dc; border:1px solid #d9a23a; color:#6b4a14; font-family:Arial,sans-serif; font-weight:700; font-size:13px; padding:10px 14px; border-radius:8px; margin:8px 0;">⏳ SOB ENCOMENDA (5 dias de produção) — produzir: ' +
+    ? '<p style="background:#F7EFDF; border:1px solid #8F9A6C; color:#6b4a14; font-family:Arial,sans-serif; font-weight:700; font-size:13px; padding:10px 14px; border-radius:8px; margin:8px 0;">⏳ SOB ENCOMENDA (5 dias de produção) — produzir: ' +
       itensEncomenda.map(i => i.tipo + (i.aroma_estoque ? ' ' + i.aroma_estoque : '')).join(', ') + '</p>'
     : '';
   const devolverHtml = itensEstoque.length
@@ -342,7 +342,7 @@ async function regenerateLabel(perfumeName, iconsPosicionados, fontId) {
   const font = fontMap[fontId] || fontMap.classico;
 
   const placedHtml = (iconsPosicionados || []).map(p =>
-    '<span style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:26px; color:#556238;">' + p.char + '</span>'
+    '<span style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:26px; color:#667449;">' + p.char + '</span>'
   ).join('');
 
   const holder = document.createElement("div");
@@ -351,7 +351,7 @@ async function regenerateLabel(perfumeName, iconsPosicionados, fontId) {
   holder.style.top = "0";
 
   holder.innerHTML =
-    '<div id="regen-canvas" style="position:relative; background:#fdfbf7; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:9px 10px; box-sizing:border-box; width:325px; height:170px; display:flex; align-items:center; justify-content:center; gap:8px;">' +
+    '<div id="regen-canvas" style="position:relative; background:#F7EFDF; border:1px solid rgba(61,58,52,0.3); border-radius:6px; padding:9px 10px; box-sizing:border-box; width:325px; height:170px; display:flex; align-items:center; justify-content:center; gap:8px;">' +
       '<div style="position:relative; width:48px; height:150px; flex-shrink:0;">' +
         '<div style="position:absolute; top:50%; left:50%; width:150px; height:48px; transform:translate(-50%,-50%) rotate(-90deg); font-family:Arial,sans-serif; font-weight:700; font-size:7px; line-height:1.35; color:#000000; display:flex; align-items:center;">' +
           '<span><strong>PERFUME</strong> — Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético. NÃO INGERIR. EVITAR CONTATO COM OS OLHOS. USO EXTERNO. <strong>PRODUTO ARTESANAL</strong> · Válido por 1 ano</span>' +
@@ -359,7 +359,7 @@ async function regenerateLabel(perfumeName, iconsPosicionados, fontId) {
       '</div>' +
       '<div style="flex:1; text-align:center;">' +
         '<p style="font-family:Playfair Display,serif; font-weight:700; font-size:14px; letter-spacing:1.5px; margin:0 0 3px; color:#000000;">SAGRADO DE MIM</p>' +
-        '<p style="font-family:Playfair Display,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#3d4a33;">uma fragrância feita para você</p>' +
+        '<p style="font-family:Playfair Display,serif; font-style:italic; font-weight:700; font-size:8px; margin:0 0 6px; color:#667449;">uma fragrância feita para você</p>' +
         '<p style="font-family:' + font.family + '; font-style:' + font.style + '; font-weight:' + font.weight + '; font-size:19px; margin:0; color:#000000;">' + perfumeName + '</p>' +
       '</div>' +
       placedHtml +
@@ -367,7 +367,7 @@ async function regenerateLabel(perfumeName, iconsPosicionados, fontId) {
   document.body.appendChild(holder);
 
   const canvasEl = document.getElementById("regen-canvas");
-  const canvas = await html2canvas(canvasEl, { backgroundColor: "#fdfbf7", scale: 5 });
+  const canvas = await html2canvas(canvasEl, { backgroundColor: "#F7EFDF", scale: 5 });
   document.body.removeChild(holder);
 
   const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
@@ -424,8 +424,8 @@ function mostrarAba(nome) {
     const ativa = k === nome;
     document.getElementById(viewId).style.display = ativa ? (k === "pedidos" ? "flex" : "block") : "none";
     const tab = document.getElementById("tab-" + k);
-    tab.style.background = ativa ? "#556238" : "#eef1e6";
-    tab.style.color = ativa ? "#fff" : "#556238";
+    tab.style.background = ativa ? "#667449" : "#D8C8A9";
+    tab.style.color = ativa ? "#fff" : "#667449";
   });
   if (nome === "etiqueta") renderAtelierEditor();
   if (nome === "estoque") renderEstoque();
@@ -439,7 +439,7 @@ document.getElementById("tab-kits").addEventListener("click", () => mostrarAba("
 // ---------- Kits personalizados ----------
 function kEsc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 const kBrl = v => v == null ? "-" : "R$ " + Number(v).toFixed(2).replace(".", ",");
-const KIT_STATUS = { novo: ["Novo", "#a3652a"], proposta_enviada: ["Proposta enviada", "#556238"], aprovado: ["Aprovado ✓", "#2f6b3a"], recusado: ["Pediu ajustes", "#a3455a"] };
+const KIT_STATUS = { novo: ["Novo", "#a3652a"], proposta_enviada: ["Proposta enviada", "#667449"], aprovado: ["Aprovado ✓", "#667449"], recusado: ["Pediu ajustes", "#a3455a"] };
 async function renderKits(forcarNovo) {
   const box = document.getElementById("kits-lista");
   document.getElementById("kits-aviso-email").style.display = (typeof emailConfigurado === "function" && emailConfigurado()) ? "none" : "block";
@@ -459,7 +459,7 @@ async function renderKits(forcarNovo) {
       '<div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;"><strong>#' + k.id + ' · ' + kEsc(k.nome) + '</strong><span style="color:' + st[1] + '; font-weight:700; font-size:13px;">' + st[0] + '</span></div>' +
       '<p style="font-size:13px; margin:6px 0; color:#4a463e;">' + kEsc(k.email) + (k.whatsapp ? ' · WhatsApp ' + kEsc(k.whatsapp) : '') + ' · ' + new Date(k.criado_em).toLocaleDateString("pt-BR") + '</p>' +
       '<p style="font-size:14px; margin:6px 0;"><strong>Orçamento:</strong> ' + kBrl(k.orcamento) + (k.ocasiao ? ' · ' + kEsc(k.ocasiao) : '') + (k.prazo ? ' · Prazo: ' + kEsc(k.prazo) : '') + '</p>' +
-      '<p style="font-size:14px; margin:6px 0 12px; white-space:pre-wrap; background:#f7f4ee; padding:10px; border-radius:8px;">' + kEsc(k.preferencias) + '</p>' +
+      '<p style="font-size:14px; margin:6px 0 12px; white-space:pre-wrap; background:#F7EFDF; padding:10px; border-radius:8px;">' + kEsc(k.preferencias) + '</p>' +
       (k.resposta_msg ? '<p style="font-size:13px; margin:0 0 12px;"><strong>Resposta da cliente:</strong> ' + kEsc(k.resposta_msg) + '</p>' : '') +
       '<label style="font-size:13px; font-weight:700; display:block; margin-bottom:4px;">Proposta (itens do kit)</label>' +
       '<textarea class="kit-itens" data-id="' + k.id + '" style="width:100%; box-sizing:border-box; min-height:90px; font-family:Arial,sans-serif; font-size:14px; padding:8px; border-radius:8px; border:1px solid rgba(61,58,52,0.3);" placeholder="Ex: 1 Difusor de Varetas 250ml (Lavanda) + 1 Vela na Latinha Grande (Flor de Cerejeira) + embalagem para presente">' + kEsc(k.proposta_itens || "") + '</textarea>' +
@@ -482,7 +482,7 @@ async function renderKits(forcarNovo) {
         mensagem: "Olá, " + r.nome + "!\n\nMontamos uma proposta de kit especialmente pra você:\n\n" + itens + "\n\nValor: " + kBrl(valor) +
           "\n\nÉ só abrir o link abaixo pra aprovar e seguir para o pagamento, ou pedir algum ajuste.\n\nCom carinho,\nSagrado de Mim",
         link: link, textoLink: "Ver e aprovar meu kit" });
-      msg.style.color = "#556238";
+      msg.style.color = "#667449";
       msg.innerHTML = ok ? "Proposta enviada para " + kEsc(r.email) + "." : 'Proposta salva, mas o e-mail não saiu. Mande este link pra cliente: <a href="' + link + '" target="_blank">' + kEsc(link) + '</a>';
       setTimeout(() => renderKits(), ok ? 1500 : 8000);
     } catch (err) {
@@ -538,7 +538,7 @@ async function renderEstoque() {
         '<input type="number" min="0" step="1" class="est-input" data-pid="' + p.id + '" data-aroma="' + a + '" value="' + (mapa[p.id + "|" + a] ?? 0) + '" data-orig="' + (mapa[p.id + "|" + a] ?? 0) + '" style="width:80px; padding:6px 8px; border:1px solid rgba(61,58,52,0.3); border-radius:6px;">' +
       '</label>'
     ).join('');
-    return '<div style="background:#fbf7f0; border:1px solid rgba(61,58,52,0.18); border-radius:12px; padding:16px 18px; margin-bottom:14px;">' +
+    return '<div style="background:#F7EFDF; border:1px solid rgba(61,58,52,0.18); border-radius:12px; padding:16px 18px; margin-bottom:14px;">' +
       '<p style="font-family:Georgia,serif; font-size:16px; margin:0 0 10px;">' + p.nome + (p.tamanho ? ' <span style="color:#8a8676; font-size:13px;">' + p.tamanho + '</span>' : '') + '</p>' +
       '<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:8px 24px;">' + campos + '</div>' +
       '<div style="margin-top:12px;"><button type="button" class="btn est-salvar" data-pid="' + p.id + '" style="font-size:13px; padding:8px 16px;">Salvar</button> <span class="est-msg" data-pid="' + p.id + '" style="font-family:Arial,sans-serif; font-size:12px; margin-left:8px;"></span></div>' +
@@ -562,7 +562,7 @@ async function renderEstoque() {
           await rpcAdmin("admin_definir_estoque", { p_codigo: codigo, p_product_id: pid, p_aroma: inp.dataset.aroma, p_qtd: qtd });
           inp.dataset.orig = String(qtd);
         }
-        msg.style.color = "#556238"; msg.textContent = "Salvo ✓";
+        msg.style.color = "#667449"; msg.textContent = "Salvo ✓";
       } catch (err) {
         if (err.codigoInvalido) { sessionStorage.removeItem("codigoEstoque"); localStorage.removeItem("codigoEstoque"); }
         msg.style.color = "#a3455a"; msg.textContent = err.codigoInvalido ? "Código incorreto — tente de novo." : ("Erro: " + err.message);
@@ -624,7 +624,7 @@ function atelierRenderAromaLabel() {
 
 function atelierRenderLabel(interactive) {
   const placedHtml = atelierPlacedIcons.map((p, idx) =>
-    '<span class="atelier-placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:24px; color:#556238; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
+    '<span class="atelier-placed-icon" data-idx="' + idx + '" style="position:absolute; left:' + p.xPct + '%; top:' + p.yPct + '%; transform:translate(-50%,-50%); font-size:24px; color:#667449; cursor:' + (interactive ? 'pointer' : 'default') + ';">' + p.char + '</span>'
   ).join('');
   const info = (typeof infoAroma === "function" && atelierPerfumeEssencia) ? infoAroma(atelierPerfumeEssencia) : null;
   const notas = info && info.saida ? { saida: info.saida, corpo: info.corpo, fundo: info.fundo } : (info ? { linha: info.desc } : {});
@@ -637,9 +637,9 @@ function renderAtelierEditor() {
   const typeSelectorHtml =
     '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Tipo de produto</p>' +
     '<div style="display:flex; gap:8px; margin-bottom:20px;">' +
-      '<button type="button" class="atelier-type-btn" data-type="perfume" style="flex:1; padding:10px; font-family:Arial,sans-serif; font-weight:700; font-size:13px; border-radius:8px; border:1px solid ' + (atelierProductType === "perfume" ? "#556238" : "rgba(61,58,52,0.25)") + '; background:' + (atelierProductType === "perfume" ? "#eef1e6" : "#fff") + '; cursor:pointer;">Perfume</button>' +
-      '<button type="button" class="atelier-type-btn" data-type="difusor" style="flex:1; padding:10px; font-family:Arial,sans-serif; font-weight:700; font-size:13px; border-radius:8px; border:1px solid ' + (atelierProductType === "difusor" ? "#556238" : "rgba(61,58,52,0.25)") + '; background:' + (atelierProductType === "difusor" ? "#eef1e6" : "#fff") + '; cursor:pointer;">Difusor</button>' +
-      '<button type="button" class="atelier-type-btn" data-type="homespray" style="flex:1; padding:10px; font-family:Arial,sans-serif; font-weight:700; font-size:13px; border-radius:8px; border:1px solid ' + (atelierProductType === "homespray" ? "#556238" : "rgba(61,58,52,0.25)") + '; background:' + (atelierProductType === "homespray" ? "#eef1e6" : "#fff") + '; cursor:pointer;">Home Spray</button>' +
+      '<button type="button" class="atelier-type-btn" data-type="perfume" style="flex:1; padding:10px; font-family:Arial,sans-serif; font-weight:700; font-size:13px; border-radius:8px; border:1px solid ' + (atelierProductType === "perfume" ? "#667449" : "rgba(61,58,52,0.25)") + '; background:' + (atelierProductType === "perfume" ? "#D8C8A9" : "#fff") + '; cursor:pointer;">Perfume</button>' +
+      '<button type="button" class="atelier-type-btn" data-type="difusor" style="flex:1; padding:10px; font-family:Arial,sans-serif; font-weight:700; font-size:13px; border-radius:8px; border:1px solid ' + (atelierProductType === "difusor" ? "#667449" : "rgba(61,58,52,0.25)") + '; background:' + (atelierProductType === "difusor" ? "#D8C8A9" : "#fff") + '; cursor:pointer;">Difusor</button>' +
+      '<button type="button" class="atelier-type-btn" data-type="homespray" style="flex:1; padding:10px; font-family:Arial,sans-serif; font-weight:700; font-size:13px; border-radius:8px; border:1px solid ' + (atelierProductType === "homespray" ? "#667449" : "rgba(61,58,52,0.25)") + '; background:' + (atelierProductType === "homespray" ? "#D8C8A9" : "#fff") + '; cursor:pointer;">Home Spray</button>' +
     '</div>';
 
   if (atelierProductType === "difusor" || atelierProductType === "homespray") {
@@ -657,13 +657,13 @@ function renderAtelierEditor() {
       Object.keys(typeof AROMAS_INFO !== "undefined" ? AROMAS_INFO : {}).map(k => '<option value="' + k + '"' + (k === atelierPerfumeEssencia ? ' selected' : '') + '>' + k + '</option>').join('') + '</select>' +
     '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Estilo da letra do nome</p>' +
     '<div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;">' +
-    atelierFontOptions.map(f => '<button type="button" class="atelier-font-btn" data-id="' + f.id + '" style="padding:10px 16px; font-family:' + f.family + '; font-style:' + f.style + '; font-weight:' + f.weight + '; font-size:16px; border:1px solid ' + (f.id === atelierSelectedFont.id ? '#556238' : 'rgba(61,58,52,0.25)') + '; background:' + (f.id === atelierSelectedFont.id ? '#eef1e6' : '#fff') + '; border-radius:8px; cursor:pointer;">' + f.label + '</button>').join('') +
+    atelierFontOptions.map(f => '<button type="button" class="atelier-font-btn" data-id="' + f.id + '" style="padding:10px 16px; font-family:' + f.family + '; font-style:' + f.style + '; font-weight:' + f.weight + '; font-size:16px; border:1px solid ' + (f.id === atelierSelectedFont.id ? '#667449' : 'rgba(61,58,52,0.25)') + '; background:' + (f.id === atelierSelectedFont.id ? '#D8C8A9' : '#fff') + '; border-radius:8px; cursor:pointer;">' + f.label + '</button>').join('') +
     '</div>' +
     '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Escolha um elemento e clique na etiqueta pra posicioná-lo</p>' +
     '<div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;">' +
-    atelierIconOptions.map(o => '<button type="button" class="atelier-icon-palette" data-id="' + o.id + '" style="padding:10px 16px; font-size:22px; color:#556238; border:1px solid rgba(61,58,52,0.25); border-radius:8px; background:#fff; cursor:pointer;">' + o.char + '</button>').join('') +
+    atelierIconOptions.map(o => '<button type="button" class="atelier-icon-palette" data-id="' + o.id + '" style="padding:10px 16px; font-size:22px; color:#667449; border:1px solid rgba(61,58,52,0.25); border-radius:8px; background:#fff; cursor:pointer;">' + o.char + '</button>').join('') +
     '</div>' +
-    '<button type="button" id="atelier-download-btn" style="width:100%; font-family:Arial,sans-serif; font-weight:700; font-size:15px; background:#556238; color:#fff; padding:14px; border-radius:10px; border:none; cursor:pointer;">Baixar etiqueta</button>';
+    '<button type="button" id="atelier-download-btn" style="width:100%; font-family:Arial,sans-serif; font-weight:700; font-size:15px; background:#667449; color:#fff; padding:14px; border-radius:10px; border:none; cursor:pointer;">Baixar etiqueta</button>';
 
   const updateAtelierPreview = () => {
     document.getElementById("atelier-label-preview").innerHTML = atelierRenderLabel(true);
@@ -705,8 +705,8 @@ function renderAtelierEditor() {
     btn.addEventListener("click", () => {
       atelierSelectedFont = atelierFontOptions.find(f => f.id === btn.dataset.id);
       container.querySelectorAll(".atelier-font-btn").forEach(b => { b.style.background = "#fff"; b.style.borderColor = "rgba(61,58,52,0.25)"; });
-      btn.style.background = "#eef1e6";
-      btn.style.borderColor = "#556238";
+      btn.style.background = "#D8C8A9";
+      btn.style.borderColor = "#667449";
       updateAtelierPreview();
     });
   });
@@ -715,8 +715,8 @@ function renderAtelierEditor() {
     btn.addEventListener("click", () => {
       atelierSelectedPaletteId = btn.dataset.id;
       container.querySelectorAll(".atelier-icon-palette").forEach(b => { b.style.background = "#fff"; b.style.borderColor = "rgba(61,58,52,0.25)"; });
-      btn.style.background = "#eef1e6";
-      btn.style.borderColor = "#556238";
+      btn.style.background = "#D8C8A9";
+      btn.style.borderColor = "#667449";
     });
   });
 
@@ -725,7 +725,7 @@ function renderAtelierEditor() {
     btn.disabled = true;
     btn.textContent = "Gerando...";
     const canvasEl = document.getElementById("atelier-label-canvas");
-    const canvas = await html2canvas(canvasEl, { backgroundColor: "#fdfbf7", scale: 5 });
+    const canvas = await html2canvas(canvasEl, { backgroundColor: "#F7EFDF", scale: 5 });
     const link = document.createElement("a");
     link.download = "etiqueta-" + (atelierPerfumeName || "sagrado-de-mim").replace(/\s+/g, "-") + ".png";
     link.href = canvas.toDataURL("image/png");
@@ -758,7 +758,7 @@ function renderAtelierAromaEditor(container, typeSelectorHtml) {
     '</select>' +
     '<p style="font-family:Arial,sans-serif; font-size:13px; font-weight:700; margin:0 0 6px;">Volume (opcional, deixe em branco pro padrão)</p>' +
     '<input type="text" id="atelier-volume-input" placeholder="Ex: 250mL" style="width:100%; box-sizing:border-box; font-family:Arial,sans-serif; font-size:14px; padding:10px 12px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); margin-bottom:16px;">' +
-    '<button type="button" id="atelier-download-btn-aroma" style="width:100%; font-family:Arial,sans-serif; font-weight:700; font-size:15px; background:#556238; color:#fff; padding:14px; border-radius:10px; border:none; cursor:pointer;">Baixar etiqueta</button>';
+    '<button type="button" id="atelier-download-btn-aroma" style="width:100%; font-family:Arial,sans-serif; font-weight:700; font-size:15px; background:#667449; color:#fff; padding:14px; border-radius:10px; border:none; cursor:pointer;">Baixar etiqueta</button>';
 
   const updatePreview = () => {
     document.getElementById("atelier-label-preview").innerHTML = atelierRenderAromaLabel();
@@ -784,7 +784,7 @@ function renderAtelierAromaEditor(container, typeSelectorHtml) {
     btn.disabled = true;
     btn.textContent = "Gerando...";
     const canvasEl = document.getElementById("atelier-label-canvas");
-    const canvas = await html2canvas(canvasEl, { backgroundColor: "#fdfbf7", scale: 5 });
+    const canvas = await html2canvas(canvasEl, { backgroundColor: "#F7EFDF", scale: 5 });
     const link = document.createElement("a");
     link.download = "etiqueta-" + atelierProductType + "-" + (atelierAromaName || "sagrado-de-mim").replace(/\s+/g, "-") + ".png";
     link.href = canvas.toDataURL("image/png");

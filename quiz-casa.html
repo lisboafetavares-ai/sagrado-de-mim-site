@@ -11,7 +11,7 @@
   body {
     margin: 0;
     padding: 40px 20px;
-    background: radial-gradient(circle at 30% 20%, #f6efe6, #ece0cf);
+    background: radial-gradient(circle at 30% 20%, #F7EFDF, #D8C8A9);
     font-family: Georgia, 'Liberation Serif', serif;
     color: #332f28;
     min-height: 100vh;
@@ -20,7 +20,7 @@
     justify-content: center;
   }
   .card {
-    background: #fbf7f0;
+    background: #F7EFDF;
     border: 1px solid rgba(61,58,52,0.25);
     border-radius: 18px;
     max-width: 560px;
@@ -32,11 +32,11 @@
   .brand h1 { font-size: 26px; letter-spacing: 4px; margin: 0; font-weight: normal; }
   .brand p {
     font-family: Jost, Arial, sans-serif; font-size: 12px; letter-spacing: 2px;
-    color: #5f6b52; margin: 6px 0 0; text-transform: uppercase;
+    color: #667449; margin: 6px 0 0; text-transform: uppercase;
   }
   .progress { display: flex; gap: 6px; margin-bottom: 28px; }
-  .progress div { flex: 1; height: 4px; border-radius: 2px; background: #e3dbca; transition: background 0.3s; }
-  .progress div.done { background: #7d9169; }
+  .progress div { flex: 1; height: 4px; border-radius: 2px; background: #D8C8A9; transition: background 0.3s; }
+  .progress div.done { background: #8F9A6C; }
   .question { font-family: Jost, Arial, sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 18px; line-height: 1.4; }
   .options { display: flex; flex-direction: column; gap: 10px; }
   .option {
@@ -44,32 +44,32 @@
     border: 1px solid rgba(61,58,52,0.25); background: #ffffff; color: #332f28; font-size: 15px;
     cursor: pointer; transition: all 0.15s;
   }
-  .option:hover { border-color: #7d9169; background: #f2efe5; }
+  .option:hover { border-color: #8F9A6C; background: #D8C8A9; }
   .result-title {
     font-family: Jost, Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
     color: #8a8676; margin: 0 0 14px;
   }
   .profile-card {
     display: flex; gap: 14px; align-items: flex-start; border-radius: 14px;
-    padding: 18px 20px; margin-bottom: 14px; background: #eef1e6;
+    padding: 18px 20px; margin-bottom: 14px; background: #D8C8A9;
   }
   .profile-icon { font-size: 26px; line-height: 1; margin-top: 2px; }
-  .profile-name { font-family: Jost, Arial, sans-serif; font-weight: 700; font-size: 16px; margin: 0 0 4px; color: #556238; }
+  .profile-name { font-family: Jost, Arial, sans-serif; font-weight: 700; font-size: 16px; margin: 0 0 4px; color: #667449; }
   .profile-desc { font-family: Jost, Arial, sans-serif; font-size: 14px; line-height: 1.55; margin: 0; color: #4a463e; }
   .restart {
     font-family: Jost, Arial, sans-serif; width: 100%; padding: 13px; border-radius: 10px;
     border: 1px solid rgba(61,58,52,0.3); background: transparent; color: #332f28; font-size: 14px; cursor: pointer; margin-top: 8px;
   }
-  .restart:hover { background: #f2efe5; }
+  .restart:hover { background: #D8C8A9; }
   .hidden { display: none; }
   .format-card {
     border: 1px solid rgba(61,58,52,0.25); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px;
     cursor: pointer; transition: all 0.15s; background: #fff;
   }
-  .format-card:hover { border-color: #556238; background: #f2efe5; }
+  .format-card:hover { border-color: #667449; background: #D8C8A9; }
   .format-title { font-family: Jost, Arial, sans-serif; font-weight: 700; font-size: 16px; margin: 0 0 4px; }
   .format-desc { font-family: Jost, Arial, sans-serif; font-size: 13px; color: #4a463e; margin: 0 0 6px; }
-  .format-price { font-family: Jost, Arial, sans-serif; font-weight: 700; color: #556238; margin: 0; }
+  .format-price { font-family: Jost, Arial, sans-serif; font-weight: 700; color: #667449; margin: 0; }
   .name-input {
     width: 100%; font-family: Jost, Arial, sans-serif; font-size: 15px; padding: 12px 14px;
     border-radius: 10px; border: 1px solid rgba(61,58,52,0.3); margin-bottom: 20px;
@@ -124,19 +124,19 @@
 
 <script>
 const aromas = {
-  lavanda: { nome: "Lavanda", icon: "💜", cor: "#8b5fa8",
+  lavanda: { nome: "Lavanda", icon: "💜", cor: "#667449",
     desc: "Calmo e relaxante, ideal pra desacelerar e descansar." },
-  canela: { nome: "Maison Vert", icon: "🌳", cor: "#4f6a3c",
+  canela: { nome: "Maison Vert", icon: "🌳", cor: "#667449",
     desc: "Verde e sofisticado, traz a sensação de uma casa elegante e acolhedora." },
-  incenso: { nome: "Incenso Spicy", icon: "🕯️", cor: "#6b5842",
+  incenso: { nome: "Incenso Spicy", icon: "🕯️", cor: "#667449",
     desc: "Espiritual e contemplativo, ideal pra momentos de introspecção." },
-  mirra_arruda: { nome: "Alecrim", icon: "🌿", cor: "#4a5a3a",
+  mirra_arruda: { nome: "Alecrim", icon: "🌿", cor: "#667449",
     desc: "Herbal e protetor, traz uma sensação de limpeza energética." },
-  bamboo: { nome: "Bamboo Trouss", icon: "🎋", cor: "#556238",
+  bamboo: { nome: "Bamboo Trouss", icon: "🎋", cor: "#667449",
     desc: "Fresco e revigorante, traz uma energia natural e concentrada pro ambiente." },
-  nerolia: { nome: "Nerolia Vetiver", icon: "🌸", cor: "#c9932e",
+  nerolia: { nome: "Nerolia Vetiver", icon: "🌸", cor: "#8F9A6C",
     desc: "Complexo e sofisticado — amadeirado, floral, com bergamota, manjericão, figo, neroli, vetiver e âmbar." },
-  chaverde: { nome: "Verbena", icon: "🍋", cor: "#7a8f3a",
+  chaverde: { nome: "Verbena", icon: "🍋", cor: "#667449",
     desc: "Cítrico e herbal, energizante e revigorante, perfeito pra começar bem o dia." }
 };
 
@@ -255,7 +255,7 @@ function renderPerfilResult() {
     '</div>' +
     '<p class="result-title" style="margin-top:22px;">Dê um nome ao seu aroma</p>' +
     '<input type="text" id="aroma-name-input" class="name-input" placeholder="Ex: Manhã de Domingo, Refúgio...">' +
-    '<button type="button" class="restart" id="continue-formato-btn" style="border-color:#556238; color:#556238; font-weight:700;">Continuar →</button>' +
+    '<button type="button" class="restart" id="continue-formato-btn" style="border-color:#667449; color:#667449; font-weight:700;">Continuar →</button>' +
     '<button type="button" class="restart" id="restart-btn">Refazer o quiz</button>';
 
   document.getElementById("continue-formato-btn").addEventListener("click", () => {

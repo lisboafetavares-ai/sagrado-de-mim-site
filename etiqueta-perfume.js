@@ -45,7 +45,7 @@ function etiquetaPerfumeHtml(o) {
         return v ? '<div><b style="font-weight:700;">' + rot + ':</b> ' + epEsc(curta(v)) + '</div>' : '';
       }).join('');
   const celula = 'display:flex; align-items:center; justify-content:center; text-align:center;';
-  return '<div id="' + (o.canvasId || "label-canvas") + '" style="position:relative; overflow:hidden; background:#F3EEE4; width:350px; height:250px; box-sizing:border-box; padding:10px; margin:0 auto 20px; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; ' + (o.interactive ? 'cursor:crosshair;' : '') + '">' +
+  return '<div id="' + (o.canvasId || "label-canvas") + '" style="position:relative; overflow:hidden; background:#F7EFDF; width:350px; height:250px; box-sizing:border-box; padding:10px; margin:0 auto 20px; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; ' + (o.interactive ? 'cursor:crosshair;' : '') + '">' +
     '<div style="width:330px; height:206px; border:' + L + '; box-sizing:border-box; display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); grid-template-rows:104px 34px 34px 32px; pointer-events:none;">' +
       '<div style="grid-column:1 / span 6; display:flex; align-items:center; gap:10px; padding:0 14px; border-bottom:' + L + ';">' +
         '<img src="' + (o.logoUrl || "assets/logo-cursiva.png") + '" alt="Sagrado de Mim" style="width:108px; height:auto; display:block; flex-shrink:0;">' +
