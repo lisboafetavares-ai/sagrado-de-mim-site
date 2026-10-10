@@ -44,8 +44,8 @@ const PRODUTOS = [
   {"id": "perfume-cabelo-40", "cat": "Perfumaria Pessoal", "nome": "Perfume para Cabelos", "tamanho": "40ml", "preco": 44.9, "aroma": true, "oculto": true, "img": null},
 
   // Corpo
-  {"id": "hidratante-250", "cat": "Corpo", "nome": "Hidratante Corporal", "tamanho": "250ml", "preco": 79.9, "aroma": true, "aromas": AROMAS_HIDRATANTE, "img": "assets/produtos/hidratante.jpg"},
-  {"id": "hidratante-moldura-300", "cat": "Corpo", "nome": "Hidratante Corporal", "tamanho": "300g · pote Moldura", "preco": 129.9, "aroma": true, "aromas": AROMAS_HIDRATANTE, "img": null},
+  {"id": "hidratante-250", "cat": "Corpo", "nome": "Hidratante Corporal", "tamanho": "250ml", "preco": 79.9, "aroma": true, "aromas": AROMAS_HIDRATANTE, "img": null},
+  {"id": "hidratante-moldura-300", "cat": "Corpo", "nome": "Hidratante Corporal", "tamanho": "300g · pote Moldura", "preco": 129.9, "aroma": true, "aromas": AROMAS_HIDRATANTE, "img": "assets/produtos/hidratante.jpg"},
   {"id": "manteiga-200", "cat": "Corpo", "nome": "Manteiga Corporal", "tamanho": "200g", "preco": 149.9, "aroma": true, "oculto": true, "img": null},
   {"id": "creme-pes-100", "cat": "Corpo", "nome": "Creme para Tratamento dos Pés", "tamanho": "100ml", "preco": 89.9, "aroma": true, "oculto": true, "img": null},
 
