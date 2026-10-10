@@ -114,8 +114,8 @@ const MODELOS = {
     html: s => {
       const tk = tintaPara(s.fundo, s.tinta), L = 'height:0; border-top:1px solid ' + tk + '; width:100%;';
       return '<div style="width:250px; height:350px; position:relative; overflow:hidden; background:' + s.fundo + '; color:' + tk + '; font-family:\'DM Mono\',\'Courier New\',monospace; border-radius:16px; box-sizing:border-box; padding:34px 22px 14px; display:flex; flex-direction:column; align-items:center; text-align:center;">' +
-        '<img src="' + logoPara(tk) + '" alt="Sagrado de Mim" style="width:82px; height:auto; display:block;">' +
-        '<div style="margin-top:22px; font-size:24px; font-weight:500; line-height:1.1; word-break:break-word;">' + esEsc(s.nome) + '</div>' +
+        '<img src="' + logoPara(tk) + '" alt="Sagrado de Mim" style="width:118px; height:auto; display:block;">' +
+        '<div style="margin-top:16px; font-size:31px; font-weight:500; line-height:1.05; word-break:break-word;">' + esEsc(s.nome) + '</div>' +
         '<div style="margin-top:auto; width:100%;">' +
           '<div style="' + L + '"></div><div style="font-size:15px; font-weight:500; padding:7px 0 2px;">' + esEsc(s.produto || "Body Splash") + '</div>' +
           '<div style="font-size:6.6px; padding:0 0 6px;">Aroma ' + esEsc(s.aroma) + ' · ' + esEsc(s.volume) + ' · feito à mão</div>' +
