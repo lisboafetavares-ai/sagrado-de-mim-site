@@ -68,6 +68,10 @@ function etqIconePAO(meses) {
 
 function etqHtmlCorpo(e, logoUrl) {
   // Mesmo desenho do estúdio de etiquetas (374 x 256 px = 99 x 67,7 mm em tamanho real)
+  if (e.p.grupo === "hidratante" && typeof etiquetaHidratanteHtml === "function") {
+    return '<div class="etq" style="width:60mm; height:60mm;"><div style="transform:scale(' + ((60 * 96 / 25.4) / 300) + '); transform-origin:0 0; width:300px; height:300px;">' +
+      etiquetaHidratanteHtml({ aroma: e.aroma, ingredientes: e.cfg.ingredientes || infoProduto(e.p.id).ingredientes || "", modo: e.cfg.modo, meses: e.cfg.meses || 12, fundo: "#F7EFDF", tinta: "#2E2A25" }) + '</div></div>';
+  }
   if (typeof MODELOS !== "undefined" && MODELOS.corpo) {
     const st = { produto: e.p.id, aroma: e.aroma, tipoTexto: e.cfg.tipo, ingredientes: e.cfg.ingredientes || (typeof infoProduto === "function" ? infoProduto(e.p.id).ingredientes : "") || "",
       modo: e.cfg.modo, meses: e.cfg.meses || 12, fundo: "#F7EFDF", lateral: "#8F9A6C" };

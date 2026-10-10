@@ -223,6 +223,8 @@
 <script src="produtos.js"></script>
 <script src="aromas-info.js"></script>
 <script src="selo-cruelty.js"></script>
+<script src="etiqueta-perfume.js"></script>
+<script src="estudio-etiquetas.js"></script>
 <script src="elementos.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
@@ -543,6 +545,10 @@ function etiquetaHtml() {
   const linha = p.nome.toUpperCase();
   const icones = edit.icones.map((ic, i) =>
     '<span class="etq-ic" data-i="' + i + '" style="position:absolute; left:' + ic.x + '%; top:' + ic.y + '%; transform:translate(-50%,-50%); font-size:22px; color:#667449; cursor:pointer; z-index:2;">' + ic.c + '</span>').join("");
+  if (p.grupo === "hidratante" && typeof etiquetaHidratanteHtml === "function") {
+    return etiquetaHidratanteHtml({ canvasId: "label-canvas", interactive: true, nome: edit.nome || "Seu nome aqui", fonte: f, aroma: edit.aroma,
+      ingredientes: inf.ingredientes || "", modo: inf.modo || "", meses: 12, fundo: "#F7EFDF", tinta: "#2E2A25", iconesHtml: icones });
+  }
   const ingred = inf.ingredientes ? escHtml(inf.ingredientes) : '<span style="display:inline-block; width:120px; border-bottom:0.5px solid #2E2A25;">&nbsp;</span>';
   const t = 'font-family:Arial,sans-serif; font-size:6.6px; line-height:1.35; margin:0; color:#2E2A25;';
   return '<div id="label-canvas" style="position:relative; overflow:hidden; background:#F7EFDF; width:374px; height:256px; margin:0 auto; box-sizing:border-box; cursor:crosshair; border:1px solid rgba(61,58,52,0.2);">' +

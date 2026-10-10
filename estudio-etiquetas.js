@@ -26,6 +26,25 @@ function selos(cor, w, comPao, meses) {
   return '<div style="display:flex; gap:' + Math.round(w / 2.4) + 'px; align-items:center; justify-content:center;">' +
     seloFeitoAMao(w + 'px', cor) + (comPao ? paoSvg(meses || 12, cor, w - 2) : '') + seloCrueltyFree(w + 'px', cor) + '</div>';
 }
+// Hidratante no pote Moldura: etiqueta quadrada, sem faixa lateral (60 x 60 mm = 300 x 300 px)
+function etiquetaHidratanteHtml(o) {
+  const tk = o.tinta || PALETA.tinta;
+  const t = 'font-family:Arial,sans-serif; font-size:6.4px; line-height:1.35; margin:0;';
+  const destaque = o.nome
+    ? '<div style="font-family:' + (o.fonte ? o.fonte.family : "Gloock, Georgia, serif") + '; font-style:' + (o.fonte ? o.fonte.style : "normal") + '; font-weight:' + (o.fonte ? o.fonte.weight : "400") + '; font-size:26px; line-height:1.05; word-break:break-word;">' + esEsc(o.nome) + '</div><div style="font-family:\'Bodoni Moda\',Georgia,serif; font-style:italic; font-size:11px; margin-top:4px;">' + esEsc(o.aroma || "") + '</div>'
+    : '<div style="font-family:Gloock,Georgia,serif; font-size:28px; line-height:1.05;">' + esEsc(String(o.aroma || "").toLowerCase().replace(/ e /g, " & ")) + '</div>';
+  return '<div id="' + (o.canvasId || "hidratante-label") + '" style="position:relative; overflow:hidden; width:300px; height:300px; background:' + (o.fundo || PALETA.creme) + '; color:' + tk + '; font-family:Jost,Arial,sans-serif; box-sizing:border-box; padding:16px 20px 12px; display:flex; flex-direction:column; align-items:center; text-align:center; border-radius:14px;' + (o.interactive ? ' cursor:crosshair;' : '') + '">' +
+    '<img src="' + logoPara(tk) + '" alt="Sagrado de Mim" style="width:112px; height:auto; display:block; pointer-events:none;">' +
+    '<div style="font-size:8px; letter-spacing:.16em; border-bottom:1px solid ' + tk + '; padding:0 6px 3px; margin-top:8px;">HIDRATANTE CORPORAL</div>' +
+    '<div style="margin-top:10px; pointer-events:none;">' + destaque + '</div>' +
+    '<div style="display:flex; align-items:center; gap:8px; margin-top:10px; pointer-events:none;">' + seloFeitoAMao('26px', tk) + '<div style="font-size:6.6px; letter-spacing:.14em; line-height:1.45; text-transform:uppercase; border-top:1px solid ' + tk + '; border-bottom:1px solid ' + tk + '; padding:3px 6px;">feito à mão<br>pensado para você</div>' + seloCrueltyFree('26px', tk) + '</div>' +
+    '<div style="margin-top:auto; width:100%; text-align:left; pointer-events:none;">' +
+      '<p style="' + t + '"><b>INGREDIENTES:</b> ' + (o.ingredientes ? esEsc(o.ingredientes) : '________________________') + '</p>' +
+      (o.modo ? '<p style="' + t + ' margin-top:2px;"><b>MODO DE USO:</b> ' + esEsc(o.modo) + ' Uso externo. Evite contato com os olhos.</p>' : '') +
+      '<div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:5px; ' + t + '"><span style="display:flex; align-items:flex-end; gap:6px;">' + paoSvg(o.meses || 12, tk, 24) + '<b style="font-size:8.5px;">300g</b></span><span style="text-align:right;">sagradodemim.com.br<br>(31) 99915-3132</span></div>' +
+    '</div>' + (o.iconesHtml || '') +
+  '</div>';
+}
 function produtosDe(filtro) { return PRODUTOS.filter(filtro); }
 function nomeProduto(p) { return (p.grupoNome || p.nome) + (p.variante ? " · " + p.variante : (p.tamanho ? " " + p.tamanho : "")); }
 
@@ -33,9 +52,9 @@ const PADRAO_LACRE = "<svg width=\"302\" height=\"470\" viewBox=\"0 0 302 470\" 
 
 const MODELOS = {
   corpo: {
-    titulo: "Hidratantes, sabonetes, espuma facial e corpo", mm: [99, 67.7], px: [374, 256],
+    titulo: "Sabonetes e espuma facial", mm: [99, 67.7], px: [374, 256],
     campos: [
-      { id: "produto", rot: "Produto", tipo: "select", opcoes: () => produtosDe(p => ["Corpo", "Banho & Facial"].includes(p.cat) && !p.oculto).map(p => [nomeProduto(p), p.id]) },
+      { id: "produto", rot: "Produto", tipo: "select", opcoes: () => produtosDe(p => ["Corpo", "Banho & Facial"].includes(p.cat) && !p.oculto && p.grupo !== "hidratante").map(p => [nomeProduto(p), p.id]) },
       { id: "aroma", rot: "Aroma", tipo: "select", opcoes: s => { const p = PRODUTOS.find(x => x.id === s.produto); return p ? aromasDe(p).map(a => [a, a]) : []; } },
       { id: "tipoTexto", rot: "Tipo (no topo)", tipo: "texto", auto: s => (typeof ETIQUETAS_CORPO !== "undefined" && ETIQUETAS_CORPO[s.produto] || {}).tipo || ((PRODUTOS.find(x => x.id === s.produto) || {}).grupoNome || (PRODUTOS.find(x => x.id === s.produto) || {}).nome || "").toUpperCase() },
       { id: "ingredientes", rot: "Ingredientes", tipo: "area", auto: s => infoProduto(s.produto).ingredientes || "" },
@@ -66,6 +85,19 @@ const MODELOS = {
           '<div style="margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; ' + t + '"><span style="display:flex; align-items:flex-end; gap:6px;">' + paoSvg(s.meses || 12, tl, 30) + '<b style="font-size:9px;">' + esEsc(p.tamanho || "") + '</b></span><span style="text-align:right;">sagradodemim.com.br<br>(31) 99915-3132</span></div>' +
         '</div></div>';
     }
+  },
+  hidratante: {
+    titulo: "Hidratante (pote Moldura)", mm: [60, 60], px: [300, 300],
+    campos: [
+      { id: "nome", rot: "Nome personalizado (opcional)", tipo: "texto", padrao: "" },
+      { id: "aroma", rot: "Aroma", tipo: "select", opcoes: () => (typeof AROMAS_HIDRATANTE !== "undefined" ? AROMAS_HIDRATANTE : []).map(a => [a, a]) },
+      { id: "ingredientes", rot: "Ingredientes", tipo: "area", auto: () => infoProduto("hidratante-moldura-300").ingredientes || "" },
+      { id: "modo", rot: "Modo de uso", tipo: "area", auto: () => infoProduto("hidratante-moldura-300").modo || "" },
+      { id: "meses", rot: "Validade depois de aberto (meses)", tipo: "numero", padrao: 12 },
+      { id: "fundo", rot: "Fundo", tipo: "cor", padrao: PALETA.creme },
+      { id: "tinta", rot: "Cor do texto", tipo: "tinta", padrao: "" }
+    ],
+    html: s => etiquetaHidratanteHtml({ nome: s.nome, aroma: s.aroma, ingredientes: s.ingredientes, modo: s.modo, meses: s.meses, fundo: s.fundo, tinta: tintaPara(s.fundo, s.tinta) })
   },
   bodysplash: {
     titulo: "Body Splash e Body Shimmer", mm: [50, 70], px: [250, 350],
