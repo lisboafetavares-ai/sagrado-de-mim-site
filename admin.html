@@ -549,7 +549,7 @@ async function renderEstoque() {
     return '<li>' + (pr.grupoNome || pr.nome) + (pr.variante ? ' ' + pr.variante : '') + (ar ? ' · ' + ar : '') + ': <b>' + n + '</b></li>'; }).join('');
   const topo = '<div style="background:#D8C8A9; border-radius:12px; padding:14px 18px; margin-bottom:16px; font-family:Arial,sans-serif; font-size:13px;">' +
     '<b>Avise-me quando chegar:</b> ' + (totalEsperando ? totalEsperando + ' pessoa(s) esperando.<ul style="margin:6px 0 0; padding-left:18px;">' + resumo + '</ul>' : 'ninguém esperando no momento.') +
-    '<p style="margin:8px 0 0; color:#4a463e;">Marque "Fora de estoque" no aroma que acabou. Na loja aparece o botão "Avise-me quando chegar". Quando você desmarcar, todo mundo que pediu recebe um e-mail.</p></div>';
+    '<p style="margin:8px 0 0; color:#4a463e;"><b>Quantidade 0</b> continua sendo "sob encomenda — 5 dias" (a cliente compra normalmente). Marque <b>"sem insumo"</b> só quando faltar matéria-prima: aí a loja não vende e mostra "Avise-me quando chegar". Ao desmarcar, todo mundo que pediu recebe um e-mail.</p></div>';
 
   box.innerHTML = topo + PRODUTOS.map(p => {
     const linhas = p.aroma ? aromasDe(p) : [""];
@@ -557,7 +557,7 @@ async function renderEstoque() {
       '<label style="display:flex; align-items:center; justify-content:space-between; gap:10px; font-family:Arial,sans-serif; font-size:13px; margin:0;">' +
         '<span>' + (a || "Quantidade") + '</span>' +
         '<span style="display:flex; align-items:center; gap:8px;"><input type="number" min="0" step="1" class="est-input" data-pid="' + p.id + '" data-aroma="' + a + '" value="' + (mapa[p.id + "|" + a] ?? 0) + '" data-orig="' + (mapa[p.id + "|" + a] ?? 0) + '" style="width:70px; padding:6px 8px; border:1px solid rgba(61,58,52,0.3); border-radius:6px;">' +
-        '<label title="Fora de estoque" style="display:flex; align-items:center; gap:3px; font-size:11px; color:#a3455a; cursor:pointer;"><input type="checkbox" class="est-fora" data-pid="' + p.id + '" data-aroma="' + a + '"' + (fora[p.id + "|" + a] ? ' checked' : '') + '>fora</label>' +
+        '<label title="Fora de estoque" style="display:flex; align-items:center; gap:3px; font-size:11px; color:#a3455a; cursor:pointer;"><input type="checkbox" class="est-fora" data-pid="' + p.id + '" data-aroma="' + a + '"' + (fora[p.id + "|" + a] ? ' checked' : '') + '>sem insumo</label>' +
         (avisos[p.id + "|" + a] ? '<span style="font-size:11px; background:#667449; color:#fff; border-radius:999px; padding:1px 7px;" title="pessoas esperando">' + avisos[p.id + "|" + a] + '</span>' : '') +
         '</span></label>'
     ).join('');
