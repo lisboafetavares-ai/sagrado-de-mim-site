@@ -283,8 +283,8 @@ function renderLabelPreview(interactive) {
   ).join('');
   const nt = { saida: notas.saida ? notas.saida.nome : "", corpo: notas.corpo ? notas.corpo.nome : "", fundo: notas.fundo ? notas.fundo.nome : "" };
   const aroma = [nt.saida, nt.corpo, nt.fundo].filter(Boolean).join(" · ");
-  // Tamanho real da etiqueta: 70mm x 50mm
-  return etiquetaPerfumeHtml({ canvasId: "label-canvas", nome: perfumeName, fonte: selectedFont, aroma: aroma, notas: nt, iconesHtml: placedHtml, interactive: interactive });
+  // Tamanho real da etiqueta: 65mm x 34mm (perfume personalizado)
+  return etiquetaPerfumePequenaHtml({ canvasId: "label-canvas", nome: perfumeName, fonte: selectedFont, aroma: aroma, notas: nt, iconesHtml: placedHtml, interactive: interactive });
 }
 
 function renderLabelEditor() {

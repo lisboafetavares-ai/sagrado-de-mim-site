@@ -700,8 +700,8 @@ function renderLabelPreview(interactive) {
   const ordem = Object.entries(scores || {}).sort((a, b) => b[1] - a[1]);
   const familia = ordem.length && profiles[ordem[0][0]] ? profiles[ordem[0][0]].nome : "";
   const fam = familia ? notasDaFamilia(familia) : { aroma: "", notas: {} };
-  // Tamanho real da etiqueta: 70mm x 50mm
-  return etiquetaPerfumeHtml({ canvasId: "label-canvas", nome: perfumeName, fonte: selectedFont, aroma: fam.aroma, notas: fam.notas, iconesHtml: placedHtml, interactive: interactive });
+  // Tamanho real da etiqueta: 65mm x 34mm (perfume personalizado)
+  return etiquetaPerfumePequenaHtml({ canvasId: "label-canvas", nome: perfumeName, fonte: selectedFont, aroma: fam.aroma, notas: fam.notas, iconesHtml: placedHtml, interactive: interactive });
 }
 
 function renderLabelEditor() {

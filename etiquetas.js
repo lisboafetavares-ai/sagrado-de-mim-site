@@ -100,17 +100,10 @@ const ETQ_CASA = {
 };
 
 function etqHtmlCasa(e, logoUrl) {
-  return '<div class="etq casa">' +
-    '<div class="ing"><div class="ing-txt"><span><b>Ingredientes:</b> ' + etqEsc(e.cfg.ingredientes) + ' <b>· Aroma: ' + etqEsc(e.base) + '</b> (peça um refil informando esse nome)</span></div></div>' +
-    '<div class="meio">' +
-      '<img src="' + logoUrl + '" alt="">' +
-      '<div class="moldura">' + etqEsc(e.nome) + '</div>' +
-      '<div class="produto">' + etqEsc(e.cfg.nome) + '</div>' +
-      '<div class="vol">' + etqEsc(e.cfg.volume) + '</div>' +
-    '</div>' +
-    '<div style="position:absolute; right:3.4mm; bottom:3.4mm;">' + seloCrueltyFree('9mm', '#1a1a1a') + '</div>' +
-    '<div style="position:absolute; right:13.6mm; bottom:3.4mm;">' + seloFeitoAMao('9mm', '#1a1a1a') + '</div>' +
-  '</div>';
+  const f = (99 * 96 / 25.4) / 495;
+  return '<div class="etq" style="width:99mm; height:67.7mm;"><div style="transform:scale(' + f + '); transform-origin:0 0; width:495px; height:338px;">' +
+    etiquetaCasaHtml({ nome: e.nome, base: e.base, produto: e.item.tipo === "Home Spray" ? "spray" : "difusor", ingredientes: e.cfg.ingredientes, volume: e.cfg.volume, logoUrl: logoUrl }) +
+  '</div></div>';
 }
 
 function etqHtmlSelo(logoUrl) {

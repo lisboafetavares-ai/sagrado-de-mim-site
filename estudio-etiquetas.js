@@ -95,7 +95,7 @@ const MODELOS = {
     }
   },
   perfume: {
-    titulo: "Perfume", mm: [70, 50], px: [350, 250],
+    titulo: "Perfume (70 × 50)", mm: [70, 50], px: [350, 250],
     campos: [
       { id: "nome", rot: "Nome do perfume", tipo: "texto", padrao: "Lua Nova" },
       { id: "aroma", rot: "Essência / aroma", tipo: "select", opcoes: () => Object.keys(typeof AROMAS_INFO !== "undefined" ? AROMAS_INFO : {}).map(a => [a, a]) },
@@ -108,6 +108,20 @@ const MODELOS = {
       return h.replace('background:#F7EFDF;', 'background:' + s.fundo + ';').replace('margin:0 auto 20px;', 'margin:0;');
     }
   },
+  perfumeP: {
+    titulo: "Perfume personalizado (65 × 34)", mm: [65, 34], px: [325, 170],
+    campos: [
+      { id: "nome", rot: "Nome do perfume", tipo: "texto", padrao: "Lua Nova" },
+      { id: "aroma", rot: "Essência / aroma", tipo: "select", opcoes: () => Object.keys(typeof AROMAS_INFO !== "undefined" ? AROMAS_INFO : {}).map(a => [a, a]) },
+      { id: "fundo", rot: "Fundo", tipo: "cor", padrao: PALETA.creme }
+    ],
+    html: s => {
+      const i = typeof infoAroma === "function" ? infoAroma(s.aroma) : null;
+      const notas = i && i.saida ? { saida: i.saida, corpo: i.corpo, fundo: i.fundo } : (i ? { linha: i.desc } : {});
+      const tk = tintaPara(s.fundo);
+      return etiquetaPerfumePequenaHtml({ canvasId: "estudio-perfp", nome: s.nome, aroma: s.aroma, notas: notas, fundo: s.fundo, tinta: tk, logoUrl: logoPara(tk) }).replace('margin:0 auto 20px;', 'margin:0;');
+    }
+  },
   casa: {
     titulo: "Difusor / Home Spray personalizado", mm: [99, 67.7], px: [495, 338],
     campos: [
@@ -118,18 +132,7 @@ const MODELOS = {
       { id: "ingredientes", rot: "Ingredientes", tipo: "area", auto: s => s.produto === "spray" ? "Água, Álcool, Fragrância, Glicerina." : "Óleo Mineral, Fragrância, Álcool, Corante." },
       { id: "fundo", rot: "Fundo", tipo: "cor", padrao: PALETA.creme }
     ],
-    html: s => {
-      const tk = tintaPara(s.fundo);
-      return '<div style="position:relative; overflow:hidden; width:495px; height:338px; background:' + s.fundo + '; color:' + tk + '; display:flex; align-items:center; gap:12px; padding:16px 18px; box-sizing:border-box;">' +
-        '<div style="position:relative; width:44px; height:306px; flex-shrink:0;"><div style="position:absolute; top:50%; left:50%; width:296px; height:44px; transform:translate(-50%,-50%) rotate(-90deg); font-family:Arial,sans-serif; font-weight:700; font-size:9px; line-height:1.4; display:flex; align-items:center;"><span>Ingredientes: ' + esEsc(s.ingredientes) + ' · Aroma: ' + esEsc(s.base) + ' (peça um refil informando esse nome)</span></div></div>' +
-        '<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:Georgia,serif;">' +
-          '<img src="' + logoPara(tk) + '" alt="" style="width:140px; margin-bottom:14px;">' +
-          '<div style="border:1.5px solid ' + tk + '; padding:12px 18px; text-align:center; margin-bottom:12px; min-width:240px; font-size:30px; letter-spacing:1px;">' + esEsc(s.nome) + '</div>' +
-          '<div style="font-size:24px; letter-spacing:1px; margin-bottom:8px;">' + (s.produto === "spray" ? "HOME SPRAY" : "DIFUSOR DE VARETAS") + '</div>' +
-          '<div style="font-family:Arial,sans-serif; font-size:16px;">' + esEsc(s.volume) + '</div>' +
-        '</div>' +
-        '<div style="position:absolute; right:16px; bottom:16px;">' + selos(tk, 42, false) + '</div></div>';
-    }
+    html: s => etiquetaCasaHtml({ nome: s.nome, base: s.base, produto: s.produto, volume: s.volume, ingredientes: s.ingredientes, fundo: s.fundo, tinta: tintaPara(s.fundo), logoUrl: logoPara(tintaPara(s.fundo)) })
   },
   selo: {
     titulo: "Selo da caixa (\"um aroma feito para você\")", mm: [67.7, 99], px: [256, 374],
