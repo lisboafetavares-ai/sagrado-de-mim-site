@@ -78,6 +78,8 @@ const PRODUTOS_INFO = {
     modo: "Aplique uma pequena quantidade na pele molhada, faça espuma e enxágue." },
   "espuma-facial-70": { desc: "Espuma de limpeza facial suave, para o dia a dia.",
     modo: "Aplique no rosto úmido, massageie suavemente evitando a área dos olhos e enxágue." },
+  "kit-lavabo": { desc: "Difusor de varetas e sabonete líquido no mesmo aroma, pra deixar o lavabo perfumado e bonito. Um presente que fica lindo em qualquer casa.",
+    modo: "Difusor: coloque as varetas no frasco e vire-as a cada 2 ou 3 dias. Sabonete: aplique nas mãos molhadas, faça espuma e enxágue." },
   "caixa-misteriosa": { desc: "Uma seleção surpresa de produtos Sagrado de Mim, montada à mão. Edição limitada: você só descobre o que tem dentro quando abrir." }
 };
 function infoProduto(id) { return (typeof PRODUTOS_INFO !== "undefined" && PRODUTOS_INFO[id]) || {}; }

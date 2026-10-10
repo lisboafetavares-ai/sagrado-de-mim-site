@@ -37,6 +37,7 @@ const PRODUTOS = [
   {"id": "passa-facil", "cat": "Perfumaria & Ambiente", "nome": "Passa Fácil", "tamanho": "", "preco": 29.9, "aroma": true, "aromas": AROMAS_PASSA_FACIL, "img": null},
   {"id": "vela-p", "grupo": "vela", "grupoNome": "Vela na Latinha", "variante": "Pequena", "cat": "Perfumaria & Ambiente", "nome": "Vela na Latinha — Pequena", "tamanho": "", "preco": 35.0, "aroma": true, "aromas": AROMAS_VELAS, "img": "assets/kits/vela.jpg"},
   {"id": "vela-g", "grupo": "vela", "grupoNome": "Vela na Latinha", "variante": "Grande", "cat": "Perfumaria & Ambiente", "nome": "Vela na Latinha — Grande", "tamanho": "", "preco": 70.0, "aroma": true, "aromas": AROMAS_VELAS, "img": "assets/kits/vela.jpg"},
+  {"id": "kit-lavabo", "cat": "Perfumaria & Ambiente", "nome": "Kit Lavabo", "tamanho": "Difusor + Sabonete Líquido", "preco": null, "aroma": true, "img": "assets/produtos/kit-lavabo.jpg"},
   {"id": "aromatizador-100", "cat": "Perfumaria & Ambiente", "nome": "Aromatizador de Ambientes", "tamanho": "100ml", "preco": 26.9, "aroma": true, "oculto": true, "img": null},
 
   // Perfumes (perfume só personalizado, pelo quiz)
