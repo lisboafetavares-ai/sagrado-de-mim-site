@@ -129,6 +129,13 @@
     .det-aba svg { display:none; }
   }
   select.variante { width:100%; margin:0 0 10px; padding:10px 12px; border-radius:10px; border:1px solid rgba(61,58,52,.3); font-family:Jost,Arial,sans-serif; font-size:14px; background:#fff; }
+  .avise { margin-top:2px; }
+  .avise-tit { font-family:Jost,Arial,sans-serif; font-size:13px; font-weight:500; margin:0 0 6px; color:#332f28; }
+  .avise-linha { display:flex; gap:6px; flex-wrap:wrap; }
+  .avise-email { flex:1 1 140px; min-width:0; padding:10px 12px; border-radius:999px; border:1px solid rgba(61,58,52,.3); font-family:Jost,Arial,sans-serif; font-size:13px; }
+  .avise-btn { padding:10px 14px; border-radius:999px; border:1px solid #667449; background:transparent; color:#667449; font-family:Jost,Arial,sans-serif; font-size:13px; cursor:pointer; }
+  .avise-btn:hover { background:#667449; color:#fff; }
+  .avise-msg { font-family:Jost,Arial,sans-serif; font-size:12px; margin:6px 0 0; min-height:14px; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -248,6 +255,46 @@ async function carregarEstoque() {
   } catch (e) { /* sem estoque: segue sem status */ }
 }
 
+// ---------- Fora de estoque / Avise-me ----------
+let FORA = {};
+async function carregarForaEstoque() {
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/fora_estoque?select=product_id,aroma", { headers: { "apikey": SUPABASE_ANON_KEY } });
+    if (!res.ok) return;
+    (await res.json()).forEach(r => { FORA[r.product_id + "|" + (r.aroma || "")] = true; });
+  } catch (e) {}
+}
+function estaFora(id, aroma) { return !!FORA[id + "|" + (aroma || "")]; }
+function atualizarFora(id) {
+  const p = PRODUTOS.find(x => x.id === id); if (!p) return;
+  const sel = document.querySelector('select.aroma[data-id="' + id + '"]');
+  const aroma = p.aroma ? (sel ? sel.value : "") : "";
+  const fora = (!p.aroma || aroma) && estaFora(id, aroma);
+  const btn = document.querySelector('.add-btn[data-id="' + id + '"]');
+  const box = document.querySelector('.avise[data-avise="' + id + '"]');
+  const st = document.querySelector('[data-status-id="' + id + '"]');
+  if (btn) { btn.style.display = fora ? "none" : ""; }
+  if (box) box.style.display = fora ? "block" : "none";
+  if (fora && st) st.innerHTML = '<span class="dot enc"></span>Fora de estoque';
+}
+async function enviarAviso(id) {
+  const p = PRODUTOS.find(x => x.id === id);
+  const sel = document.querySelector('select.aroma[data-id="' + id + '"]');
+  const aroma = p.aroma ? (sel ? sel.value : "") : "";
+  const inp = document.querySelector('.avise-email[data-id="' + id + '"]');
+  const msg = document.querySelector('.avise-msg[data-id="' + id + '"]');
+  const email = inp.value.trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.style.color = "#a3455a"; msg.textContent = "Digite um e-mail válido."; return; }
+  msg.style.color = "#6b6558"; msg.textContent = "Enviando...";
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/rpc/criar_aviso", { method: "POST", headers: { "apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_product_id: id, p_aroma: aroma, p_email: email }) });
+    if (!res.ok) throw new Error();
+    msg.style.color = "#667449"; msg.textContent = "Pronto! Vamos te avisar por e-mail quando chegar.";
+    inp.value = "";
+  } catch (e) { msg.style.color = "#a3455a"; msg.textContent = "Não foi possível agora. Tente de novo."; }
+}
+
 function qtdEstoque(id, aroma) {
   if (ESTOQUE === null) return null;
   return ESTOQUE[id + "|" + (aroma || "")] || 0;
@@ -312,7 +359,7 @@ function renderGrid() {
       aroma = '<select class="aroma" data-id="' + p.id + '"><option value="">Escolha o aroma...</option>' +
         aromasDe(p).map(a => {
           const q = qtdEstoque(p.id, a);
-          const rotulo = q === null ? a : a + (q > 0 ? " · pronta entrega" : " · sob encomenda");
+          const rotulo = estaFora(p.id, a) ? a + " · fora de estoque" : (q === null ? a : a + (q > 0 ? " · pronta entrega" : " · sob encomenda"));
           return '<option value="' + a + '">' + rotulo + '</option>';
         }).join('') + '</select>';
       status = ESTOQUE === null ? "" : "Escolha o aroma para ver a disponibilidade";
@@ -337,6 +384,9 @@ function renderGrid() {
         (p.limitado && !(qtdEstoque(p.id, "") > 0)
           ? '<button type="button" class="add-btn" disabled style="opacity:.5; cursor:default;">' + (qtdEstoque(p.id, "") === null ? 'Indisponível no momento' : 'Esgotada') + '</button>'
           : '<button type="button" class="add-btn" data-id="' + p.id + '">Adicionar ao carrinho</button>') +
+        '<div class="avise" data-avise="' + p.id + '" style="display:none;"><p class="avise-tit">Fora de estoque no momento</p>' +
+          '<div class="avise-linha"><input type="email" class="avise-email" data-id="' + p.id + '" placeholder="Seu e-mail" aria-label="Seu e-mail"><button type="button" class="avise-btn" data-id="' + p.id + '">Avise-me quando chegar</button></div>' +
+          '<p class="avise-msg" data-id="' + p.id + '" role="status"></p></div>' +
       '</div></div>';
   }).join('');
 
@@ -367,8 +417,11 @@ function renderGrid() {
       const el = document.querySelector('[data-status-id="' + id + '"]');
       if (!el) return;
       el.innerHTML = sel.value ? statusHtml(qtdEstoque(id, sel.value)) : (ESTOQUE === null ? "" : "Escolha o aroma para ver a disponibilidade");
+      atualizarFora(id);
     });
   });
+  grid.querySelectorAll(".avise-btn").forEach(b => b.addEventListener("click", () => enviarAviso(b.dataset.id)));
+  grid.querySelectorAll(".add-btn[data-id]").forEach(b => atualizarFora(b.dataset.id));
 }
 
 function adicionar(id) {
@@ -385,6 +438,7 @@ function adicionar(id) {
     aromaSel = sel.value;
     detalhes["Aroma"] = aromaSel;
   }
+  if (estaFora(id, aromaSel)) { alert("Esse item está fora de estoque. Deixe seu e-mail que avisamos quando chegar."); return; }
   const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
 
   // Se ja existem unidades iguais no carrinho, elas contam no estoque antes desta.
@@ -416,7 +470,7 @@ function adicionar(id) {
   window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
 }
 
-carregarEstoque().then(() => { renderFiltros(); renderGrid(); });
+Promise.all([carregarEstoque(), carregarForaEstoque()]).then(() => { renderFiltros(); renderGrid(); });
 
 
 // ===== Janela de detalhes do produto (abas + notas do aroma) =====

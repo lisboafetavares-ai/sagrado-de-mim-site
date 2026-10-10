@@ -539,13 +539,27 @@ async function renderEstoque() {
     return;
   }
 
-  box.innerHTML = PRODUTOS.map(p => {
+  // fora de estoque (público) e avisos (com senha)
+  let fora = {}, avisos = {};
+  try { const r = await fetch(SUPABASE_URL + "/rest/v1/fora_estoque?select=product_id,aroma", { headers: sbHeaders() }); if (r.ok) (await r.json()).forEach(x => { fora[x.product_id + "|" + x.aroma] = true; }); } catch (e) {}
+  try { const cod = localStorage.getItem("codigoEstoque") || sessionStorage.getItem("codigoEstoque");
+    if (cod) (await rpcAdmin("admin_listar_avisos", { p_codigo: cod })).forEach(x => { avisos[x.product_id + "|" + x.aroma] = x.esperando; }); } catch (e) {}
+  const totalEsperando = Object.values(avisos).reduce((t, n) => t + n, 0);
+  const resumo = Object.entries(avisos).map(([k, n]) => { const [pid, ar] = k.split("|"); const pr = PRODUTOS.find(x => x.id === pid) || { nome: pid };
+    return '<li>' + (pr.grupoNome || pr.nome) + (pr.variante ? ' ' + pr.variante : '') + (ar ? ' · ' + ar : '') + ': <b>' + n + '</b></li>'; }).join('');
+  const topo = '<div style="background:#D8C8A9; border-radius:12px; padding:14px 18px; margin-bottom:16px; font-family:Arial,sans-serif; font-size:13px;">' +
+    '<b>Avise-me quando chegar:</b> ' + (totalEsperando ? totalEsperando + ' pessoa(s) esperando.<ul style="margin:6px 0 0; padding-left:18px;">' + resumo + '</ul>' : 'ninguém esperando no momento.') +
+    '<p style="margin:8px 0 0; color:#4a463e;">Marque "Fora de estoque" no aroma que acabou. Na loja aparece o botão "Avise-me quando chegar". Quando você desmarcar, todo mundo que pediu recebe um e-mail.</p></div>';
+
+  box.innerHTML = topo + PRODUTOS.map(p => {
     const linhas = p.aroma ? aromasDe(p) : [""];
     const campos = linhas.map(a =>
       '<label style="display:flex; align-items:center; justify-content:space-between; gap:10px; font-family:Arial,sans-serif; font-size:13px; margin:0;">' +
         '<span>' + (a || "Quantidade") + '</span>' +
-        '<input type="number" min="0" step="1" class="est-input" data-pid="' + p.id + '" data-aroma="' + a + '" value="' + (mapa[p.id + "|" + a] ?? 0) + '" data-orig="' + (mapa[p.id + "|" + a] ?? 0) + '" style="width:80px; padding:6px 8px; border:1px solid rgba(61,58,52,0.3); border-radius:6px;">' +
-      '</label>'
+        '<span style="display:flex; align-items:center; gap:8px;"><input type="number" min="0" step="1" class="est-input" data-pid="' + p.id + '" data-aroma="' + a + '" value="' + (mapa[p.id + "|" + a] ?? 0) + '" data-orig="' + (mapa[p.id + "|" + a] ?? 0) + '" style="width:70px; padding:6px 8px; border:1px solid rgba(61,58,52,0.3); border-radius:6px;">' +
+        '<label title="Fora de estoque" style="display:flex; align-items:center; gap:3px; font-size:11px; color:#a3455a; cursor:pointer;"><input type="checkbox" class="est-fora" data-pid="' + p.id + '" data-aroma="' + a + '"' + (fora[p.id + "|" + a] ? ' checked' : '') + '>fora</label>' +
+        (avisos[p.id + "|" + a] ? '<span style="font-size:11px; background:#667449; color:#fff; border-radius:999px; padding:1px 7px;" title="pessoas esperando">' + avisos[p.id + "|" + a] + '</span>' : '') +
+        '</span></label>'
     ).join('');
     return '<div style="background:#F7EFDF; border:1px solid rgba(61,58,52,0.18); border-radius:12px; padding:16px 18px; margin-bottom:14px;">' +
       '<p style="font-family:Georgia,serif; font-size:16px; margin:0 0 10px;">' + p.nome + (p.tamanho ? ' <span style="color:#8a8676; font-size:13px;">' + p.tamanho + '</span>' : '') + '</p>' +
@@ -553,6 +567,35 @@ async function renderEstoque() {
       '<div style="margin-top:12px;"><button type="button" class="btn est-salvar" data-pid="' + p.id + '" style="font-size:13px; padding:8px 16px;">Salvar</button> <span class="est-msg" data-pid="' + p.id + '" style="font-family:Arial,sans-serif; font-size:12px; margin-left:8px;"></span></div>' +
     '</div>';
   }).join('');
+
+  box.querySelectorAll(".est-fora").forEach(chk => chk.addEventListener("change", async () => {
+    const pid = chk.dataset.pid, aroma = chk.dataset.aroma, marcado = chk.checked;
+    const msg = box.querySelector('.est-msg[data-pid="' + pid + '"]');
+    const codigo = codigoEstoque(false);
+    if (!codigo) { chk.checked = !marcado; return; }
+    chk.disabled = true; msg.style.color = "#8a8676"; msg.textContent = "Salvando…";
+    try {
+      const emails = await rpcAdmin("admin_definir_fora", { p_codigo: codigo, p_product_id: pid, p_aroma: aroma, p_fora: marcado });
+      let enviados = 0;
+      if (!marcado && emails && emails.length) {
+        const pr = PRODUTOS.find(x => x.id === pid) || { nome: pid };
+        const nomeProd = (pr.grupoNome || pr.nome) + (pr.variante ? " " + pr.variante : "") + (aroma ? " · " + aroma : "");
+        for (const em of emails) {
+          const ok = typeof enviarEmail === "function" && await enviarEmail({ para: em, nome: "", assunto: "Chegou! " + nomeProd + " — Sagrado de Mim",
+            mensagem: "Olá!\n\nO produto que você pediu pra gente avisar já está disponível de novo: " + nomeProd + ".\n\nCorre lá antes que acabe!\n\nCom carinho,\nSagrado de Mim",
+            link: location.origin + "/loja.html", textoLink: "Ir para a loja" });
+          if (ok) enviados++;
+        }
+      }
+      msg.style.color = "#667449";
+      msg.textContent = marcado ? "Marcado como fora de estoque ✓" : ("Disponível de novo ✓" + (emails && emails.length ? " · " + (enviados ? enviados + " e-mail(s) enviados" : emails.length + " pessoa(s) esperando, mas o e-mail não está configurado: avise por WhatsApp (" + emails.join(", ") + ")") : ""));
+    } catch (err) {
+      chk.checked = !marcado;
+      if (err.codigoInvalido) { sessionStorage.removeItem("codigoEstoque"); localStorage.removeItem("codigoEstoque"); }
+      msg.style.color = "#a3455a"; msg.textContent = err.codigoInvalido ? "Código incorreto — tente de novo." : ("Erro: " + err.message + " (rodou o arquivo sql/avise-me.sql?)");
+    }
+    chk.disabled = false;
+  }));
 
   box.querySelectorAll(".est-salvar").forEach(btn => {
     btn.addEventListener("click", async () => {
