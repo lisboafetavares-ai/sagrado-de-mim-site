@@ -7,7 +7,7 @@
 <meta name="description" content="Painel administrativo Sagrado de Mim.">
 <title>Sagrado de Mim — Painel da Loja</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital@1&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital@1&family=Montserrat:wght@700&family=Jost:wght@400;500&family=Gloock&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
   body {
@@ -73,6 +73,7 @@
     <button type="button" id="tab-etiqueta" class="admin-tab" style="background:#D8C8A9; color:#667449; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Personalizar Etiqueta</button>
     <button type="button" id="tab-estoque" class="admin-tab" style="background:#D8C8A9; color:#667449; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Estoque</button>
     <button type="button" id="tab-kits" class="admin-tab" style="background:#D8C8A9; color:#667449; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Kits</button>
+    <button type="button" id="tab-estudio" class="admin-tab" style="background:#D8C8A9; color:#667449; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Todas as etiquetas</button>
     <button type="button" id="backup-btn" style="margin-left:auto; background:none; border:1px solid rgba(61,58,52,0.25); color:#8a8676; padding:8px 14px; border-radius:8px; font-family:Arial,sans-serif; font-weight:700; font-size:12px; cursor:pointer;">⬇ Baixar backup de pedidos</button>
   </div>
 
@@ -87,6 +88,11 @@
     <p style="font-family:Arial,sans-serif; font-size:13px; color:#6b6558; margin:0 0 6px;">Quantidade <strong>pronta entrega</strong> de cada produto. Com <strong>0</strong>, o produto aparece como <strong>sob encomenda (5 dias de produção)</strong>. Cada pedido novo desconta daqui automaticamente.</p>
     <p style="font-family:Arial,sans-serif; font-size:12px; color:#8a8676; margin:0 0 20px;">Na primeira vez que salvar, o painel pede a senha do estoque. Depois fica guardada neste computador.</p>
     <div id="estoque-lista"><p style="font-family:Arial,sans-serif; font-size:13px;">Carregando…</p></div>
+  </div>
+
+  <div id="view-estudio" style="display:none; max-width:900px; margin:0 auto; padding:28px 24px;">
+    <p style="font-family:Arial,sans-serif; font-size:13px; color:#6b6558; margin:0 0 14px;">Escolha o modelo, mude fundo, nome, aroma e textos, e imprima no tamanho real ou baixe a imagem.</p>
+    <div id="estudio"></div>
   </div>
 
   <div id="view-kits" style="display:none; max-width:900px; margin:0 auto; padding:28px 24px; font-family:Arial,sans-serif;">
@@ -106,6 +112,7 @@
 <script src="etiqueta-perfume.js" charset="utf-8"></script>
 <script src="elementos.js" charset="utf-8"></script>
 <script src="emails.js" charset="utf-8"></script>
+<script src="estudio-etiquetas.js" charset="utf-8"></script>
 <script src="etiquetas.js" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -419,7 +426,7 @@ document.getElementById("backup-btn").addEventListener("click", async () => {
 });
 
 function mostrarAba(nome) {
-  const abas = { pedidos: "view-pedidos", estoque: "view-estoque", etiqueta: "view-etiqueta", kits: "view-kits" };
+  const abas = { pedidos: "view-pedidos", estoque: "view-estoque", etiqueta: "view-etiqueta", kits: "view-kits", estudio: "view-estudio" };
   Object.entries(abas).forEach(([k, viewId]) => {
     const ativa = k === nome;
     document.getElementById(viewId).style.display = ativa ? (k === "pedidos" ? "flex" : "block") : "none";
@@ -430,11 +437,13 @@ function mostrarAba(nome) {
   if (nome === "etiqueta") renderAtelierEditor();
   if (nome === "estoque") renderEstoque();
   if (nome === "kits") renderKits();
+  if (nome === "estudio") abrirEstudio();
 }
 document.getElementById("tab-pedidos").addEventListener("click", () => mostrarAba("pedidos"));
 document.getElementById("tab-estoque").addEventListener("click", () => mostrarAba("estoque"));
 document.getElementById("tab-etiqueta").addEventListener("click", () => mostrarAba("etiqueta"));
 document.getElementById("tab-kits").addEventListener("click", () => mostrarAba("kits"));
+document.getElementById("tab-estudio").addEventListener("click", () => mostrarAba("estudio"));
 
 // ---------- Kits personalizados ----------
 function kEsc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
