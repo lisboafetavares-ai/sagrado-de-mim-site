@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="assets/logo-cursiva.png">
+<meta name="description" content="Monte um kit personalizado Sagrado de Mim: conte seu orçamento e o que você gosta, e a gente monta uma proposta pra você.">
+<title>Sagrado de Mim — Kits personalizados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Jost:wght@400;500&display=swap">
+<link rel="stylesheet" href="tema.css">
+<style>
+  .kp { max-width: 1100px; margin: 0 auto; padding: 32px 24px 72px; font-family: Jost, Arial, sans-serif; color: #332f28; }
+  .kp h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; font-size: clamp(40px, 6vw, 58px); margin: 8px 0 14px; line-height: 1.05; }
+  .kp .eyebrow { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: #556238; margin: 0; }
+  .kp .intro { color: #5A4A3F; font-size: 18px; max-width: 620px; margin: 0 0 32px; line-height: 1.6; }
+  .galeria { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 48px; }
+  .galeria img { width: 100%; height: 280px; object-fit: cover; border-radius: 16px; display: block; }
+  .passos-k { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0 0 40px; }
+  .passos-k div { background: #EFE6DA; border-radius: 18px; padding: 18px 20px; font-size: 15px; line-height: 1.5; }
+  .passos-k b { display: block; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 30px; font-weight: 500; color: #556238; }
+  .cartao { background: #FBF8F3; border: 1px solid rgba(61,58,52,.12); border-radius: 28px; padding: 36px 32px; max-width: 640px; margin: 0 auto; }
+  .cartao h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; font-size: 34px; margin: 0 0 6px; }
+  .cartao label { display: block; font-weight: 500; font-size: 14px; margin: 18px 0 6px; }
+  .cartao input, .cartao textarea, .cartao select { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 15px; padding: 11px 13px; border-radius: 10px; border: 1px solid rgba(61,58,52,.3); background: #fff; }
+  .cartao textarea { min-height: 130px; resize: vertical; }
+  .cartao small { color: #6b6558; font-size: 12.5px; display: block; margin-top: 4px; }
+  .linha2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 14px; }
+  .btn-k { display: inline-block; width: 100%; margin-top: 24px; padding: 15px; border: none; border-radius: 999px; background: #556238; color: #fff; font-family: inherit; font-size: 16px; cursor: pointer; }
+  .btn-k.contorno { background: transparent; color: #332f28; border: 1px solid #332f28; }
+  .btn-k:disabled { opacity: .6; cursor: default; }
+  .msg { margin-top: 14px; font-size: 14px; }
+  .msg.erro { color: #a3455a; }
+  .proposta { background: #fff; border: 1px solid rgba(61,58,52,.15); border-radius: 16px; padding: 18px 20px; margin: 16px 0; white-space: pre-wrap; line-height: 1.6; }
+  .valor { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 34px; margin: 4px 0 0; }
+  .status { display: inline-block; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; background: #eef1e6; color: #3d4a33; padding: 5px 12px; border-radius: 999px; }
+  @media (max-width: 760px) {
+    .galeria { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .galeria img { height: 180px; }
+    .passos-k { grid-template-columns: 1fr; }
+    .linha2 { grid-template-columns: 1fr; }
+    .cartao { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+<p class="sm-aviso">Frete fixo de R$25 para todo o Brasil · Pagamento via Pix</p>
+<header class="sm-topo">
+  <a href="index.html" class="sm-logo"><img src="assets/logo-cursiva.png" alt="Sagrado de Mim"></a>
+  <nav aria-label="Principal">
+    <a href="loja.html">Loja</a>
+    <a href="index.html#perfume">Perfume Corporal</a>
+    <a href="index.html#casa">Aroma para Casa</a>
+    <a href="kits.html">Kits</a>
+    <a href="index.html#sobre">Sobre</a>
+  </nav>
+  <div class="sm-icones">
+    <a href="meu-perfil.html" aria-label="Meu perfil" title="Meu perfil"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span class="rotulo">Perfil</span></a>
+    <a href="meus-pedidos.html" aria-label="Meus pedidos" title="Meus pedidos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg><span class="rotulo">Pedidos</span></a>
+    <a href="carrinho.html" aria-label="Carrinho" title="Carrinho"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 8h14l-1.2 12H6.2L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="rotulo">Carrinho</span><span class="sm-badge" id="sm-cart-count"></span></a>
+  </div>
+</header>
+<main class="kp">
+  <div id="area-pedido">
+    <p class="eyebrow">Encomenda especial</p>
+    <h1>Kits personalizados</h1>
+    <p class="intro">Conte quanto quer investir e do que você (ou quem vai ganhar) gosta. A gente monta uma proposta de kit feita à mão e envia pro seu e-mail. Você aprova aqui mesmo no site.</p>
+    <div class="galeria">
+      <img src="assets/kits/difusor.jpg" alt="Difusor de varetas Sagrado de Mim">
+      <img src="assets/kits/perfume.jpg" alt="Perfume artesanal">
+      <img src="assets/kits/velas.jpg" alt="Velas na latinha com tampas decoradas">
+      <img src="assets/kits/agua-lencol.jpg" alt="Água para lençol">
+      <img src="assets/kits/vela.jpg" alt="Vela na latinha amarela">
+      <img src="assets/kits/perfume-lichia.jpg" alt="Perfume artesanal com lichias">
+    </div>
+    <div class="passos-k">
+      <div><b>1</b>Você conta seu orçamento e o que gosta.</div>
+      <div><b>2</b>A gente monta uma proposta e envia pro seu e-mail.</div>
+      <div><b>3</b>Você aprova pelo link e finaliza o pagamento.</div>
+    </div>
+    <form class="cartao" id="form-kit" novalidate>
+      <h2>Monte seu kit</h2>
+      <div class="linha2">
+        <div><label for="k-nome">Seu nome</label><input id="k-nome" required maxlength="120" autocomplete="name"></div>
+        <div><label for="k-email">Seu e-mail</label><input id="k-email" type="email" required maxlength="160" autocomplete="email"><small>A proposta chega por aqui.</small></div>
+      </div>
+      <div class="linha2">
+        <div><label for="k-orc">Orçamento (R$)</label><input id="k-orc" type="number" min="30" step="1" required inputmode="decimal" placeholder="Ex: 250"><small>Quanto você quer investir no kit.</small></div>
+        <div><label for="k-zap">WhatsApp (opcional)</label><input id="k-zap" maxlength="40" inputmode="tel" autocomplete="tel"></div>
+      </div>
+      <div class="linha2">
+        <div><label for="k-ocasiao">Ocasião</label>
+          <select id="k-ocasiao"><option value="">Escolha...</option><option>Presente de aniversário</option><option>Presente para alguém especial</option><option>Datas comemorativas</option><option>Casamento / Chá</option><option>Corporativo</option><option>Para mim</option><option>Outra</option></select></div>
+        <div><label for="k-prazo">Pra quando? (opcional)</label><input id="k-prazo" maxlength="120" placeholder="Ex: até 20/12"></div>
+      </div>
+      <label for="k-pref">O que você gosta ou quer no kit?</label>
+      <textarea id="k-pref" required maxlength="3000" placeholder="Ex: gosto de aromas florais e suaves, queria um difusor pro quarto e uma vela. A pessoa adora lavanda..."></textarea>
+      <button type="submit" class="btn-k" id="k-enviar">Enviar pedido de kit</button>
+      <p class="msg" id="k-msg" role="status"></p>
+    </form>
+  </div>
+
+  <div id="area-proposta" style="display:none;"></div>
+</main>
+<footer class="sm-rodape2">
+  <img src="assets/logo-cursiva.png" alt="Sagrado de Mim">
+  <p class="lema">feito à mão, pensado para você</p>
+  <nav aria-label="Rodapé"><a href="loja.html">Loja</a><a href="kits.html">Kits personalizados</a><a href="quiz-corporal.html">Perfume personalizado</a><a href="quiz-casa.html">Aroma para casa</a><a href="meus-pedidos.html">Meus pedidos</a></nav>
+  <p class="contato"><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp (31) 99915-3132</a><span>·</span><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></p>
+</footer>
+<script>
+(function () {
+  var n = JSON.parse(localStorage.getItem("sagradoCart") || "[]").length;
+  var b = document.getElementById("sm-cart-count");
+  if (b && n > 0) { b.textContent = n; b.style.display = "flex"; }
+})();
+</script>
+<script src="emails.js" charset="utf-8"></script>
+<script>
+const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
+async function rpc(nome, corpo) {
+  const res = await fetch(SUPABASE_URL + "/rest/v1/rpc/" + nome, { method: "POST", headers: { "apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json" }, body: JSON.stringify(corpo) });
+  const t = await res.text();
+  if (!res.ok) { let m = t; try { m = JSON.parse(t).message || t; } catch (e) {} throw new Error(m); }
+  try { return JSON.parse(t); } catch (e) { return t; }
+}
+const brl = v => "R$ " + Number(v).toFixed(2).replace(".", ",");
+const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const linkDo = token => location.origin + location.pathname + "?k=" + token;
+
+// ---------- Pedido ----------
+document.getElementById("form-kit").addEventListener("submit", async e => {
+  e.preventDefault();
+  const msg = document.getElementById("k-msg"), btn = document.getElementById("k-enviar");
+  const d = { nome: k("nome"), email: k("email"), orc: parseFloat(k("orc").replace(",", ".")), zap: k("zap"), ocasiao: k("ocasiao"), prazo: k("prazo"), pref: k("pref") };
+  function k(id) { return document.getElementById("k-" + id).value.trim(); }
+  msg.className = "msg erro";
+  if (!d.nome || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email) || !(d.orc >= 30) || !d.pref) {
+    msg.textContent = "Preencha nome, e-mail válido, orçamento (a partir de R$ 30) e o que você gosta.";
+    return;
+  }
+  btn.disabled = true; btn.textContent = "Enviando...";
+  try {
+    const r = await rpc("criar_kit", { p_nome: d.nome, p_email: d.email, p_whatsapp: d.zap || null, p_orcamento: d.orc, p_ocasiao: d.ocasiao || null, p_preferencias: d.pref, p_prazo: d.prazo || null });
+    const link = linkDo(r.token);
+    await enviarEmail({ para: EMAIL_CONFIG.avisoPara, nome: "Sagrado de Mim", assunto: "Novo pedido de kit #" + r.id + " — " + d.nome,
+      mensagem: "Novo pedido de kit personalizado.\n\nNome: " + d.nome + "\nE-mail: " + d.email + "\nWhatsApp: " + (d.zap || "-") +
+        "\nOrçamento: " + brl(d.orc) + "\nOcasião: " + (d.ocasiao || "-") + "\nPrazo: " + (d.prazo || "-") + "\n\nO que gosta / quer:\n" + d.pref +
+        "\n\nPara enviar a proposta, abra o painel na aba Kits.",
+      link: location.origin + "/admin.html", textoLink: "Abrir o painel" });
+    await enviarEmail({ para: d.email, nome: d.nome, assunto: "Recebemos seu pedido de kit — Sagrado de Mim",
+      mensagem: "Olá, " + d.nome + "!\n\nRecebemos seu pedido de kit personalizado (orçamento de " + brl(d.orc) + "). Vamos montar uma proposta com carinho e te enviar por aqui. Você vai poder aprovar direto no site.\n\nCom carinho,\nSagrado de Mim",
+      link: link, textoLink: "Acompanhar meu pedido" });
+    document.getElementById("form-kit").innerHTML = '<h2>Pedido enviado!</h2><p style="font-size:16px; line-height:1.6;">Obrigada, ' + esc(d.nome) + '! Recebemos seu pedido de kit e vamos montar uma proposta com carinho. Ela chega no seu e-mail <b>' + esc(d.email) + '</b>.</p><p style="font-size:14px; color:#6b6558;">Guarde este link pra acompanhar: <a href="' + link + '">' + esc(link) + '</a></p>';
+  } catch (err) {
+    msg.textContent = "Não foi possível enviar agora (" + err.message + "). Tente de novo ou fale com a gente no WhatsApp (31) 99915-3132.";
+    btn.disabled = false; btn.textContent = "Enviar pedido de kit";
+  }
+});
+
+// ---------- Proposta (link do e-mail: kits.html?k=TOKEN) ----------
+const token = new URLSearchParams(location.search).get("k");
+if (token) carregarProposta();
+async function carregarProposta() {
+  document.getElementById("area-pedido").style.display = "none";
+  const box = document.getElementById("area-proposta"); box.style.display = "block";
+  box.innerHTML = '<div class="cartao"><p>Carregando...</p></div>';
+  let k;
+  try { k = await rpc("ver_kit", { p_token: token }); } catch (e) { k = null; }
+  if (!k) { box.innerHTML = '<div class="cartao"><h2>Pedido não encontrado</h2><p>Confira se o link está completo, ou fale com a gente no WhatsApp (31) 99915-3132.</p></div>'; return; }
+  const status = { novo: "Montando sua proposta", proposta_enviada: "Proposta pronta", aprovado: "Aprovado", recusado: "Recusado" }[k.status] || k.status;
+  let h = '<div class="cartao"><p class="eyebrow">Kit personalizado #' + k.id + '</p><h2>Olá, ' + esc(k.nome) + '!</h2><span class="status">' + status + '</span>' +
+    '<p style="margin:18px 0 4px; font-size:14px; color:#6b6558;">Seu pedido: orçamento de ' + brl(k.orcamento) + (k.ocasiao ? ' · ' + esc(k.ocasiao) : '') + '</p>' +
+    '<p style="margin:0; font-size:14px; color:#6b6558; white-space:pre-wrap;">' + esc(k.preferencias) + '</p>';
+  if (k.status === "novo") {
+    h += '<p style="margin-top:20px;">Estamos montando sua proposta com carinho. Você vai receber um e-mail quando ela estiver pronta.</p>';
+  } else {
+    h += '<p style="margin:24px 0 0; font-weight:500;">Nossa proposta</p><div class="proposta">' + esc(k.proposta_itens) + '</div><p class="valor">' + brl(k.proposta_valor) + '</p>';
+    if (k.status === "proposta_enviada") {
+      h += '<label for="k-resp" style="display:block; font-weight:500; font-size:14px; margin:20px 0 6px;">Quer comentar algo? (opcional)</label><textarea id="k-resp" maxlength="2000" style="width:100%; box-sizing:border-box; min-height:80px; font-family:inherit; font-size:15px; padding:11px 13px; border-radius:10px; border:1px solid rgba(61,58,52,.3);"></textarea>' +
+        '<button type="button" class="btn-k" id="k-aprovar">Aprovar e ir para o pagamento</button><button type="button" class="btn-k contorno" id="k-recusar" style="margin-top:10px;">Não aprovo / quero ajustes</button><p class="msg" id="k-rmsg" role="status"></p>';
+    } else if (k.status === "aprovado") {
+      h += '<p style="margin-top:16px;">Você aprovou este kit' + (k.resposta_msg ? ' e comentou: <i>' + esc(k.resposta_msg) + '</i>' : '') + '.</p><button type="button" class="btn-k" id="k-pagar">Ir para o pagamento</button>';
+    } else {
+      h += '<p style="margin-top:16px;">Você pediu ajustes' + (k.resposta_msg ? ': <i>' + esc(k.resposta_msg) + '</i>' : '') + '. A gente vai preparar uma nova proposta e te avisar por e-mail.</p>';
+    }
+  }
+  box.innerHTML = h + '</div>';
+  const pagar = () => {
+    const cart = JSON.parse(localStorage.getItem("sagradoCart") || "[]");
+    if (!cart.some(i => i.kitId === k.id)) cart.push({ tipo: "Kit personalizado #" + k.id, preco: Number(k.proposta_valor), detalhes: { "Kit": k.proposta_itens, "Pedido de kit": "#" + k.id }, kitId: k.id });
+    localStorage.setItem("sagradoCart", JSON.stringify(cart));
+    location.href = "carrinho.html";
+  };
+  if (document.getElementById("k-pagar")) document.getElementById("k-pagar").onclick = pagar;
+  const responder = async aprovado => {
+    const rmsg = document.getElementById("k-rmsg"), texto = document.getElementById("k-resp").value.trim();
+    if (!aprovado && !texto) { rmsg.className = "msg erro"; rmsg.textContent = "Conta pra gente o que você quer ajustar."; return; }
+    document.getElementById("k-aprovar").disabled = document.getElementById("k-recusar").disabled = true;
+    try {
+      await rpc("responder_kit", { p_token: token, p_aprovado: aprovado, p_msg: texto || null });
+      await enviarEmail({ para: EMAIL_CONFIG.avisoPara, nome: "Sagrado de Mim", assunto: "Kit #" + k.id + (aprovado ? " APROVADO" : " — cliente pediu ajustes") + " — " + k.nome,
+        mensagem: k.nome + (aprovado ? " aprovou" : " NÃO aprovou") + " a proposta do kit #" + k.id + " (" + brl(k.proposta_valor) + ")." + (texto ? "\n\nComentário: " + texto : ""),
+        link: location.origin + "/admin.html", textoLink: "Abrir o painel" });
+      if (aprovado) pagar(); else carregarProposta();
+    } catch (err) {
+      rmsg.className = "msg erro"; rmsg.textContent = "Não foi possível registrar agora (" + err.message + ").";
+      document.getElementById("k-aprovar").disabled = document.getElementById("k-recusar").disabled = false;
+    }
+  };
+  if (document.getElementById("k-aprovar")) {
+    document.getElementById("k-aprovar").onclick = () => responder(true);
+    document.getElementById("k-recusar").onclick = () => responder(false);
+  }
+}
+</script>
+</body>
+</html>

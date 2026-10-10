@@ -72,6 +72,7 @@
     <button type="button" id="tab-pedidos" class="admin-tab" style="background:#556238; color:#fff; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Pedidos</button>
     <button type="button" id="tab-etiqueta" class="admin-tab" style="background:#eef1e6; color:#556238; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Personalizar Etiqueta</button>
     <button type="button" id="tab-estoque" class="admin-tab" style="background:#eef1e6; color:#556238; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Estoque</button>
+    <button type="button" id="tab-kits" class="admin-tab" style="background:#eef1e6; color:#556238; border:none; padding:10px 20px; border-radius:8px 8px 0 0; font-family:Arial,sans-serif; font-weight:700; font-size:13px; cursor:pointer;">Kits</button>
     <button type="button" id="backup-btn" style="margin-left:auto; background:none; border:1px solid rgba(61,58,52,0.25); color:#8a8676; padding:8px 14px; border-radius:8px; font-family:Arial,sans-serif; font-weight:700; font-size:12px; cursor:pointer;">⬇ Baixar backup de pedidos</button>
   </div>
 
@@ -88,6 +89,12 @@
     <div id="estoque-lista"><p style="font-family:Arial,sans-serif; font-size:13px;">Carregando…</p></div>
   </div>
 
+  <div id="view-kits" style="display:none; max-width:900px; margin:0 auto; padding:28px 24px; font-family:Arial,sans-serif;">
+    <p style="font-size:13px; color:#6b6558; margin:0 0 6px;">Pedidos de <strong>kit personalizado</strong> feitos pelo site. Escreva a proposta e clique em enviar: a cliente recebe por e-mail um link pra aprovar ou pedir ajustes.</p>
+    <p id="kits-aviso-email" style="font-size:12px; color:#a3455a; margin:0 0 16px; display:none;">O envio de e-mails ainda não está configurado (arquivo emails.js). As propostas ficam salvas, mas a cliente não recebe o e-mail: mande o link pra ela pelo WhatsApp.</p>
+    <div id="kits-lista"><p style="font-size:13px;">Carregando…</p></div>
+  </div>
+
   <div id="view-etiqueta" style="display:none; max-width:600px; margin:0 auto; padding:32px 24px;">
     <p style="font-family:Arial,sans-serif; font-size:14px; color:#8a8676; margin:0 0 20px;">Use essa área pra criar uma etiqueta na hora, com quem estiver aqui no ateliê.</p>
     <div id="atelier-editor"></div>
@@ -98,6 +105,7 @@
 <script src="aromas-info.js" charset="utf-8"></script>
 <script src="etiqueta-perfume.js" charset="utf-8"></script>
 <script src="elementos.js" charset="utf-8"></script>
+<script src="emails.js" charset="utf-8"></script>
 <script src="etiquetas.js" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
@@ -411,7 +419,7 @@ document.getElementById("backup-btn").addEventListener("click", async () => {
 });
 
 function mostrarAba(nome) {
-  const abas = { pedidos: "view-pedidos", estoque: "view-estoque", etiqueta: "view-etiqueta" };
+  const abas = { pedidos: "view-pedidos", estoque: "view-estoque", etiqueta: "view-etiqueta", kits: "view-kits" };
   Object.entries(abas).forEach(([k, viewId]) => {
     const ativa = k === nome;
     document.getElementById(viewId).style.display = ativa ? (k === "pedidos" ? "flex" : "block") : "none";
@@ -421,10 +429,68 @@ function mostrarAba(nome) {
   });
   if (nome === "etiqueta") renderAtelierEditor();
   if (nome === "estoque") renderEstoque();
+  if (nome === "kits") renderKits();
 }
 document.getElementById("tab-pedidos").addEventListener("click", () => mostrarAba("pedidos"));
 document.getElementById("tab-estoque").addEventListener("click", () => mostrarAba("estoque"));
 document.getElementById("tab-etiqueta").addEventListener("click", () => mostrarAba("etiqueta"));
+document.getElementById("tab-kits").addEventListener("click", () => mostrarAba("kits"));
+
+// ---------- Kits personalizados ----------
+function kEsc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+const kBrl = v => v == null ? "-" : "R$ " + Number(v).toFixed(2).replace(".", ",");
+const KIT_STATUS = { novo: ["Novo", "#a3652a"], proposta_enviada: ["Proposta enviada", "#556238"], aprovado: ["Aprovado ✓", "#2f6b3a"], recusado: ["Pediu ajustes", "#a3455a"] };
+async function renderKits(forcarNovo) {
+  const box = document.getElementById("kits-lista");
+  document.getElementById("kits-aviso-email").style.display = (typeof emailConfigurado === "function" && emailConfigurado()) ? "none" : "block";
+  const cod = codigoEstoque(forcarNovo);
+  if (!cod) { box.innerHTML = '<p style="font-size:13px;">É preciso a senha do painel pra ver os kits.</p>'; return; }
+  let lista;
+  try { lista = await rpcAdmin("admin_listar_kits", { p_codigo: cod }); }
+  catch (err) {
+    if (err.codigoInvalido) { localStorage.removeItem("codigoEstoque"); sessionStorage.removeItem("codigoEstoque"); return renderKits(true); }
+    box.innerHTML = '<p style="font-size:13px; color:#a3455a;">Não foi possível carregar os kits: ' + kEsc(err.message) + '. Se ainda não rodou o arquivo sql/kits.sql no Supabase, rode primeiro.</p>'; return;
+  }
+  if (!lista.length) { box.innerHTML = '<p style="font-size:13px;">Nenhum pedido de kit ainda.</p>'; return; }
+  box.innerHTML = lista.map(k => {
+    const st = KIT_STATUS[k.status] || [k.status, "#555"];
+    const link = location.origin + "/kits.html?k=" + k.token;
+    return '<div style="background:#fff; border:1px solid rgba(61,58,52,0.15); border-radius:12px; padding:18px; margin-bottom:16px;">' +
+      '<div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;"><strong>#' + k.id + ' · ' + kEsc(k.nome) + '</strong><span style="color:' + st[1] + '; font-weight:700; font-size:13px;">' + st[0] + '</span></div>' +
+      '<p style="font-size:13px; margin:6px 0; color:#4a463e;">' + kEsc(k.email) + (k.whatsapp ? ' · WhatsApp ' + kEsc(k.whatsapp) : '') + ' · ' + new Date(k.criado_em).toLocaleDateString("pt-BR") + '</p>' +
+      '<p style="font-size:14px; margin:6px 0;"><strong>Orçamento:</strong> ' + kBrl(k.orcamento) + (k.ocasiao ? ' · ' + kEsc(k.ocasiao) : '') + (k.prazo ? ' · Prazo: ' + kEsc(k.prazo) : '') + '</p>' +
+      '<p style="font-size:14px; margin:6px 0 12px; white-space:pre-wrap; background:#f7f4ee; padding:10px; border-radius:8px;">' + kEsc(k.preferencias) + '</p>' +
+      (k.resposta_msg ? '<p style="font-size:13px; margin:0 0 12px;"><strong>Resposta da cliente:</strong> ' + kEsc(k.resposta_msg) + '</p>' : '') +
+      '<label style="font-size:13px; font-weight:700; display:block; margin-bottom:4px;">Proposta (itens do kit)</label>' +
+      '<textarea class="kit-itens" data-id="' + k.id + '" style="width:100%; box-sizing:border-box; min-height:90px; font-family:Arial,sans-serif; font-size:14px; padding:8px; border-radius:8px; border:1px solid rgba(61,58,52,0.3);" placeholder="Ex: 1 Difusor de Varetas 250ml (Lavanda) + 1 Vela na Latinha Grande (Flor de Cerejeira) + embalagem para presente">' + kEsc(k.proposta_itens || "") + '</textarea>' +
+      '<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:8px;"><label style="font-size:13px; font-weight:700;">Valor R$ <input class="kit-valor" data-id="' + k.id + '" type="number" step="0.01" min="1" value="' + (k.proposta_valor || "") + '" style="width:120px; padding:8px; border-radius:8px; border:1px solid rgba(61,58,52,0.3);"></label>' +
+      '<button type="button" class="btn kit-enviar" data-id="' + k.id + '" style="font-size:13px; padding:9px 16px;"' + (k.status === "aprovado" ? ' disabled title="Já aprovado"' : '') + '>' + (k.status === "novo" ? "Enviar proposta" : "Reenviar proposta") + '</button>' +
+      '<a href="' + link + '" target="_blank" rel="noopener" style="font-size:12px;">link da cliente</a></div>' +
+      '<p class="kit-msg" data-id="' + k.id + '" style="font-size:12px; margin:8px 0 0;"></p></div>';
+  }).join("");
+  box.querySelectorAll(".kit-enviar").forEach(btn => btn.addEventListener("click", async () => {
+    const id = btn.dataset.id, k = lista.find(x => String(x.id) === id);
+    const itens = box.querySelector('.kit-itens[data-id="' + id + '"]').value.trim();
+    const valor = parseFloat(box.querySelector('.kit-valor[data-id="' + id + '"]').value);
+    const msg = box.querySelector('.kit-msg[data-id="' + id + '"]');
+    if (!itens || !(valor > 0)) { msg.style.color = "#a3455a"; msg.textContent = "Escreva os itens e o valor."; return; }
+    btn.disabled = true; btn.textContent = "Enviando...";
+    try {
+      const r = await rpcAdmin("admin_enviar_proposta_kit", { p_codigo: codigoEstoque(), p_id: Number(id), p_itens: itens, p_valor: valor });
+      const link = location.origin + "/kits.html?k=" + r.token;
+      const ok = await enviarEmail({ para: r.email, nome: r.nome, assunto: "Sua proposta de kit está pronta — Sagrado de Mim",
+        mensagem: "Olá, " + r.nome + "!\n\nMontamos uma proposta de kit especialmente pra você:\n\n" + itens + "\n\nValor: " + kBrl(valor) +
+          "\n\nÉ só abrir o link abaixo pra aprovar e seguir para o pagamento, ou pedir algum ajuste.\n\nCom carinho,\nSagrado de Mim",
+        link: link, textoLink: "Ver e aprovar meu kit" });
+      msg.style.color = "#556238";
+      msg.innerHTML = ok ? "Proposta enviada para " + kEsc(r.email) + "." : 'Proposta salva, mas o e-mail não saiu. Mande este link pra cliente: <a href="' + link + '" target="_blank">' + kEsc(link) + '</a>';
+      setTimeout(() => renderKits(), ok ? 1500 : 8000);
+    } catch (err) {
+      msg.style.color = "#a3455a"; msg.textContent = "Erro: " + err.message;
+      btn.disabled = false; btn.textContent = "Enviar proposta";
+    }
+  }));
+}
 
 // ---------- Estoque ----------
 function codigoEstoque(forcarNovo) {
