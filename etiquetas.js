@@ -67,29 +67,13 @@ function etqIconePAO(meses) {
 }
 
 function etqHtmlCorpo(e, logoUrl) {
-  const aroma = (e.aroma || "").toLowerCase().replace(/ e /g, " & ");
-  const ingred = e.cfg.ingredientes
-    ? etqEsc(e.cfg.ingredientes)
-    : '<span style="display:inline-block; width:150px; border-bottom:0.5px solid #2E2A25;">&nbsp;</span>';
-  return '<div class="etq corpo">' +
-    '<div class="frente">' +
-      '<div class="tipo">' + etqEsc(e.cfg.tipo) + '</div>' +
-      '<div class="aroma">' + etqEsc(aroma || e.p.nome.toLowerCase()) + '</div>' +
-      '<div class="lema">feito à mão<br>pensado para você</div>' +
-    '</div>' +
-    '<div class="lateral"></div>' +
-    '<div class="girado">' +
-      '<div class="marca"><img src="' + logoUrl + '" alt=""><span>AROMAS · ARTESANAL</span></div>' +
-      '<div class="linha"></div>' +
-      '<div class="txt"><b>INGREDIENTES:</b> ' + ingred + '</div>' +
-      '<div class="txt"><b>MODO DE USO:</b> ' + etqEsc(e.cfg.modo) + '</div>' +
-      '<div class="txt pequeno">Uso externo. Evite contato com os olhos.</div>' +
-      '<div class="rodape"><span class="pao-box">' + etqIconePAO(e.cfg.meses || 12) + '<span class="vol">' + etqEsc(e.p.tamanho) + '</span></span>' +
-      '<span style="text-align:right">sagradodemim.com.br<br>(31) 99915-3132</span></div>' +
-    '</div>' +
-    '<div style="position:absolute; left:2.6mm; bottom:2.6mm;">' + seloCrueltyFree('8mm') + '</div>' +
-    '<div style="position:absolute; left:2.6mm; bottom:11.4mm;">' + seloFeitoAMao('8mm') + '</div>' +
-  '</div>';
+  // Mesmo desenho do estúdio de etiquetas (374 x 256 px = 99 x 67,7 mm em tamanho real)
+  if (typeof MODELOS !== "undefined" && MODELOS.corpo) {
+    const st = { produto: e.p.id, aroma: e.aroma, tipoTexto: e.cfg.tipo, ingredientes: e.cfg.ingredientes || (typeof infoProduto === "function" ? infoProduto(e.p.id).ingredientes : "") || "",
+      modo: e.cfg.modo, meses: e.cfg.meses || 12, fundo: "#F7EFDF", lateral: "#8F9A6C" };
+    return '<div class="etq" style="width:99mm; height:67.7mm;"><div style="transform:scale(' + ((99 * 96 / 25.4) / 374) + '); transform-origin:0 0; width:374px; height:256px;">' + MODELOS.corpo.html(st) + '</div></div>';
+  }
+  return '';
 }
 
 

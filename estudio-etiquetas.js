@@ -50,13 +50,12 @@ const MODELOS = {
       const t = 'font-family:Arial,sans-serif; font-size:6.8px; line-height:1.35; margin:0;';
       const ingred = s.ingredientes ? esEsc(s.ingredientes) : '<span style="display:inline-block; width:120px; border-bottom:0.5px solid ' + tl + ';">&nbsp;</span>';
       return '<div style="position:relative; overflow:hidden; width:374px; height:256px; background:' + s.fundo + '; color:' + tf + '; font-family:Jost,Arial,sans-serif;">' +
-        '<div style="position:absolute; left:0; top:0; width:238px; height:256px; box-sizing:border-box; padding:22px 20px 20px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; text-align:center;">' +
-          '<div style="font-size:9px; letter-spacing:.16em; border-bottom:1px solid ' + tf + '; padding:0 6px 3px;">' + esEsc(s.tipoTexto) + '</div>' +
-          '<div style="font-family:Gloock,Georgia,serif; font-size:34px; line-height:1.05;">' + esEsc(String(s.aroma || "").toLowerCase().replace(/ e /g, " & ")) + '</div>' +
-          '<div style="font-size:8.5px; letter-spacing:.14em; line-height:1.5; text-transform:uppercase; border-top:1px solid ' + tf + '; border-bottom:1px solid ' + tf + '; padding:4px 10px;">feito à mão<br>pensado para você</div>' +
+        '<div style="position:absolute; left:0; top:0; width:238px; height:256px; box-sizing:border-box; padding:16px 20px 18px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; text-align:center;">' +
+          '<img src="' + logoPara(tf) + '" alt="Sagrado de Mim" style="width:118px; height:auto; display:block;">' +
+          '<div><div style="font-size:8.5px; letter-spacing:.16em; border-bottom:1px solid ' + tf + '; padding:0 6px 3px; display:inline-block;">' + esEsc(s.tipoTexto) + '</div>' +
+          '<div style="font-family:Gloock,Georgia,serif; font-size:30px; line-height:1.05; margin-top:8px;">' + esEsc(String(s.aroma || "").toLowerCase().replace(/ e /g, " & ")) + '</div></div>' +
+          '<div style="display:flex; align-items:center; gap:8px;">' + seloFeitoAMao('28px', tf) + '<div style="font-size:7px; letter-spacing:.14em; line-height:1.45; text-transform:uppercase; border-top:1px solid ' + tf + '; border-bottom:1px solid ' + tf + '; padding:3px 6px;">feito à mão<br>pensado para você</div>' + seloCrueltyFree('28px', tf) + '</div>' +
         '</div>' +
-        '<div style="position:absolute; left:10px; bottom:10px;">' + seloCrueltyFree('30px', tf) + '</div>' +
-        '<div style="position:absolute; left:10px; bottom:44px;">' + seloFeitoAMao('30px', tf) + '</div>' +
         '<div style="position:absolute; left:238px; top:0; width:136px; height:256px; background:' + s.lateral + ';"></div>' +
         '<div style="position:absolute; left:178px; top:60px; width:256px; height:136px; transform:rotate(-90deg); box-sizing:border-box; padding:11px 14px 9px; display:flex; flex-direction:column; gap:4px; color:' + tl + ';">' +
           '<div style="display:flex; align-items:flex-end; gap:8px;"><img src="' + logoPara(tl) + '" alt="" style="height:24px; width:auto; display:block;"><span style="font-size:7px; letter-spacing:.16em; padding-bottom:3px;">AROMAS · ARTESANAL</span></div>' +
