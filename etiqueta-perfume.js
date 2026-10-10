@@ -99,8 +99,8 @@ function etiquetaCasaHtml(o) {
   const notasHtml = info && info.saida
     ? ['SAÍDA', 'CORPO', 'FUNDO'].map((rot, i) => '<div><b style="font-weight:700;">' + rot + ':</b> ' + epEsc(curta([info.saida, info.corpo, info.fundo][i])) + '</div>').join('')
     : (info && info.desc ? '<div style="text-transform:none; letter-spacing:0.02em;">' + epEsc(info.desc) + '</div>' : '<div>AROMA ' + epEsc(o.base || "") + '</div>');
-  const ingred = o.ingredientes || (spray ? "Água, Álcool, Fragrância, Glicerina." : "Óleo Mineral, Fragrância, Álcool, Corante.");
-  const vol = o.volume || (spray ? "200mL" : "250mL");
+  const ingred = o.ingredientes != null && o.ingredientes !== "" ? o.ingredientes : (o.tituloProduto ? "________________" : null) || (spray ? "Água, Álcool, Fragrância, Glicerina." : "Óleo Mineral, Fragrância, Álcool, Corante.");
+  const vol = o.volume || (o.tituloProduto ? "—" : (spray ? "200mL" : "250mL"));
   const c = 'display:flex; align-items:center; justify-content:center; text-align:center;';
   return '<div id="' + (o.canvasId || "casa-label") + '" style="position:relative; overflow:hidden; width:495px; height:338px; background:' + (o.fundo || "#F7EFDF") + '; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; box-sizing:border-box; padding:14px; margin:' + (o.margem || "0") + ';">' +
     '<div style="width:467px; height:280px; border:' + L + '; box-sizing:border-box; display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); grid-template-rows:140px 46px 46px 46px;">' +
@@ -109,13 +109,13 @@ function etiquetaCasaHtml(o) {
         '<div style="flex:1; min-width:0; text-align:center; font-family:Georgia, serif; font-size:34px; line-height:1.05; letter-spacing:0.04em; word-break:break-word;">' + epEsc(o.nome || "Nome do aroma") + '</div>' +
       '</div>' +
       '<div style="grid-column:1 / span 3; grid-row:2 / span 2; border-right:' + L + '; border-bottom:' + L + '; padding:6px 14px; font-size:8.6px; letter-spacing:0.1em; line-height:1.7; display:flex; flex-direction:column; justify-content:center; text-transform:uppercase;">' + notasHtml + '</div>' +
-      '<div style="grid-column:4 / span 3; border-bottom:' + L + '; ' + c + ' font-size:11px; letter-spacing:0.2em;">' + (spray ? "HOME SPRAY" : "DIFUSOR DE VARETAS") + '</div>' +
+      '<div style="grid-column:4 / span 3; border-bottom:' + L + '; ' + c + ' font-size:11px; letter-spacing:0.2em; padding:0 6px;">' + epEsc(o.tituloProduto || (spray ? "HOME SPRAY" : "DIFUSOR DE VARETAS")) + '</div>' +
       '<div style="grid-column:4; border-right:' + L + '; border-bottom:' + L + '; ' + c + ' font-size:11px; letter-spacing:0.06em;">' + epEsc(vol) + '</div>' +
       '<div style="grid-column:5; border-right:' + L + '; border-bottom:' + L + '; ' + c + '">' + (typeof seloFeitoAMao === "function" ? seloFeitoAMao('34px', INK) : '') + '</div>' +
       '<div style="grid-column:6; border-bottom:' + L + '; ' + c + '">' + (typeof seloCrueltyFree === "function" ? seloCrueltyFree('34px', INK) : '') + '</div>' +
       '<div style="grid-column:1 / span 3; border-right:' + L + '; ' + c + ' font-size:10px; letter-spacing:0.18em; text-transform:uppercase; padding:0 8px;">Aroma ' + epEsc(o.base || "") + '</div>' +
       '<div style="grid-column:4 / span 3; ' + c + ' font-size:11px; letter-spacing:0.06em;">sagradodemim.com.br</div>' +
     '</div>' +
-    '<div style="margin-top:8px; font-size:6.6px; line-height:1.4; font-weight:700; text-align:center; padding:0 10px;">Ingredientes: ' + epEsc(ingred) + ' Uso externo. Não ingerir. Mantenha fora do alcance de crianças e animais. Para pedir um refil, informe o aroma ' + epEsc(o.base || "") + '.</div>' +
+    '<div style="margin-top:8px; font-size:6.6px; line-height:1.4; font-weight:700; text-align:center; padding:0 10px;">Ingredientes: ' + epEsc(ingred) + ' Uso externo. Não ingerir. Mantenha fora do alcance de crianças e animais.' + (o.tituloProduto ? '' : ' Para pedir um refil, informe o aroma ' + epEsc(o.base || "") + '.') + '</div>' +
   '</div>';
 }

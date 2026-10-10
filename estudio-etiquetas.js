@@ -33,9 +33,9 @@ const PADRAO_LACRE = "<svg width=\"302\" height=\"470\" viewBox=\"0 0 302 470\" 
 
 const MODELOS = {
   corpo: {
-    titulo: "Sabonetes, hidratantes e corpo", mm: [99, 67.7], px: [374, 256],
+    titulo: "Hidratantes, sabonetes, espuma facial e corpo", mm: [99, 67.7], px: [374, 256],
     campos: [
-      { id: "produto", rot: "Produto", tipo: "select", opcoes: () => produtosDe(p => ["Corpo", "Banho & Facial"].includes(p.cat)).map(p => [nomeProduto(p), p.id]) },
+      { id: "produto", rot: "Produto", tipo: "select", opcoes: () => produtosDe(p => ["Corpo", "Banho & Facial"].includes(p.cat) && !p.oculto).map(p => [nomeProduto(p), p.id]) },
       { id: "aroma", rot: "Aroma", tipo: "select", opcoes: s => { const p = PRODUTOS.find(x => x.id === s.produto); return p ? aromasDe(p).map(a => [a, a]) : []; } },
       { id: "tipoTexto", rot: "Tipo (no topo)", tipo: "texto", auto: s => (typeof ETIQUETAS_CORPO !== "undefined" && ETIQUETAS_CORPO[s.produto] || {}).tipo || ((PRODUTOS.find(x => x.id === s.produto) || {}).grupoNome || (PRODUTOS.find(x => x.id === s.produto) || {}).nome || "").toUpperCase() },
       { id: "ingredientes", rot: "Ingredientes", tipo: "area", auto: s => infoProduto(s.produto).ingredientes || "" },
@@ -69,13 +69,14 @@ const MODELOS = {
     }
   },
   bodysplash: {
-    titulo: "Body Splash", mm: [50, 70], px: [250, 350],
+    titulo: "Body Splash e Body Shimmer", mm: [50, 70], px: [250, 350],
     campos: [
+      { id: "produto", rot: "Produto", tipo: "select", opcoes: () => [["Body Splash", "Body Splash"], ["Body Shimmer", "Body Shimmer"]] },
       { id: "nome", rot: "Nome (destaque)", tipo: "texto", padrao: "Lua Nova" },
-      { id: "aroma", rot: "Aroma", tipo: "select", opcoes: () => (typeof AROMAS_BODY_SPLASH !== "undefined" ? AROMAS_BODY_SPLASH : []).map(a => [a, a]) },
+      { id: "aroma", rot: "Aroma", tipo: "select", opcoes: s => ((s.produto === "Body Shimmer" ? (typeof AROMAS_SHIMMER !== "undefined" ? AROMAS_SHIMMER : []) : (typeof AROMAS_BODY_SPLASH !== "undefined" ? AROMAS_BODY_SPLASH : []))).map(a => [a, a]) },
       { id: "notas", rot: "Notas", tipo: "texto", auto: s => notasCurtas(s.aroma) },
-      { id: "volume", rot: "Volume", tipo: "texto", padrao: "250 ml" },
-      { id: "ingredientes", rot: "Ingredientes", tipo: "area", auto: () => infoProduto("body-splash-250").ingredientes || "" },
+      { id: "volume", rot: "Volume", tipo: "texto", auto: s => s.produto === "Body Shimmer" ? "225 ml" : "250 ml" },
+      { id: "ingredientes", rot: "Ingredientes", tipo: "area", auto: s => infoProduto(s.produto === "Body Shimmer" ? "body-shimmer-225" : "body-splash-250").ingredientes || "" },
       { id: "fundo", rot: "Fundo", tipo: "cor", padrao: PALETA.creme },
       { id: "tinta", rot: "Cor do texto", tipo: "tinta", padrao: "" }
     ],
@@ -85,7 +86,7 @@ const MODELOS = {
         '<img src="' + logoPara(tk) + '" alt="Sagrado de Mim" style="width:82px; height:auto; display:block;">' +
         '<div style="margin-top:22px; font-size:24px; font-weight:500; line-height:1.1; word-break:break-word;">' + esEsc(s.nome) + '</div>' +
         '<div style="margin-top:auto; width:100%;">' +
-          '<div style="' + L + '"></div><div style="font-size:15px; font-weight:500; padding:7px 0 2px;">Body Splash</div>' +
+          '<div style="' + L + '"></div><div style="font-size:15px; font-weight:500; padding:7px 0 2px;">' + esEsc(s.produto || "Body Splash") + '</div>' +
           '<div style="font-size:6.6px; padding:0 0 6px;">Aroma ' + esEsc(s.aroma) + ' · ' + esEsc(s.volume) + ' · feito à mão</div>' +
           '<div style="' + L + '"></div><div style="font-size:8.6px; padding:10px 0 14px;">' + esEsc(s.notas || " ") + '</div>' +
           '<div style="' + L + '"></div><div style="font-size:8.5px; padding:9px 0;">sagradodemim.com.br</div>' +
@@ -133,6 +134,19 @@ const MODELOS = {
       { id: "fundo", rot: "Fundo", tipo: "cor", padrao: PALETA.creme }
     ],
     html: s => etiquetaCasaHtml({ nome: s.nome, base: s.base, produto: s.produto, volume: s.volume, ingredientes: s.ingredientes, fundo: s.fundo, tinta: tintaPara(s.fundo), logoUrl: logoPara(tintaPara(s.fundo)) })
+  },
+  ambiente: {
+    titulo: "Casa & Ambiente (difusor, refis, home spray, velas, água para lençol...)", mm: [99, 67.7], px: [495, 338],
+    campos: [
+      { id: "produto", rot: "Produto", tipo: "select", opcoes: () => produtosDe(p => p.cat === "Perfumaria & Ambiente" && !p.oculto).map(p => [nomeProduto(p), p.id]) },
+      { id: "aroma", rot: "Aroma", tipo: "select", opcoes: s => { const p = PRODUTOS.find(x => x.id === s.produto); return p ? aromasDe(p).map(a => [a, a]) : []; } },
+      { id: "nome", rot: "Texto em destaque", tipo: "texto", auto: s => s.aroma || "" },
+      { id: "titulo", rot: "Nome do produto (na caixinha)", tipo: "texto", auto: s => { const p = PRODUTOS.find(x => x.id === s.produto) || {}; return String(p.nome || "").toUpperCase(); } },
+      { id: "volume", rot: "Volume / tamanho", tipo: "texto", auto: s => { const p = PRODUTOS.find(x => x.id === s.produto) || {}; return p.tamanho || p.variante || ""; } },
+      { id: "ingredientes", rot: "Ingredientes", tipo: "area", auto: s => infoProduto(s.produto).ingredientes || "" },
+      { id: "fundo", rot: "Fundo", tipo: "cor", padrao: PALETA.creme }
+    ],
+    html: s => etiquetaCasaHtml({ nome: s.nome, base: s.aroma, tituloProduto: s.titulo, volume: s.volume, ingredientes: s.ingredientes, fundo: s.fundo, tinta: tintaPara(s.fundo), logoUrl: logoPara(tintaPara(s.fundo)) })
   },
   selo: {
     titulo: "Selo da caixa (\"um aroma feito para você\")", mm: [67.7, 99], px: [256, 374],
