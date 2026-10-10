@@ -51,7 +51,7 @@ const PRODUTOS = [
   {"id": "creme-pes-100", "cat": "Corpo", "nome": "Creme para Tratamento dos Pés", "tamanho": "100ml", "preco": 89.9, "aroma": true, "oculto": true, "img": null},
 
   // Banho & Facial
-  {"id": "sabonete-fatia-125", "cat": "Banho & Facial", "nome": "Sabonete Fatia", "tamanho": "125g", "preco": 32.0, "aroma": true, "aromas": AROMAS_SABONETE, "img": null},
+  {"id": "sabonete-fatia-125", "cat": "Banho & Facial", "nome": "Sabonete Fatia", "tamanho": "125g", "preco": 32.0, "aroma": true, "aromas": AROMAS_SABONETE, "img": "assets/produtos/sabonete-fatia.jpg"},
   {"id": "sabonete-gel-250", "cat": "Banho & Facial", "nome": "Sabonete Líquido", "tamanho": "250ml", "preco": 123.6, "aroma": true, "aromas": AROMAS_LIQUIDO_ESPUMA, "img": "assets/produtos/sabonete-liquido.jpg"},
   {"id": "espuma-facial-70", "cat": "Banho & Facial", "nome": "Espuma de Limpeza Facial", "tamanho": "70ml", "preco": 62.0, "aroma": true, "aromas": AROMAS_LIQUIDO_ESPUMA, "img": null},
 
