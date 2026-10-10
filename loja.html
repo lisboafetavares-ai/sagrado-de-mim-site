@@ -128,6 +128,7 @@
     .det-aba { font-size:13px; }
     .det-aba svg { display:none; }
   }
+  select.variante { width:100%; margin:0 0 10px; padding:10px 12px; border-radius:10px; border:1px solid rgba(61,58,52,.3); font-family:Jost,Arial,sans-serif; font-size:14px; background:#fff; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -277,14 +278,31 @@ function renderFiltros() {
   });
 }
 
+const VARIANTE_SEL = {}; // grupo -> id da variante escolhida
 function renderGrid() {
   const aromasAntes = {};
   document.querySelectorAll("select.aroma").forEach(s => { if (s.value) aromasAntes[s.dataset.id] = s.value; });
-  const lista = PRODUTOS.filter(p => p.preco != null && !p.oculto && (categoriaAtiva === "Todos" || p.cat === categoriaAtiva));
+  const visiveis = PRODUTOS.filter(p => p.preco != null && !p.oculto && (categoriaAtiva === "Todos" || p.cat === categoriaAtiva));
+  // Agrupa tamanhos/refis num anúncio só: mostra a variante escolhida de cada grupo
+  const vistos = {}, lista = [];
+  visiveis.forEach(p => {
+    if (!p.grupo) { lista.push(p); return; }
+    if (vistos[p.grupo]) return;
+    vistos[p.grupo] = true;
+    const doGrupo = visiveis.filter(x => x.grupo === p.grupo);
+    lista.push(doGrupo.find(x => x.id === VARIANTE_SEL[p.grupo]) || doGrupo[0]);
+  });
+  const variantesDe = p => p.grupo ? visiveis.filter(x => x.grupo === p.grupo) : [p];
   const grid = document.getElementById("grid");
   grid.innerHTML = lista.map(p => {
-    const foto = p.img
-      ? '<img class="real" src="' + p.img + '" alt="' + p.nome + '" loading="lazy">'
+    const vars = variantesDe(p);
+    const fotoGrupo = p.img || (vars.find(x => x.img) || {}).img;
+    const nomeCard = p.grupoNome || p.nome;
+    const seletorVar = vars.length > 1
+      ? '<select class="variante" data-grupo="' + p.grupo + '" aria-label="Tamanho">' + vars.map(v => '<option value="' + v.id + '"' + (v.id === p.id ? ' selected' : '') + '>' + v.variante + ' · ' + brl(v.preco) + '</option>').join('') + '</select>'
+      : '';
+    const foto = fotoGrupo
+      ? '<img class="real" src="' + fotoGrupo + '" alt="' + nomeCard + '" loading="lazy">'
       : '<img class="placeholder" src="assets/logo-cursiva.png" alt="">';
     let aroma = "";
     let status = "";
@@ -306,11 +324,12 @@ function renderGrid() {
       '<div class="photo" data-detalhe="' + p.id + '" role="button" tabindex="0" aria-label="Ver detalhes de ' + p.nome + '">' + foto + '</div>' +
       '<div class="info">' +
         '<p class="cat">' + p.cat + '</p>' +
-        '<p class="name"><a href="#" data-detalhe="' + p.id + '">' + p.nome + '</a></p>' +
-        '<p class="size">' + (p.tamanho || "&nbsp;") + '</p>' +
+        '<p class="name"><a href="#" data-detalhe="' + p.id + '">' + nomeCard + '</a></p>' +
+        '<p class="size">' + (vars.length > 1 ? (vars.length + ' opções de tamanho') : (p.tamanho || "&nbsp;")) + '</p>' +
         '<p class="status" data-status-id="' + p.id + '">' + status + '</p>' +
         '<p class="price">' + brl(p.preco) + '</p>' +
         '<a href="#" class="ver-detalhes" data-detalhe="' + p.id + '">' + (p.aroma ? 'Conhecer os aromas e detalhes' : 'Ver detalhes') + ' →</a>' +
+        seletorVar +
         aroma +
         (p.limitado ? '' : persoHtml(p.id)) +
         (p.limitado && !(qtdEstoque(p.id, "") > 0)
@@ -320,6 +339,15 @@ function renderGrid() {
   }).join('');
 
   ligarPerso(grid);
+  grid.querySelectorAll("select.variante").forEach(sel => sel.addEventListener("change", () => {
+    const antigo = VARIANTE_SEL[sel.dataset.grupo] || lista.find(x => x.grupo === sel.dataset.grupo).id;
+    const aromaSel = document.querySelector('select.aroma[data-id="' + antigo + '"]');
+    const aromaValor = aromaSel ? aromaSel.value : "";
+    VARIANTE_SEL[sel.dataset.grupo] = sel.value;
+    renderGrid();
+    const novo = document.querySelector('select.aroma[data-id="' + sel.value + '"]');
+    if (novo && aromaValor && [...novo.options].some(o => o.value === aromaValor)) { novo.value = aromaValor; novo.dispatchEvent(new Event("change")); }
+  }));
   Object.entries(aromasAntes).forEach(([id, v]) => {
     const s = grid.querySelector('select.aroma[data-id="' + id + '"]');
     if (s) { s.value = v; s.dispatchEvent(new Event("change")); }
