@@ -27,7 +27,7 @@ function aromasDe(p) {
 
 const PRODUTOS = [
   // Casa & Ambiente
-  {"id": "difusor-250", "grupo": "difusor", "grupoNome": "Difusor de Varetas", "variante": "Difusor 250ml", "cat": "Perfumaria & Ambiente", "nome": "Difusor de Varetas", "tamanho": "250ml", "preco": 168.5, "aroma": true, "img": "assets/produtos/difusor.jpg"},
+  {"id": "difusor-250", "grupo": "difusor", "grupoNome": "Difusor de Varetas", "variante": "Difusor 250ml", "cat": "Perfumaria & Ambiente", "nome": "Difusor de Varetas", "tamanho": "250ml", "preco": 168.5, "aroma": true, "img": "assets/produtos/difusor-lilas.jpg", "fotos": ["assets/produtos/difusor-lilas.jpg", "assets/produtos/difusor-cristais.jpg", "assets/produtos/difusor-varetas-opcoes.jpg", "assets/produtos/difusor-quadrado.jpg", "assets/produtos/difusor.jpg"], "varetas": true},
   {"id": "refil-500", "grupo": "difusor", "grupoNome": "Difusor de Varetas", "variante": "Refil 500ml", "cat": "Perfumaria & Ambiente", "nome": "Refil de Difusor de Varetas", "tamanho": "500ml", "preco": 175.0, "aroma": true, "img": null},
   {"id": "refil-1l", "grupo": "difusor", "grupoNome": "Difusor de Varetas", "variante": "Refil 1L", "cat": "Perfumaria & Ambiente", "nome": "Refil de Difusor de Varetas", "tamanho": "1L", "preco": 346.9, "aroma": true, "img": null},
   {"id": "home-spray-250", "grupo": "home-spray", "grupoNome": "Home Spray", "variante": "250ml", "cat": "Perfumaria & Ambiente", "nome": "Home Spray", "tamanho": "250ml", "preco": 45.0, "aroma": true, "img": "assets/produtos/home-spray.jpg"},
