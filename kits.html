@@ -100,6 +100,7 @@
       <label for="k-pref">O que você gosta ou quer no kit?</label>
       <textarea id="k-pref" required maxlength="3000" placeholder="Ex: gosto de aromas florais e suaves, queria um difusor pro quarto e uma vela. A pessoa adora lavanda..."></textarea>
       <button type="submit" class="btn-k" id="k-enviar">Enviar pedido de kit</button>
+      <p style="font-size:14px; text-align:center; margin:16px 0 0;">Tem uma ideia diferente? <a href="pedido-especial.html" style="color:#667449;">Faça um pedido especial →</a></p>
       <p class="msg" id="k-msg" role="status"></p>
     </form>
   </div>
@@ -109,7 +110,7 @@
 <footer class="sm-rodape2">
   <img src="assets/logo-cursiva.png" alt="Sagrado de Mim">
   <p class="lema">feito à mão, pensado para você</p>
-  <nav aria-label="Rodapé"><a href="loja.html">Loja</a><a href="kits.html">Kits personalizados</a><a href="quiz-corporal.html">Perfume personalizado</a><a href="quiz-casa.html">Aroma para casa</a><a href="meus-pedidos.html">Meus pedidos</a></nav>
+  <nav aria-label="Rodapé"><a href="loja.html">Loja</a><a href="kits.html">Kits personalizados</a><a href="pedido-especial.html">Pedido especial</a><a href="quiz-corporal.html">Perfume personalizado</a><a href="quiz-casa.html">Aroma para casa</a><a href="meus-pedidos.html">Meus pedidos</a></nav>
   <p class="contato"><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp (31) 99915-3132</a><span>·</span><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></p>
 </footer>
 <script>
@@ -121,6 +122,8 @@
 </script>
 <script src="emails.js" charset="utf-8"></script>
 <script>
+const TIPO = "kit"; // "kit" ou "especial"
+const NOME_TIPO = t => t === "especial" ? "Pedido especial" : "Kit personalizado";
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_g3oZgj3D3YcZvW3werbYPA_Pv-_FNpL";
 async function rpc(nome, corpo) {
@@ -140,23 +143,23 @@ document.getElementById("form-kit").addEventListener("submit", async e => {
   const d = { nome: k("nome"), email: k("email"), orc: parseFloat(k("orc").replace(",", ".")), zap: k("zap"), ocasiao: k("ocasiao"), prazo: k("prazo"), pref: k("pref") };
   function k(id) { return document.getElementById("k-" + id).value.trim(); }
   msg.className = "msg erro";
-  if (!d.nome || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email) || !(d.orc >= 30) || !d.pref) {
-    msg.textContent = "Preencha nome, e-mail válido, orçamento (a partir de R$ 30) e o que você gosta.";
+  if (!d.nome || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email) || (TIPO === "kit" && !(d.orc >= 30)) || !d.pref) {
+    msg.textContent = TIPO === "kit" ? "Preencha nome, e-mail válido, orçamento (a partir de R$ 30) e o que você gosta." : "Preencha nome, e-mail válido e conte a sua ideia.";
     return;
   }
   btn.disabled = true; btn.textContent = "Enviando...";
   try {
-    const r = await rpc("criar_kit", { p_nome: d.nome, p_email: d.email, p_whatsapp: d.zap || null, p_orcamento: d.orc, p_ocasiao: d.ocasiao || null, p_preferencias: d.pref, p_prazo: d.prazo || null });
+    const r = await rpc("criar_kit", { p_nome: d.nome, p_email: d.email, p_whatsapp: d.zap || null, p_orcamento: isNaN(d.orc) ? null : d.orc, p_ocasiao: d.ocasiao || null, p_preferencias: d.pref, p_prazo: d.prazo || null, p_tipo: TIPO });
     const link = linkDo(r.token);
-    await enviarEmail({ para: EMAIL_CONFIG.avisoPara, nome: "Sagrado de Mim", assunto: "Novo pedido de kit #" + r.id + " — " + d.nome,
-      mensagem: "Novo pedido de kit personalizado.\n\nNome: " + d.nome + "\nE-mail: " + d.email + "\nWhatsApp: " + (d.zap || "-") +
-        "\nOrçamento: " + brl(d.orc) + "\nOcasião: " + (d.ocasiao || "-") + "\nPrazo: " + (d.prazo || "-") + "\n\nO que gosta / quer:\n" + d.pref +
+    await enviarEmail({ para: EMAIL_CONFIG.avisoPara, nome: "Sagrado de Mim", assunto: "Novo " + NOME_TIPO(TIPO).toLowerCase() + " #" + r.id + " — " + d.nome,
+      mensagem: NOME_TIPO(TIPO) + " novo.\n\nNome: " + d.nome + "\nE-mail: " + d.email + "\nWhatsApp: " + (d.zap || "-") +
+        "\nOrçamento: " + (isNaN(d.orc) ? "não informado" : brl(d.orc)) + "\nOcasião: " + (d.ocasiao || "-") + "\nPrazo: " + (d.prazo || "-") + "\n\nPedido / ideia:\n" + d.pref +
         "\n\nPara enviar a proposta, abra o painel na aba Kits.",
       link: location.origin + "/admin.html", textoLink: "Abrir o painel" });
-    await enviarEmail({ para: d.email, nome: d.nome, assunto: "Recebemos seu pedido de kit — Sagrado de Mim",
-      mensagem: "Olá, " + d.nome + "!\n\nRecebemos seu pedido de kit personalizado (orçamento de " + brl(d.orc) + "). Vamos montar uma proposta com carinho e te enviar por aqui. Você vai poder aprovar direto no site.\n\nCom carinho,\nSagrado de Mim",
+    await enviarEmail({ para: d.email, nome: d.nome, assunto: "Recebemos seu " + NOME_TIPO(TIPO).toLowerCase() + " — Sagrado de Mim",
+      mensagem: "Olá, " + d.nome + "!\n\nRecebemos seu " + NOME_TIPO(TIPO).toLowerCase() + ". " + (TIPO === "especial" ? "Vamos avaliar se conseguimos fazer e te respondemos por aqui." : "Vamos montar uma proposta com carinho e te enviar por aqui.") + " Você vai poder aprovar direto no site.\n\nCom carinho,\nSagrado de Mim",
       link: link, textoLink: "Acompanhar meu pedido" });
-    document.getElementById("form-kit").innerHTML = '<h2>Pedido enviado!</h2><p style="font-size:16px; line-height:1.6;">Obrigada, ' + esc(d.nome) + '! Recebemos seu pedido de kit e vamos montar uma proposta com carinho. Ela chega no seu e-mail <b>' + esc(d.email) + '</b>.</p><p style="font-size:14px; color:#6b6558;">Guarde este link pra acompanhar: <a href="' + link + '">' + esc(link) + '</a></p>';
+    document.getElementById("form-kit").innerHTML = '<h2>Pedido enviado!</h2><p style="font-size:16px; line-height:1.6;">Obrigada, ' + esc(d.nome) + '! Recebemos seu ' + NOME_TIPO(TIPO).toLowerCase() + ' e ' + (TIPO === "especial" ? 'vamos ver com carinho se conseguimos fazer.' : 'vamos montar uma proposta com carinho.') + ' Ela chega no seu e-mail <b>' + esc(d.email) + '</b>.</p><p style="font-size:14px; color:#6b6558;">Guarde este link pra acompanhar: <a href="' + link + '">' + esc(link) + '</a></p>';
   } catch (err) {
     msg.textContent = "Não foi possível enviar agora (" + err.message + "). Tente de novo ou fale com a gente no WhatsApp (31) 99915-3132.";
     btn.disabled = false; btn.textContent = "Enviar pedido de kit";
@@ -173,11 +176,13 @@ async function carregarProposta() {
   let k;
   try { k = await rpc("ver_kit", { p_token: token }); } catch (e) { k = null; }
   if (!k) { box.innerHTML = '<div class="cartao"><h2>Pedido não encontrado</h2><p>Confira se o link está completo, ou fale com a gente no WhatsApp (31) 99915-3132.</p></div>'; return; }
-  const status = { novo: "Montando sua proposta", proposta_enviada: "Proposta pronta", aprovado: "Aprovado", recusado: "Recusado" }[k.status] || k.status;
-  let h = '<div class="cartao"><p class="eyebrow">Kit personalizado #' + k.id + '</p><h2>Olá, ' + esc(k.nome) + '!</h2><span class="status">' + status + '</span>' +
-    '<p style="margin:18px 0 4px; font-size:14px; color:#6b6558;">Seu pedido: orçamento de ' + brl(k.orcamento) + (k.ocasiao ? ' · ' + esc(k.ocasiao) : '') + '</p>' +
+  const status = { novo: k.tipo === "especial" ? "Estamos avaliando" : "Montando sua proposta", proposta_enviada: "Proposta pronta", aprovado: "Aprovado", recusado: "Você pediu ajustes", inviavel: "Não foi possível" }[k.status] || k.status;
+  let h = '<div class="cartao"><p class="eyebrow">' + NOME_TIPO(k.tipo) + ' #' + k.id + '</p><h2>Olá, ' + esc(k.nome) + '!</h2><span class="status">' + status + '</span>' +
+    '<p style="margin:18px 0 4px; font-size:14px; color:#6b6558;">Seu pedido' + (k.orcamento != null ? ': orçamento de ' + brl(k.orcamento) : '') + (k.ocasiao ? ' · ' + esc(k.ocasiao) : '') + '</p>' +
     '<p style="margin:0; font-size:14px; color:#6b6558; white-space:pre-wrap;">' + esc(k.preferencias) + '</p>';
-  if (k.status === "novo") {
+  if (k.status === "inviavel") {
+    h += '<p style="margin-top:20px;">Infelizmente não vamos conseguir fazer esse pedido.</p>' + (k.proposta_itens ? '<div class="proposta">' + esc(k.proposta_itens) + '</div>' : '') + '<p style="font-size:14px;">Se quiser, faça um novo pedido ou fale com a gente no WhatsApp (31) 99915-3132.</p>';
+  } else if (k.status === "novo") {
     h += '<p style="margin-top:20px;">Estamos montando sua proposta com carinho. Você vai receber um e-mail quando ela estiver pronta.</p>';
   } else {
     h += '<p style="margin:24px 0 0; font-weight:500;">Nossa proposta</p><div class="proposta">' + esc(k.proposta_itens) + '</div><p class="valor">' + brl(k.proposta_valor) + '</p>';
