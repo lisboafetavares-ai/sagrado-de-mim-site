@@ -138,7 +138,16 @@ document.getElementById("form-kit").addEventListener("submit", async e => {
   }
   btn.disabled = true; btn.textContent = "Enviando...";
   try {
-    const r = await rpc("criar_kit", { p_nome: d.nome, p_email: d.email, p_whatsapp: d.zap || null, p_orcamento: isNaN(d.orc) ? null : d.orc, p_ocasiao: d.ocasiao || null, p_preferencias: d.pref, p_prazo: d.prazo || null, p_tipo: TIPO });
+    const corpo = { p_nome: d.nome, p_email: d.email, p_whatsapp: d.zap || null, p_orcamento: isNaN(d.orc) ? null : d.orc, p_ocasiao: d.ocasiao || null, p_preferencias: d.pref, p_prazo: d.prazo || null, p_tipo: TIPO };
+    let r;
+    try { r = await rpc("criar_kit", corpo); }
+    catch (e1) {
+      // banco ainda sem o sql/pedido-especial.sql: tenta do jeito antigo
+      if (!/function|p_tipo|schema cache/i.test(e1.message)) throw e1;
+      const antigo = Object.assign({}, corpo); delete antigo.p_tipo;
+      if (TIPO === "especial") { antigo.p_preferencias = "[PEDIDO ESPECIAL] " + antigo.p_preferencias; if (antigo.p_orcamento == null) antigo.p_orcamento = 30; }
+      r = await rpc("criar_kit", antigo);
+    }
     const link = linkDo(r.token);
     await enviarEmail({ para: EMAIL_CONFIG.avisoPara, nome: "Sagrado de Mim", assunto: "Novo " + NOME_TIPO(TIPO).toLowerCase() + " #" + r.id + " — " + d.nome,
       mensagem: NOME_TIPO(TIPO) + " novo.\n\nNome: " + d.nome + "\nE-mail: " + d.email + "\nWhatsApp: " + (d.zap || "-") +
