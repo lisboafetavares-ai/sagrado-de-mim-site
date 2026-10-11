@@ -7,11 +7,11 @@ const ETIQUETA_FUNDO = "#F7EFDF";        // bege da paleta
 const ETIQUETA_SELO_FUNDO = "#D8C8A9";   // sage bem claro
 
 const ETIQUETAS_CORPO = {
-  "sabonete-fatia-125": { tipo: "SABONETE ARTESANAL", modo: "Molhe o sabonete e a pele, faça espuma, massageie e enxágue bem.", ingredientes: "", meses: 12 },
-  "sabonete-gel-250": { tipo: "SABONETE LÍQUIDO", modo: "Aplique uma pequena quantidade na pele molhada, faça espuma e enxágue.", ingredientes: "", meses: 12 },
+  "sabonete-fatia-125": { tipo: "SABONETE ARTESANAL", modo: "Molhe o sabonete e a pele, faça espuma, massageie e enxágue bem.", ingredientes: "Base Glicerinada, Lauril Líquido, Fragrância, Extrato Glicerinado, Corante Cosmético.", meses: 12 },
+  "sabonete-gel-250": { tipo: "SABONETE LÍQUIDO", modo: "Aplique uma pequena quantidade na pele molhada, faça espuma e enxágue.", ingredientes: "Água Mineral, Base Concentrada para Sabonete Líquido, Extrato Glicólico, Fragrância, Tensoativo Anfótero, Corante Cosmético.", meses: 12 },
   "espuma-facial-70": { tipo: "ESPUMA DE LIMPEZA FACIAL", modo: "Aplique no rosto úmido, massageie suavemente evitando a área dos olhos e enxágue.", ingredientes: "", meses: 12 },
-  "hidratante-250": { tipo: "HIDRATANTE CORPORAL", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "", meses: 12 },
-  "hidratante-moldura-300": { tipo: "HIDRATANTE CORPORAL", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "", meses: 12 },
+  "hidratante-250": { tipo: "HIDRATANTE CORPORAL", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "Água Mineral, Extrato Glicerinado, Base Autoemulsionante, Óleo Vegetal, Fragrância, Óleo de Silicone, Ureia, Conservante, Corante Cosmético.", meses: 12 },
+  "hidratante-moldura-300": { tipo: "HIDRATANTE CORPORAL", modo: "Após o banho, aplique na pele limpa e seca, massageando até absorver.", ingredientes: "Água Mineral, Extrato Glicerinado, Base Autoemulsionante, Óleo Vegetal, Fragrância, Óleo de Silicone, Ureia, Conservante, Corante Cosmético.", meses: 12 },
   "manteiga-200": { tipo: "MANTEIGA CORPORAL", modo: "Aplique pequenas quantidades na pele, massageando até absorver. Ideal após o banho.", ingredientes: "", meses: 12 },
   "creme-pes-100": { tipo: "CREME PARA OS PÉS", modo: "Aplique nos pés limpos e secos, massageando principalmente as áreas ressecadas.", ingredientes: "", meses: 12 }
 };
@@ -83,8 +83,8 @@ function etqHtmlCorpo(e, logoUrl) {
 
 // ---- Difusor / Home Spray do quiz "Aroma para Casa" (mesmo modelo da aba Personalizar Etiqueta) ----
 const ETQ_CASA = {
-  "Difusor de Varetas": { nome: "DIFUSOR DE VARETAS", ingredientes: "Óleo Mineral, Fragrância, Álcool, Corante.", volume: "250mL" },
-  "Home Spray": { nome: "HOME SPRAY", ingredientes: "Água, Álcool, Fragrância, Glicerina.", volume: "200mL" }
+  "Difusor de Varetas": { nome: "DIFUSOR DE VARETAS", ingredientes: "Álcool de Cereais, Fragrância, Água Mineral, Corante.", volume: "250mL" },
+  "Home Spray": { nome: "HOME SPRAY", ingredientes: "Álcool de Cereais, Água Mineral, Fragrância, Corante.", volume: "200mL" }
 };
 
 function etqHtmlCasa(e, logoUrl) {

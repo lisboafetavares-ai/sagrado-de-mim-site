@@ -99,7 +99,7 @@ function etiquetaCasaHtml(o) {
   const notasHtml = info && info.saida
     ? ['SAÍDA', 'CORPO', 'FUNDO'].map((rot, i) => '<div><b style="font-weight:700;">' + rot + ':</b> ' + epEsc(curta([info.saida, info.corpo, info.fundo][i])) + '</div>').join('')
     : (info && info.desc ? '<div style="text-transform:none; letter-spacing:0.02em;">' + epEsc(info.desc) + '</div>' : '<div>AROMA ' + epEsc(o.base || "") + '</div>');
-  const ingred = o.ingredientes != null && o.ingredientes !== "" ? o.ingredientes : (o.tituloProduto ? "________________" : null) || (spray ? "Água, Álcool, Fragrância, Glicerina." : "Óleo Mineral, Fragrância, Álcool, Corante.");
+  const ingred = o.ingredientes != null && o.ingredientes !== "" ? o.ingredientes : (o.tituloProduto ? "________________" : null) || (spray ? "Álcool de Cereais, Água Mineral, Fragrância, Corante." : "Álcool de Cereais, Fragrância, Água Mineral, Corante.");
   const vol = o.volume || (o.tituloProduto ? "—" : (spray ? "200mL" : "250mL"));
   const c = 'display:flex; align-items:center; justify-content:center; text-align:center;';
   return '<div id="' + (o.canvasId || "casa-label") + '" style="position:relative; overflow:hidden; width:495px; height:338px; background:' + (o.fundo || "#F7EFDF") + '; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; box-sizing:border-box; padding:14px; margin:' + (o.margem || "0") + ';">' +

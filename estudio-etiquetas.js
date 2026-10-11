@@ -161,7 +161,7 @@ const MODELOS = {
       { id: "produto", rot: "Produto", tipo: "select", opcoes: () => [["Difusor de Varetas", "difusor"], ["Home Spray", "spray"]] },
       { id: "base", rot: "Aroma base", tipo: "select", opcoes: () => (typeof AROMAS !== "undefined" ? AROMAS : []).map(a => [a, a]) },
       { id: "volume", rot: "Volume", tipo: "texto", auto: s => s.produto === "spray" ? "200mL" : "250mL" },
-      { id: "ingredientes", rot: "Ingredientes", tipo: "area", auto: s => s.produto === "spray" ? "Água, Álcool, Fragrância, Glicerina." : "Óleo Mineral, Fragrância, Álcool, Corante." },
+      { id: "ingredientes", rot: "Ingredientes", tipo: "area", auto: s => s.produto === "spray" ? "Álcool de Cereais, Água Mineral, Fragrância, Corante." : "Álcool de Cereais, Fragrância, Água Mineral, Corante." },
       { id: "fundo", rot: "Fundo", tipo: "cor", padrao: PALETA.creme }
     ],
     html: s => etiquetaCasaHtml({ nome: s.nome, base: s.base, produto: s.produto, volume: s.volume, ingredientes: s.ingredientes, fundo: s.fundo, tinta: tintaPara(s.fundo), logoUrl: logoPara(tintaPara(s.fundo)) })

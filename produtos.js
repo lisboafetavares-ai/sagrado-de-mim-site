@@ -32,7 +32,7 @@ const PRODUTOS = [
   {"id": "refil-1l", "grupo": "difusor", "grupoNome": "Difusor de Varetas", "variante": "Refil 1L", "cat": "Perfumaria & Ambiente", "nome": "Refil de Difusor de Varetas", "tamanho": "1L", "preco": 346.9, "aroma": true, "img": null},
   {"id": "home-spray-250", "grupo": "home-spray", "grupoNome": "Home Spray", "variante": "250ml", "cat": "Perfumaria & Ambiente", "nome": "Home Spray", "tamanho": "250ml", "preco": 45.0, "aroma": true, "img": "assets/produtos/home-spray.jpg"},
   {"id": "home-spray-500", "grupo": "home-spray", "grupoNome": "Home Spray", "variante": "500ml", "cat": "Perfumaria & Ambiente", "nome": "Home Spray", "tamanho": "500ml", "preco": 85.0, "aroma": true, "img": "assets/produtos/home-spray.jpg"},
-  {"id": "agua-lencol", "cat": "Perfumaria & Ambiente", "nome": "Água para Lençol", "tamanho": "", "preco": null, "aroma": true, "aromas": AROMAS_LENCOL, "img": "assets/kits/agua-lencol.jpg"},
+  {"id": "agua-lencol", "cat": "Perfumaria & Ambiente", "nome": "Água para Lençol", "tamanho": "250ml", "preco": null, "aroma": true, "aromas": AROMAS_LENCOL, "img": "assets/kits/agua-lencol.jpg"},
   {"id": "neutralizador-70", "cat": "Perfumaria & Ambiente", "nome": "Neutralizador de Odores", "tamanho": "70ml", "preco": 29.9, "aroma": true, "aromas": AROMAS_NEUTRALIZADOR, "img": null},
   {"id": "passa-facil", "cat": "Perfumaria & Ambiente", "nome": "Passa Fácil", "tamanho": "", "preco": 29.9, "aroma": true, "aromas": AROMAS_PASSA_FACIL, "img": null},
   {"id": "vela-p", "grupo": "vela", "grupoNome": "Vela na Latinha", "variante": "Pequena", "cat": "Perfumaria & Ambiente", "nome": "Vela na Latinha — Pequena", "tamanho": "", "preco": 35.0, "aroma": true, "aromas": AROMAS_VELAS, "img": "assets/kits/vela.jpg"},
