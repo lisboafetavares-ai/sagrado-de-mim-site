@@ -218,7 +218,7 @@ const MODELOS = {
 };
 
 // ---------- Interface ----------
-let ESTUDIO = { modelo: "corpo", s: {} };
+let ESTUDIO = { modelo: "livre", s: {} };
 function estudioPadroes(mid) {
   const m = MODELOS[mid], s = {};
   m.campos.forEach(c => {
@@ -232,6 +232,12 @@ function estudioPadroes(mid) {
 function renderEstudio() {
   const box = document.getElementById("estudio");
   if (!box) return;
+  if (ESTUDIO.modelo === "livre" && typeof elRender === "function") {
+    box.innerHTML = '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">' + ['livre'].concat(Object.keys(MODELOS)).map(k => '<button type="button" data-modelo="' + k + '" style="padding:9px 14px; border-radius:999px; cursor:pointer; font-family:Arial,sans-serif; font-size:13px; border:1px solid ' + PALETA.oliva + '; background:' + (k === ESTUDIO.modelo ? PALETA.oliva : '#fff') + '; color:' + (k === ESTUDIO.modelo ? '#fff' : PALETA.oliva) + ';">' + (k === 'livre' ? '✨ Editor livre (Estilo A)' : MODELOS[k].titulo) + '</button>').join('') + '</div><div id="el-area"></div>';
+    box.querySelectorAll("[data-modelo]").forEach(b => b.onclick = () => { ESTUDIO = { modelo: b.dataset.modelo, s: b.dataset.modelo === "livre" ? {} : estudioPadroes(b.dataset.modelo) }; renderEstudio(); });
+    elRender(document.getElementById("el-area"));
+    return;
+  }
   const m = MODELOS[ESTUDIO.modelo], s = ESTUDIO.s;
   const est = 'width:100%; box-sizing:border-box; font-family:Arial,sans-serif; font-size:14px; padding:9px 11px; border-radius:8px; border:1px solid rgba(61,58,52,0.3); background:#fff;';
   const campo = c => {
@@ -247,7 +253,7 @@ function renderEstudio() {
   };
   const escala = Math.min(1, 560 / m.px[0]);
   box.innerHTML =
-    '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">' + Object.keys(MODELOS).map(k => '<button type="button" data-modelo="' + k + '" style="padding:9px 14px; border-radius:999px; cursor:pointer; font-family:Arial,sans-serif; font-size:13px; border:1px solid ' + PALETA.oliva + '; background:' + (k === ESTUDIO.modelo ? PALETA.oliva : '#fff') + '; color:' + (k === ESTUDIO.modelo ? '#fff' : PALETA.oliva) + ';">' + MODELOS[k].titulo + '</button>').join('') + '</div>' +
+    '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">' + '<button type="button" data-modelo="livre" style="padding:9px 14px; border-radius:999px; cursor:pointer; font-family:Arial,sans-serif; font-size:13px; border:1px solid ' + PALETA.oliva + '; background:#fff; color:' + PALETA.oliva + ';">✨ Editor livre (Estilo A)</button>' + Object.keys(MODELOS).map(k => '<button type="button" data-modelo="' + k + '" style="padding:9px 14px; border-radius:999px; cursor:pointer; font-family:Arial,sans-serif; font-size:13px; border:1px solid ' + PALETA.oliva + '; background:' + (k === ESTUDIO.modelo ? PALETA.oliva : '#fff') + '; color:' + (k === ESTUDIO.modelo ? '#fff' : PALETA.oliva) + ';">' + MODELOS[k].titulo + '</button>').join('') + '</div>' +
     '<p style="font-family:Arial,sans-serif; font-size:12px; color:#6b6558; margin:0 0 12px;">Tamanho real: ' + String(m.mm[0]).replace(".", ",") + ' × ' + String(m.mm[1]).replace(".", ",") + ' mm</p>' +
     '<div style="background:#ece6da; border-radius:12px; padding:20px; display:flex; justify-content:center; overflow:auto;"><div style="width:' + Math.round(m.px[0] * escala) + 'px; height:' + Math.round(m.px[1] * escala) + 'px;"><div id="estudio-preview" style="transform:scale(' + escala + '); transform-origin:0 0; width:' + m.px[0] + 'px; height:' + m.px[1] + 'px;">' + m.html(s) + '</div></div></div>' +
     '<div style="margin-top:8px;">' + m.campos.map(campo).join('') + '</div>' +
@@ -256,7 +262,7 @@ function renderEstudio() {
       '<button type="button" class="btn" id="estudio-imprimir" style="font-size:13px; padding:10px 16px;">🖨️ Imprimir</button>' +
       '<button type="button" class="btn" id="estudio-png" style="font-size:13px; padding:10px 16px; background:#fff; color:' + PALETA.oliva + '; border:1px solid ' + PALETA.oliva + ';">⬇️ Baixar imagem</button>' +
     '</div>';
-  box.querySelectorAll("[data-modelo]").forEach(b => b.onclick = () => { ESTUDIO = { modelo: b.dataset.modelo, s: estudioPadroes(b.dataset.modelo) }; renderEstudio(); });
+  box.querySelectorAll("[data-modelo]").forEach(b => b.onclick = () => { ESTUDIO = { modelo: b.dataset.modelo, s: b.dataset.modelo === "livre" ? {} : estudioPadroes(b.dataset.modelo) }; renderEstudio(); });
   box.querySelectorAll("[data-cor]").forEach(b => b.onclick = () => { ESTUDIO.s[b.dataset.cor] = b.dataset.valor; renderEstudio(); });
   box.querySelectorAll("[data-campo]").forEach(el => {
     const atualiza = () => {
@@ -274,7 +280,7 @@ function renderEstudio() {
   document.getElementById("estudio-imprimir").onclick = imprimirEstudio;
   document.getElementById("estudio-png").onclick = baixarEstudio;
 }
-function abrirEstudio() { if (!ESTUDIO.s || !Object.keys(ESTUDIO.s).length) ESTUDIO.s = estudioPadroes(ESTUDIO.modelo); renderEstudio(); }
+function abrirEstudio() { if (ESTUDIO.modelo !== "livre" && (!ESTUDIO.s || !Object.keys(ESTUDIO.s).length)) ESTUDIO.s = estudioPadroes(ESTUDIO.modelo); renderEstudio(); }
 
 function imprimirEstudio() {
   const m = MODELOS[ESTUDIO.modelo], html = m.html(ESTUDIO.s);
