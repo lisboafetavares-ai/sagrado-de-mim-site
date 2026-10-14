@@ -9,7 +9,7 @@ const EL_FONTES = [
   ["Georgia", "Georgia, serif"], ["Arial", "Arial, sans-serif"]
 ];
 // Paleta ampla e neutra (tons terrosos, sálvia, azul-acinzentado, rosados, marrons)
-const EL_CORES = ["#FFFFFF", "#FFFDF9", "#FBF7EE", "#F7EFDF", "#D8C8A9", "#8F9A6C", "#667449", "#2E2A25", "#000000", "#D4D6D5", "#C4BCB1", "#F0E6E4", "#EEE6DB", "#A79186", "#B8C3BD", "#CABC9F", "#EFCBBF", "#E6CCB5", "#9A7153", "#ABB9B9", "#ADA592", "#DABDB7", "#EAC3A4", "#93674E", "#7D8D8A", "#A0957F", "#C1A399", "#D2A57C", "#855845", "#587883", "#909E87", "#DCA68E", "#B28156", "#8E4733", "#5A6970", "#828574", "#B77C74", "#96684E", "#79422D", "#445C60", "#6C7467", "#9B5354", "#935435", "#68362B", "#455151", "#7D5754", "#7E3E22", "#4E2F2C", "#3E453D", "#5A6567", "#5A4437", "#603117", "#552C32", "#212D3B", "#502A1F", "#4D2A17", "#33271B", "#D3D5C8", "#9CA8A4", "#89968C", "#73847C", "#5C6C61", "#8F8B6E", "#988E73", "#CCBBA9", "#BB8970", "#A76B51", "#384B5A", "#506171", "#848D92", "#B1AEA7", "#6B6A65", "#4A4B45"];
+const EL_CORES = ["#FFFFFF", "#EDE2CF", "#FFFDF9", "#FBF7EE", "#F7EFDF", "#D8C8A9", "#8F9A6C", "#667449", "#2E2A25", "#000000", "#D4D6D5", "#C4BCB1", "#F0E6E4", "#EEE6DB", "#A79186", "#B8C3BD", "#CABC9F", "#EFCBBF", "#E6CCB5", "#9A7153", "#ABB9B9", "#ADA592", "#DABDB7", "#EAC3A4", "#93674E", "#7D8D8A", "#A0957F", "#C1A399", "#D2A57C", "#855845", "#587883", "#909E87", "#DCA68E", "#B28156", "#8E4733", "#5A6970", "#828574", "#B77C74", "#96684E", "#79422D", "#445C60", "#6C7467", "#9B5354", "#935435", "#68362B", "#455151", "#7D5754", "#7E3E22", "#4E2F2C", "#3E453D", "#5A6567", "#5A4437", "#603117", "#552C32", "#212D3B", "#502A1F", "#4D2A17", "#33271B", "#D3D5C8", "#9CA8A4", "#89968C", "#73847C", "#5C6C61", "#8F8B6E", "#988E73", "#CCBBA9", "#BB8970", "#A76B51", "#384B5A", "#506171", "#848D92", "#B1AEA7", "#6B6A65", "#4A4B45", "#D8D5D0", "#F4F3EE", "#D5DCD4", "#BEB8BC", "#C9C1B7", "#E1D6C3", "#BEC9BB", "#ADAFBB", "#E5C6C1", "#D8BFBB", "#BFC6D0", "#9EA7B6", "#AA9787", "#B8A5A9", "#97ABA9", "#95A5B2", "#8FA5A3", "#A8B1B8", "#9294A0"];
 const EL_PRESETS = [["Kayali Slim",3.5,5],["Kayali",4.5,5],["Perfume",4,5],["Difusor",5,5],["Difusor",7,4],["3 em 1",5,3],["3 em 1",3,2],
   ["Sabonete / Difusor",9.9,6.77],["Hidratante",6,6],["Body Splash",5,7],["Perfume pequeno",6.5,3.4],["Perfume",7,5]];
 
@@ -57,7 +57,7 @@ function elAplicarPronta(i) {
   });
 }
 const EL_PADRAO = {
-  lado: "frente", larg: 5, alt: 5, fundo: "#FBF7EE", faixaCor: "#8F9A6C", faixaPos: "esquerda", faixaEsp: 1.6,
+  lado: "frente", larg: 5, alt: 5, fundo: "#EDE2CF", faixaCor: "#8F9A6C", faixaPos: "esquerda", faixaEsp: 1.6,
   mostrarLogo: true, logoCor: "#667449", logoTam: 22,
   titulo: "Bamboo Trouss", tituloFonte: "'Bodoni Moda', Georgia, serif", tituloTam: 4.6, tituloCor: "#3A3631", maiusculas: true,
   mostrarLinha: true, linhaCor: "#8F9A6C",
