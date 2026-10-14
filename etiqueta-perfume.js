@@ -80,7 +80,7 @@ function etiquetaPerfumePequenaHtml(o) {
     '<div style="position:absolute; left:42px; top:8px; width:275px; height:154px; border:' + L + '; box-sizing:border-box; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); grid-template-rows:100px 52px; pointer-events:none;">' +
       '<div style="grid-column:1 / span 3; display:flex; align-items:center; gap:8px; padding:0 10px; border-bottom:' + L + ';">' +
         '<img src="' + (o.logoUrl || "assets/logo-cursiva.png") + '" alt="Sagrado de Mim" style="width:84px; height:auto; display:block; flex-shrink:0;">' +
-        '<div style="flex:1; min-width:0; text-align:center;"><div style="font-family:' + f.family + '; font-style:' + f.style + '; font-weight:' + f.weight + '; font-size:22px; line-height:1.05; word-break:break-word;">' + epEsc(o.nome || "Nome do perfume") + '</div>' +
+        '<div style="flex:1; min-width:0; text-align:center;"><div style="font-family:' + f.family + '; font-style:' + f.style + '; font-weight:' + f.weight + '; font-size:' + (o.nomeTam || 22) + 'px; line-height:1.05; word-break:break-word; color:' + (o.corNome || INK) + ';">' + epEsc(o.nome || "Nome do perfume") + '</div>' +
           (o.aroma ? '<div style="font-size:6.4px; letter-spacing:0.22em; margin-top:6px; text-transform:uppercase;">' + epEsc(o.aroma) + '</div>' : '') + '</div>' +
       '</div>' +
       '<div style="grid-column:1 / span 2; border-right:' + L + '; padding:4px 8px; font-size:5.8px; letter-spacing:0.08em; line-height:1.55; display:flex; flex-direction:column; justify-content:center; text-transform:uppercase;">' + notasHtml + '</div>' +

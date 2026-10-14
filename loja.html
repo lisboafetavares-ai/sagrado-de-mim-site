@@ -214,6 +214,7 @@
       <input type="text" id="perso-nome" maxlength="28" placeholder="Ex: Para a Ana, Lua Nova, Meu cantinho...">
       <label>Estilo da letra</label>
       <div class="perso-opts" id="perso-fontes"></div>
+      <div id="perso-cores"></div>
       <label>Elementos (escolha um e clique na etiqueta; clique num já colocado para tirar)</label>
       <div class="perso-opts" id="perso-icones"></div>
       <div class="perso-acoes">
@@ -244,6 +245,7 @@
 <script src="selo-cruelty.js"></script>
 <script src="etiqueta-perfume.js"></script>
 <script src="estudio-etiquetas.js"></script>
+<script src="perso-opcoes.js"></script>
 <script src="elementos.js"></script>
 <script>
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
@@ -622,7 +624,7 @@ const FONTES_ETQ = [
   {id:"script", label:"Script", family:"'Dancing Script',cursive", style:"normal", weight:"700"},
   {id:"elegante", label:"Elegante", family:"'Playfair Display',serif", style:"italic", weight:"400"},
   {id:"moderno", label:"Moderno", family:"'Montserrat',sans-serif", style:"normal", weight:"700"}
-];
+].concat(typeof PERSO_FONTES_EXTRA !== "undefined" ? PERSO_FONTES_EXTRA : []);
 const ICONES_ETQ = ELEMENTOS_ETIQUETA.map(e => e.svg);
 const PERSO = {}; // id do produto -> { img, nome, fonte }
 let edit = null;  // estado do editor aberto
@@ -657,21 +659,22 @@ function etiquetaHtml() {
     '<span class="etq-ic" data-i="' + i + '" style="position:absolute; left:' + ic.x + '%; top:' + ic.y + '%; transform:translate(-50%,-50%); font-size:22px; color:#667449; cursor:pointer; z-index:2;">' + ic.c + '</span>').join("");
   if (p.grupo === "hidratante" && typeof etiquetaHidratanteHtml === "function") {
     return etiquetaHidratanteHtml({ canvasId: "label-canvas", interactive: true, nome: edit.nome || "Seu nome aqui", fonte: f, aroma: edit.aroma,
-      ingredientes: inf.ingredientes || "", modo: inf.modo || "", meses: 12, fundo: "#FFFDF9", tinta: "#2E2A25", iconesHtml: icones });
+      ingredientes: inf.ingredientes || "", modo: inf.modo || "", meses: 12, fundo: edit.fundo, tinta: edit.corNome, iconesHtml: icones }).replace("font-size:26px; line-height:1.05;", "font-size:" + edit.nomeTam + "px; line-height:1.05;");
   }
   const ingred = inf.ingredientes ? escHtml(inf.ingredientes) : '<span style="display:inline-block; width:120px; border-bottom:0.5px solid #2E2A25;">&nbsp;</span>';
-  const t = 'font-family:Arial,sans-serif; font-size:6.6px; line-height:1.35; margin:0; color:#2E2A25;';
-  return '<div id="label-canvas" style="position:relative; overflow:hidden; background:#FFFDF9; width:374px; height:256px; margin:0 auto; box-sizing:border-box; cursor:crosshair; border:1px solid rgba(61,58,52,0.2);">' +
+  const t = 'font-family:Arial,sans-serif; font-size:6.6px; line-height:1.35; margin:0; color:inherit;';
+  const tl = (typeof persoCorEscura === "function" && persoCorEscura(edit.detalhe)) ? "#F7EFDF" : "#2E2A25";
+  return '<div id="label-canvas" style="position:relative; overflow:hidden; background:' + edit.fundo + '; width:374px; height:256px; margin:0 auto; box-sizing:border-box; cursor:crosshair; border:1px solid rgba(61,58,52,0.2);">' +
     '<div style="position:absolute; left:0; top:0; width:238px; height:256px; box-sizing:border-box; padding:20px 18px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; text-align:center; pointer-events:none;">' +
       '<img src="assets/logo-cursiva.png" alt="Sagrado de Mim" style="width:96px; height:auto; display:block;">' +
-      '<p style="font-family:' + f.family + '; font-style:' + f.style + '; font-weight:' + f.weight + '; font-size:28px; margin:0; color:#2E2A25; line-height:1.1; word-break:break-word;">' + escHtml(edit.nome || "Seu nome aqui") + '</p>' +
+      '<p style="font-family:' + f.family + '; font-style:' + f.style + '; font-weight:' + f.weight + '; font-size:' + edit.nomeTam + 'px; margin:0; color:' + edit.corNome + '; line-height:1.1; word-break:break-word;">' + escHtml(edit.nome || "Seu nome aqui") + '</p>' +
       '<div><p style="font-family:Arial,sans-serif; font-size:8px; letter-spacing:1.6px; margin:0 0 3px; color:#2E2A25;">' + escHtml(linha) + '</p>' +
-      '<p style="font-family:Playfair Display,serif; font-style:italic; font-size:12px; margin:0; color:#667449;">' + escHtml(edit.aroma || "") + '</p></div>' +
+      '<p style="font-family:Playfair Display,serif; font-style:italic; font-size:12px; margin:0; color:' + edit.detalhe + ';">' + escHtml(edit.aroma || "") + '</p></div>' +
     '</div>' +
-    '<div style="position:absolute; left:238px; top:0; width:136px; height:256px; background:#8F9A6C;"></div>' +
-    '<div style="position:absolute; left:178px; top:60px; width:256px; height:136px; transform:rotate(-90deg); box-sizing:border-box; padding:11px 14px 9px; display:flex; flex-direction:column; gap:4px; pointer-events:none;">' +
+    '<div style="position:absolute; left:238px; top:0; width:136px; height:256px; background:' + edit.detalhe + ';"></div>' +
+    '<div style="position:absolute; left:178px; top:60px; width:256px; height:136px; transform:rotate(-90deg); box-sizing:border-box; padding:11px 14px 9px; display:flex; flex-direction:column; gap:4px; pointer-events:none; color:' + tl + ';">' +
       '<p style="' + t + ' font-size:8px; letter-spacing:1.5px;"><b>AROMA:</b> ' + escHtml(edit.aroma || "") + '</p>' +
-      '<div style="height:1px; background:#2E2A25;"></div>' +
+      '<div style="height:1px; background:currentColor;"></div>' +
       '<p style="' + t + '"><b>INGREDIENTES:</b> ' + ingred + '</p>' +
       (inf.modo ? '<p style="' + t + '"><b>MODO DE USO:</b> ' + escHtml(inf.modo) + '</p>' : '') +
       '<div style="margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; ' + t + '"><span style="font-size:8.5px; font-weight:700;">' + escHtml(p.tamanho || "") + '</span><span style="text-align:right;">sagradodemim.com.br<br>(31) 99915-3132</span></div>' +
@@ -681,17 +684,28 @@ function etiquetaHtml() {
     icones + '</div>';
 }
 
-function desenharPerso() {
-  const prev = document.getElementById("perso-preview");
-  prev.innerHTML = etiquetaHtml();
+function desenharPersoEventos() {
   const cv = document.getElementById("label-canvas");
   cv.addEventListener("click", e => {
-    if (e.target.classList.contains("etq-ic")) { edit.icones.splice(+e.target.dataset.i, 1); desenharPerso(); return; }
+    const ic = e.target.closest(".etq-ic");
+    if (ic) { edit.icones.splice(+ic.dataset.i, 1); desenharPerso(); return; }
     if (!edit.icone) return;
     const r = cv.getBoundingClientRect();
     edit.icones.push({ c: ICONES_ETQ[+edit.icone], x: (e.clientX - r.left) / r.width * 100, y: (e.clientY - r.top) / r.height * 100 });
     desenharPerso();
   });
+}
+function desenharPerso() {
+  const prev = document.getElementById("perso-preview");
+  prev.innerHTML = etiquetaHtml();
+  desenharPersoEventos();
+  const cv = document.getElementById("label-canvas");
+  const pc = document.getElementById("perso-cores");
+  if (pc && typeof persoControlesHtml === "function") {
+    const ehHid = (PRODUTOS.find(x => x.id === edit.id) || {}).grupo === "hidratante";
+    pc.innerHTML = persoControlesHtml(edit, { semDetalhe: ehHid, min: 16, max: 40 });
+    persoLigar(pc, edit, cheio => { if (cheio) desenharPerso(); else { const c = document.getElementById("label-canvas"); prev.innerHTML = etiquetaHtml(); desenharPersoEventos(); } });
+  }
   document.querySelectorAll("#perso-fontes button").forEach(b => b.classList.toggle("sel", b.dataset.f === edit.fonte));
   document.querySelectorAll("#perso-icones button").forEach(b => b.classList.toggle("sel", b.dataset.c === edit.icone));
 }
@@ -701,7 +715,8 @@ function abrirPerso(id) {
   const antigo = PERSO[id];
   if (p.aroma && !aromaEscolhido(id)) { alert("Escolha o aroma primeiro: ele aparece na etiqueta."); const s = document.querySelector('select.aroma[data-id="' + id + '"]'); if (s) s.focus(); return; }
   edit = { id, aroma: aromaEscolhido(id), nome: antigo ? antigo.nome : "", fonte: antigo ? antigo.fonteId : "elegante",
-           icones: antigo ? antigo.icones.slice() : [], icone: null };
+           icones: antigo ? antigo.icones.slice() : [], icone: null,
+           fundo: antigo && antigo.fundo || "#FFFDF9", detalhe: antigo && antigo.detalhe || "#8F9A6C", corNome: antigo && antigo.corNome || "#2E2A25", nomeTam: antigo && antigo.nomeTam || 28 };
   document.getElementById("perso-produto").textContent = p.nome + (p.tamanho ? " " + p.tamanho : "") + (edit.aroma ? " · " + edit.aroma : "");
   document.getElementById("perso-nome").value = edit.nome;
   document.getElementById("perso-modal").classList.add("show");
@@ -744,7 +759,7 @@ document.getElementById("perso-salvar").addEventListener("click", async () => {
     return;
   }
   const f = FONTES_ETQ.find(x => x.id === edit.fonte);
-  PERSO[edit.id] = { img, aroma: edit.aroma, nome: edit.nome.trim(), fonte: f.label, fonteId: f.id, icones: edit.icones };
+  PERSO[edit.id] = { img, aroma: edit.aroma, nome: edit.nome.trim(), fonte: f.label, fonteId: f.id, icones: edit.icones, fundo: edit.fundo, detalhe: edit.detalhe, corNome: edit.corNome, nomeTam: edit.nomeTam };
   btn.disabled = false; btn.textContent = "Salvar etiqueta";
   fecharPerso();
   renderGrid();
