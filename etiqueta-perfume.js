@@ -45,7 +45,7 @@ function etiquetaPerfumeHtml(o) {
         return v ? '<div><b style="font-weight:700;">' + rot + ':</b> ' + epEsc(curta(v)) + '</div>' : '';
       }).join('');
   const celula = 'display:flex; align-items:center; justify-content:center; text-align:center;';
-  return '<div id="' + (o.canvasId || "label-canvas") + '" style="position:relative; overflow:hidden; background:#F7EFDF; width:350px; height:250px; box-sizing:border-box; padding:10px; margin:0 auto 20px; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; ' + (o.interactive ? 'cursor:crosshair;' : '') + '">' +
+  return '<div id="' + (o.canvasId || "label-canvas") + '" style="position:relative; overflow:hidden; background:#FFFDF9; width:350px; height:250px; box-sizing:border-box; padding:10px; margin:0 auto 20px; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; ' + (o.interactive ? 'cursor:crosshair;' : '') + '">' +
     '<div style="width:330px; height:206px; border:' + L + '; box-sizing:border-box; display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); grid-template-rows:104px 34px 34px 32px; pointer-events:none;">' +
       '<div style="grid-column:1 / span 6; display:flex; align-items:center; gap:10px; padding:0 14px; border-bottom:' + L + ';">' +
         '<img src="' + (o.logoUrl || "assets/logo-cursiva.png") + '" alt="Sagrado de Mim" style="width:108px; height:auto; display:block; flex-shrink:0;">' +
@@ -73,7 +73,7 @@ function etiquetaPerfumePequenaHtml(o) {
   const notasHtml = n.linha
     ? '<div><b style="font-weight:700;">NOTAS:</b> ' + epEsc(n.linha) + '</div>'
     : ['SAÍDA', 'CORPO', 'FUNDO'].map((rot, i) => { const v = [n.saida, n.corpo, n.fundo][i]; return v ? '<div><b style="font-weight:700;">' + rot + ':</b> ' + epEsc(curta(v)) + '</div>' : ''; }).join('');
-  return '<div id="' + (o.canvasId || "label-canvas") + '" style="position:relative; overflow:hidden; width:325px; height:170px; background:' + (o.fundo || "#F7EFDF") + '; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; box-sizing:border-box; margin:0 auto 20px; ' + (o.interactive ? 'cursor:crosshair;' : '') + '">' +
+  return '<div id="' + (o.canvasId || "label-canvas") + '" style="position:relative; overflow:hidden; width:325px; height:170px; background:' + (o.fundo || "#FFFDF9") + '; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; box-sizing:border-box; margin:0 auto 20px; ' + (o.interactive ? 'cursor:crosshair;' : '') + '">' +
     '<div style="position:absolute; left:8px; top:8px; width:30px; height:154px; display:flex; align-items:center; justify-content:center; pointer-events:none;">' +
       '<div style="width:150px; transform:rotate(-90deg); font-size:4.4px; line-height:1.35; font-weight:700; text-align:center; flex-shrink:0;">PERFUME — Composição: Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral e Corante Cosmético. NÃO INGERIR. EVITAR CONTATO COM OS OLHOS. USO EXTERNO. PRODUTO ARTESANAL · Válido por 1 ano.</div>' +
     '</div>' +
@@ -102,7 +102,7 @@ function etiquetaCasaHtml(o) {
   const ingred = o.ingredientes != null && o.ingredientes !== "" ? o.ingredientes : (o.tituloProduto ? "________________" : null) || (spray ? "Álcool de Cereais, Água Mineral, Fragrância, Corante." : "Álcool de Cereais, Fragrância, Água Mineral, Corante.");
   const vol = o.volume || (o.tituloProduto ? "—" : (spray ? "200mL" : "250mL"));
   const c = 'display:flex; align-items:center; justify-content:center; text-align:center;';
-  return '<div id="' + (o.canvasId || "casa-label") + '" style="position:relative; overflow:hidden; width:495px; height:338px; background:' + (o.fundo || "#F7EFDF") + '; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; box-sizing:border-box; padding:14px; margin:' + (o.margem || "0") + ';">' +
+  return '<div id="' + (o.canvasId || "casa-label") + '" style="position:relative; overflow:hidden; width:495px; height:338px; background:' + (o.fundo || "#FFFDF9") + '; color:' + INK + '; font-family:Arial, Helvetica, sans-serif; box-sizing:border-box; padding:14px; margin:' + (o.margem || "0") + ';">' +
     '<div style="width:467px; height:280px; border:' + L + '; box-sizing:border-box; display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); grid-template-rows:140px 46px 46px 46px;">' +
       '<div style="grid-column:1 / span 6; display:flex; align-items:center; gap:14px; padding:0 20px; border-bottom:' + L + ';">' +
         '<img src="' + (o.logoUrl || "assets/logo-cursiva.png") + '" alt="Sagrado de Mim" style="width:150px; height:auto; display:block; flex-shrink:0;">' +

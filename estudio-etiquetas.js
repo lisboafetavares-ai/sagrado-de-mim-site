@@ -137,7 +137,7 @@ const MODELOS = {
       const i = typeof infoAroma === "function" ? infoAroma(s.aroma) : null;
       const notas = i && i.saida ? { saida: i.saida, corpo: i.corpo, fundo: i.fundo } : (i ? { linha: i.desc } : {});
       const h = etiquetaPerfumeHtml({ canvasId: "estudio-perf", nome: s.nome, aroma: s.aroma, notas: notas, logoUrl: logoPara(PALETA.tinta) });
-      return h.replace('background:#F7EFDF;', 'background:' + s.fundo + ';').replace('margin:0 auto 20px;', 'margin:0;');
+      return h.replace('background:#FFFDF9;', 'background:' + s.fundo + ';').replace('margin:0 auto 20px;', 'margin:0;');
     }
   },
   perfumeP: {

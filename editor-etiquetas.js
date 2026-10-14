@@ -8,13 +8,54 @@ const EL_FONTES = [
   ["Dancing Script (cursiva)", "'Dancing Script', cursive"], ["Great Vibes (cursiva fina)", "'Great Vibes', cursive"],
   ["Georgia", "Georgia, serif"], ["Arial", "Arial, sans-serif"]
 ];
-const EL_CORES = ["#F7EFDF","#D8C8A9","#8F9A6C","#667449","#FFFFFF","#FBF7EE","#F3EADC","#EFE6DA","#E8DCC8","#D9C3A5","#C8B08C","#A88B65",
-  "#2E2A25","#3A3631","#000000","#4A4A4A","#7A7A7A","#BDBDBD","#E6E6E6",
-  "#DDE3CF","#B7C29A","#A2A285","#7F8C68","#556238","#3F4A2B","#C9D6C1","#8FAE9A","#5E8B73","#2F5D4E",
-  "#F4D9D0","#E8B4A6","#DFAB8B","#D9835F","#B0786C","#8B4A2D","#F6E3A1","#E8C468","#C0822F","#B39058",
-  "#E4D8EE","#C8B6DD","#9C86B8","#6B5480","#D6E4F0","#A9C4DE","#6F93B8","#2F4F6F","#F2C9D8","#D98BA6","#9E4F6C"];
+// Paleta ampla e neutra (tons terrosos, sálvia, azul-acinzentado, rosados, marrons)
+const EL_CORES = ["#FFFFFF", "#FFFDF9", "#FBF7EE", "#F7EFDF", "#D8C8A9", "#8F9A6C", "#667449", "#2E2A25", "#000000", "#D4D6D5", "#C4BCB1", "#F0E6E4", "#EEE6DB", "#A79186", "#B8C3BD", "#CABC9F", "#EFCBBF", "#E6CCB5", "#9A7153", "#ABB9B9", "#ADA592", "#DABDB7", "#EAC3A4", "#93674E", "#7D8D8A", "#A0957F", "#C1A399", "#D2A57C", "#855845", "#587883", "#909E87", "#DCA68E", "#B28156", "#8E4733", "#5A6970", "#828574", "#B77C74", "#96684E", "#79422D", "#445C60", "#6C7467", "#9B5354", "#935435", "#68362B", "#455151", "#7D5754", "#7E3E22", "#4E2F2C", "#3E453D", "#5A6567", "#5A4437", "#603117", "#552C32", "#212D3B", "#502A1F", "#4D2A17", "#33271B", "#D3D5C8", "#9CA8A4", "#89968C", "#73847C", "#5C6C61", "#8F8B6E", "#988E73", "#CCBBA9", "#BB8970", "#A76B51", "#384B5A", "#506171", "#848D92", "#B1AEA7", "#6B6A65", "#4A4B45"];
 const EL_PRESETS = [["Kayali Slim",3.5,5],["Kayali",4.5,5],["Perfume",4,5],["Difusor",5,5],["Difusor",7,4],["3 em 1",5,3],["3 em 1",3,2],
   ["Sabonete / Difusor",9.9,6.77],["Hidratante",6,6],["Body Splash",5,7],["Perfume pequeno",6.5,3.4],["Perfume",7,5]];
+
+// Etiquetas prontas no Estilo A (as aprovadas), por produto. s = escala dos elementos.
+const CU_CORPO = "Uso externo. Evite contato com os olhos. Mantenha fora do alcance de crianças.";
+const CU_CASA = "Não ingerir. Mantenha longe do sol, do fogo e do alcance de crianças e animais.";
+const CU_PERF = "Não ingerir. Uso externo. Evite contato com os olhos.";
+const EL_PRONTAS = [
+  ["Difusor 250 ml", "difusor-250", 9.9, 6.77, 1.2, "Bamboo Trouss", "DIFUSOR DE VARETAS", "250 ml", CU_CASA],
+  ["Refil 500 ml", "refil-500", 9.9, 6.77, 1.2, "Bamboo Trouss", "REFIL DE DIFUSOR", "500 ml", CU_CASA],
+  ["Refil 1 L", "refil-1l", 9.9, 6.77, 1.2, "Bamboo Trouss", "REFIL DE DIFUSOR", "1 L", CU_CASA],
+  ["Home Spray 250 ml", "home-spray-250", 9.9, 6.77, 1.2, "Bamboo Trouss", "HOME SPRAY", "250 ml", CU_CASA],
+  ["Home Spray 500 ml", "home-spray-500", 9.9, 6.77, 1.2, "Bamboo Trouss", "HOME SPRAY", "500 ml", CU_CASA],
+  ["Água para Lençol", "agua-lencol", 9.9, 6.77, 1.2, "Bamboo Trouss", "ÁGUA PARA LENÇOL", "250 ml", CU_CASA],
+  ["Sabonete Artesanal", "sabonete-fatia-125", 9.9, 6.77, 1.2, "Rosa Mosqueta", "SABONETE ARTESANAL", "125 g", CU_CORPO],
+  ["Sabonete Líquido", "sabonete-gel-250", 9.9, 6.77, 1.2, "Rosas Brancas", "SABONETE LÍQUIDO", "250 ml", CU_CORPO],
+  ["Hidratante (Moldura)", "hidratante-moldura-300", 6, 6, 0.95, "Mademoiselle", "HIDRATANTE CORPORAL", "300 g", CU_CORPO],
+  ["Vela pequena", "vela-p", 6, 6, 0.95, "Bamboo Trouss", "VELA AROMÁTICA", "pequena", "Nunca deixe a vela acesa sem supervisão. Mantenha longe de crianças, animais e objetos inflamáveis."],
+  ["Vela grande", "vela-g", 6, 6, 0.95, "Bamboo Trouss", "VELA AROMÁTICA", "grande", "Nunca deixe a vela acesa sem supervisão. Mantenha longe de crianças, animais e objetos inflamáveis."],
+  ["Body Splash", "body-splash-250", 5, 7, 0.85, "Dreams", "BODY SPLASH", "250 ml", CU_CORPO],
+  ["Body Shimmer", "body-shimmer-225", 5, 7, 0.85, "Madamme Magnólia", "BODY SHIMMER", "225 ml", CU_CORPO],
+  ["Neutralizador", "neutralizador-70", 5, 7, 0.85, "Capim Limão", "NEUTRALIZADOR DE ODORES", "70 ml", CU_CASA],
+  ["Passa Fácil", "passa-facil", 5, 7, 0.85, "Confort Home", "PASSA FÁCIL", "", CU_CASA],
+  ["Espuma Facial", "espuma-facial-70", 5, 7, 0.85, "Espuma Facial", "LIMPEZA FACIAL", "70 ml", CU_CORPO],
+  ["Perfume personalizado 6,5×3,4", "", 6.5, 3.4, 0.6, "Dreams", "PERFUME", "personalizado", CU_PERF],
+  ["Perfume 7×5", "", 7, 5, 0.85, "Dreams", "PERFUME", "", CU_PERF],
+  ["Kayali Slim 3,5×5", "", 3.5, 5, 0.66, "Nerolia e Lima", "EAU DE PARFUM", "", CU_PERF],
+  ["Kayali 4,5×5", "", 4.5, 5, 0.8, "Nerolia", "EAU DE PARFUM", "", CU_PERF],
+  ["Perfume 4×5", "", 4, 5, 0.72, "Nerolia e Lima", "EAU DE PARFUM", "", CU_PERF],
+  ["Difusor 5×5", "difusor-250", 5, 5, 0.8, "White Gardênia", "DIFUSOR DE VARETAS", "", CU_CASA],
+  ["Difusor 7×4", "difusor-250", 7, 4, 0.85, "Bamboo Trouss", "DIFUSOR DE VARETAS", "", CU_CASA],
+  ["3 em 1 · 5×3", "", 5, 3, 0.55, "Perfume 3 em 1", "CORPO · CASA · CARRO", "", CU_PERF],
+  ["3 em 1 · 3×2", "", 3, 2, 0.36, "3 em 1", "CORPO · CASA · CARRO", "", CU_PERF]
+];
+const PERF_INGR = "Álcool de Cereais, Essência, Glicerina Bidestilada, Extrato Glicerinado, Água Mineral, Corante Cosmético.";
+function elAplicarPronta(i) {
+  const p = EL_PRONTAS[i], s = p[4];
+  const inf = (p[1] && typeof infoProduto === "function") ? infoProduto(p[1]) : {};
+  const ehPerfume = /PERFUME|PARFUM|3 EM 1|CORPO · CASA/.test(p[6]);
+  EL = Object.assign(JSON.parse(JSON.stringify(EL_PADRAO)), {
+    larg: p[2], alt: p[3], titulo: p[5], sub: p[6], vol: p[7], extra: "",
+    logoTam: +(24 * s).toFixed(1), tituloTam: +(5.4 * s).toFixed(1), subTam: +(1.9 * s).toFixed(2), volTam: +(1.7 * s).toFixed(2),
+    faixaEsp: +(1.6 * s).toFixed(2), versoTam: +(1.75 * s).toFixed(2), seloTam: +(5.5 * s).toFixed(1),
+    ingredientes: inf.ingredientes || (ehPerfume ? PERF_INGR : ""), modo: inf.modo || (ehPerfume ? "Borrife sobre a pele, nos pulsos e no pescoço." : ""), cuidados: p[8]
+  });
+}
 const EL_PADRAO = {
   lado: "frente", larg: 5, alt: 5, fundo: "#FBF7EE", faixaCor: "#8F9A6C", faixaPos: "esquerda", faixaEsp: 1.6,
   mostrarLogo: true, logoCor: "#667449", logoTam: 22,
@@ -130,7 +171,11 @@ function elRender(box) {
       </div>
     </div>
     <div class="el-ctrl">
-      <details open><summary>📏 Tamanho</summary>
+      <details open><summary>📦 Etiquetas prontas (Opção A aprovada)</summary>
+        <p style="margin:4px 0 6px;color:#6b6558;font-size:12px">Clique no produto pra carregar a etiqueta aprovada. Depois é só mudar o que quiser.</p>
+        <div class="el-pres">${EL_PRONTAS.map((p, i) => `<button type="button" data-pronta="${i}">${p[0]}</button>`).join("")}</div>
+      </details>
+      <details><summary>📏 Tamanho</summary>
         <div class="el-pres">${EL_PRESETS.map(p => `<button type="button" data-pre="${p[1]}x${p[2]}">${p[0]} ${String(p[1]).replace(".", ",")}×${String(p[2]).replace(".", ",")}</button>`).join("")}</div>
         <div class="el-tam"><label class="el-l">Largura (cm)<input type="number" step="0.1" min="1" max="19" data-campo="larg" value="${e.larg}"></label><label class="el-l">Altura (cm)<input type="number" step="0.1" min="1" max="27" data-campo="alt" value="${e.alt}"></label></div>
       </details>
@@ -181,6 +226,7 @@ function elRender(box) {
   });
   box.querySelectorAll("[data-cor]").forEach(b => b.onclick = () => { EL[b.dataset.cor] = b.dataset.v; re(); });
   box.querySelectorAll("[data-pre]").forEach(b => b.onclick = () => { const [w, h] = b.dataset.pre.split("x").map(Number); EL.larg = w; EL.alt = h; const base = Math.min(w, h * 1.2); EL.logoTam = Math.round(base * 4.4 * 2) / 2; EL.tituloTam = Math.round(base * 0.9 * 10) / 10; EL.subTam = Math.max(1, Math.round(base * .34 * 10) / 10); EL.volTam = EL.subTam; EL.extraTam = EL.subTam; EL.versoTam = Math.max(1, Math.round(base * .3 * 10) / 10); EL.seloTam = Math.max(3, Math.round(base * 1.1)); EL.faixaEsp = Math.max(.8, Math.round(base * .3 * 10) / 10); re(); });
+  box.querySelectorAll("[data-pronta]").forEach(b => b.onclick = () => { elAplicarPronta(+b.dataset.pronta); re(); });
   box.querySelectorAll("[data-lado]").forEach(b => b.onclick = () => { EL.lado = b.dataset.lado; re(); });
   box.querySelectorAll("[data-carregar]").forEach(b => b.onclick = () => { EL = Object.assign(JSON.parse(JSON.stringify(EL_PADRAO)), salvos[+b.dataset.carregar].estado); re(); });
   box.querySelectorAll("[data-apagar]").forEach(b => b.onclick = () => { if (!confirm("Apagar este modelo?")) return; salvos.splice(+b.dataset.apagar, 1); localStorage.setItem("sdm_modelos_etiqueta", JSON.stringify(salvos)); re(); });
