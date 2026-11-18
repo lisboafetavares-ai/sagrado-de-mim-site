@@ -79,6 +79,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap">
 <link rel="stylesheet" href="tema.css">
+<script src="blackfriday.js"></script>
 </head>
 <body>
 <p class="sm-aviso">Frete fixo de R$25 para todo o Brasil · Pagamento via Pix</p>
@@ -286,17 +287,17 @@ function renderFormatoResult(aroma) {
     '<div class="format-card" id="format-difusor">' +
       '<p class="format-title">Difusor de Varetas</p>' +
       '<p class="format-desc">Perfuma o ambiente de forma contínua e delicada.</p>' +
-      '<p class="format-price">R$ 168,50</p>' +
+      '<p class="format-price">' + bfPrecoHtml(BF_ATIVA ? 168.5 : null, bfQuiz(168.5)) + '</p>' +
     '</div>' +
     '<div class="format-card" id="format-spray">' +
       '<p class="format-title">Home Spray</p>' +
       '<p class="format-desc">Borrifa e perfuma instantaneamente o ambiente.</p>' +
-      '<p class="format-price">R$ 85,00</p>' +
+      '<p class="format-price">' + bfPrecoHtml(BF_ATIVA ? 85 : null, bfQuiz(85)) + '</p>' +
     '</div>' +
     '<button type="button" class="restart" id="restart-btn2">Refazer o quiz</button>';
 
-  document.getElementById("format-difusor").addEventListener("click", () => adicionarAoCarrinho("Difusor de Varetas", 168.5, aromaNome, aroma.nome));
-  document.getElementById("format-spray").addEventListener("click", () => adicionarAoCarrinho("Home Spray", 85, aromaNome, aroma.nome));
+  document.getElementById("format-difusor").addEventListener("click", () => adicionarAoCarrinho("Difusor de Varetas", bfQuiz(168.5), aromaNome, aroma.nome));
+  document.getElementById("format-spray").addEventListener("click", () => adicionarAoCarrinho("Home Spray", bfQuiz(85), aromaNome, aroma.nome));
 
   document.getElementById("restart-btn2").addEventListener("click", () => {
     current = 0;
