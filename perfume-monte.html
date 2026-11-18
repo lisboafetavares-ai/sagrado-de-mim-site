@@ -72,6 +72,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap">
 <link rel="stylesheet" href="tema.css">
+<script src="blackfriday.js"></script>
 </head>
 <body>
 <p class="sm-aviso">Frete fixo de R$25 para todo o Brasil · Pagamento via Pix</p>
@@ -400,7 +401,7 @@ function renderFinalSummary() {
 
   const orderItem = {
     tipo: "Perfume Personalizado (Monte o Seu)",
-    preco: 150,
+    preco: bfQuiz(150),
     etiquetaImg: labelImageDataUrl,
     iconsPosicionados: placedIcons,
     fontePersonalizada: selectedFont.id,
@@ -421,7 +422,7 @@ function renderFinalSummary() {
   resultArea.innerHTML =
     '<p class="result-title">Adicionado ao carrinho!</p>' +
     renderLabelPreview(false) +
-    '<p class="profile-desc"><strong>Perfume Personalizado</strong> — R$ 150,00</p>' +
+    '<p class="profile-desc"><strong>Perfume Personalizado</strong> — ' + bfPrecoHtml(BF_ATIVA ? 150 : null, bfQuiz(150)) + '</p>' +
     '<p class="profile-desc"><strong>Saída:</strong> ' + notas.saida.nome + ' · <strong>Corpo:</strong> ' + notas.corpo.nome + ' · <strong>Fundo:</strong> ' + notas.fundo.nome + '</p>' +
     '<p class="profile-desc"><strong>Tampa:</strong> ' + capAnswer + '</p>' +
     '<a href="carrinho.html" class="restart" style="display:block; text-align:center; text-decoration:none; border-color:#667449; color:#667449; font-weight:700; margin-top:14px;">Ir para o carrinho →</a>' +
