@@ -240,6 +240,7 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="blackfriday.js"></script>
 <script src="produtos.js"></script>
 <script src="aromas-info.js"></script>
 <script src="selo-cruelty.js"></script>
@@ -295,7 +296,7 @@ function atualizarPrecoVaretas(id) {
   const card = document.querySelector('details.varetas[data-var="' + id + '"]'); if (!card) return;
   const el = card.closest(".product").querySelector(".price");
   const x = extrasVaretas(id);
-  el.innerHTML = brl(p.preco + x.valor) + (x.valor ? ' <small style="font-size:12px; color:#6b6558; font-weight:400;">(com enfeites)</small>' : '');
+  el.innerHTML = bfPrecoHtml(p.precoOriginal != null ? p.precoOriginal + x.valor : null, p.preco + x.valor) + (x.valor ? ' <small style="font-size:12px; color:#6b6558; font-weight:400;">(com enfeites)</small>' : '');
 }
 
 // ---------- Fora de estoque / Avise-me ----------
@@ -419,7 +420,7 @@ function renderGrid() {
         '<p class="name"><a href="#" data-detalhe="' + p.id + '">' + nomeCard + '</a></p>' +
         '<p class="size">' + (vars.length > 1 ? (vars.length + ' opções de tamanho') : (p.tamanho || "&nbsp;")) + '</p>' +
         '<p class="status" data-status-id="' + p.id + '">' + status + '</p>' +
-        '<p class="price">' + brl(p.preco) + '</p>' +
+        '<p class="price">' + bfPrecoHtml(p.precoOriginal, p.preco) + '</p>' +
         '<a href="#" class="ver-detalhes" data-detalhe="' + p.id + '">' + (p.aroma ? 'Conhecer os aromas e detalhes' : 'Ver detalhes') + ' →</a>' +
         seletorVar +
         aroma +
@@ -587,7 +588,7 @@ function abrirDetalhe(id) {
   document.getElementById("det-cat").textContent = p.cat;
   document.getElementById("det-nome").textContent = p.nome;
   document.getElementById("det-tam").textContent = p.tamanho || "";
-  document.getElementById("det-preco").textContent = brl(p.preco);
+  document.getElementById("det-preco").innerHTML = bfPrecoHtml(p.precoOriginal, p.preco);
   const selCard = document.querySelector('select.aroma[data-id="' + id + '"]');
   document.getElementById("det-aroma").innerHTML = p.aroma
     ? '<select id="det-sel" aria-label="Aroma"><option value="">Escolha o aroma...</option>' + aromasDe(p).map(a => '<option value="' + detEsc(a) + '"' + (selCard && selCard.value === a ? ' selected' : '') + '>' + detEsc(a) + '</option>').join('') + '</select>'
