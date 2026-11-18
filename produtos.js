@@ -59,3 +59,6 @@ const PRODUTOS = [
   // Edição limitada
   {"id": "caixa-misteriosa", "cat": "Edição limitada", "nome": "Caixa Misteriosa", "tamanho": "Blind box de produtos", "preco": 250.0, "aroma": false, "limitado": true, "img": null}
 ];
+
+// Black Friday (ver blackfriday.js)
+if (typeof bfAplicarProdutos === "function") bfAplicarProdutos(PRODUTOS);
