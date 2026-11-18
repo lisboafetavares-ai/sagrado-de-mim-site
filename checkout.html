@@ -67,6 +67,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500&display=swap">
 <link rel="stylesheet" href="tema.css">
+<script src="blackfriday.js"></script>
 </head>
 <body>
 <p class="sm-aviso">Frete fixo de R$25 para todo o Brasil · Pagamento via Pix</p>
@@ -372,7 +373,9 @@ function render() {
   function recalcularTotal() {
     const embrulho = document.getElementById("embrulho-check").checked;
     let total = subtotal + frete + (embrulho ? 5 : 0);
-    if (appliedCoupon) {
+    if (appliedCoupon && appliedCoupon.valor_fixo) {
+      total = Math.max(0, total - appliedCoupon.valor_fixo);
+    } else if (appliedCoupon) {
       total = total * (1 - appliedCoupon.desconto_percentual / 100);
     }
     document.getElementById("total-box").textContent = "Total: R$ " + total.toFixed(2).replace('.', ',');
@@ -396,6 +399,20 @@ function render() {
     const code = document.getElementById("cupom-input").value.trim().toUpperCase();
     const msg = document.getElementById("cupom-msg");
     if (!code) return;
+    // Cupom de Black Friday (valor fixo, ver blackfriday.js)
+    if (typeof BF_CUPOM !== "undefined" && code === BF_CUPOM.code) {
+      if (BF_ATIVA) {
+        appliedCoupon = { code: BF_CUPOM.code, valor_fixo: BF_CUPOM.valor };
+        msg.style.color = "#667449";
+        msg.textContent = "Cupom aplicado! R$ " + BF_CUPOM.valor.toFixed(2).replace(".", ",") + " de desconto no total.";
+      } else {
+        appliedCoupon = null;
+        msg.style.color = "#a3455a";
+        msg.textContent = "Cupom inválido ou expirado.";
+      }
+      recalcularTotal();
+      return;
+    }
     try {
       const res = await fetch(SUPABASE_URL + "/rest/v1/coupons?code=eq." + encodeURIComponent(code) + "&ativo=eq.true", { headers: sbHeaders() });
       const rows = await res.json();
@@ -432,7 +449,7 @@ function render() {
     const totalFinal = recalcularTotal();
     const orderSummary = buildOrderSummary(cart, subtotal, frete, totalFinal) +
       (embrulho ? "\nEmbrulho para presente: Sim" + (embrulhoMsg ? " — Mensagem: " + embrulhoMsg : "") : "") +
-      (appliedCoupon ? "\nCupom aplicado: " + appliedCoupon.code + " (" + appliedCoupon.desconto_percentual + "%)" : "");
+      (appliedCoupon ? "\nCupom aplicado: " + appliedCoupon.code + (appliedCoupon.valor_fixo ? " (R$ " + appliedCoupon.valor_fixo.toFixed(2).replace(".", ",") + ")" : " (" + appliedCoupon.desconto_percentual + "%)") : "");
 
     const formData = new FormData(document.getElementById("order-form"));
     formData.append("email", session.email);
