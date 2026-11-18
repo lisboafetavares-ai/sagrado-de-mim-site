@@ -281,7 +281,7 @@
         <div><span>3</span>Etiqueta com o nome que você escolher</div>
       </div>
       <div class="linha-preco">
-        <span class="preco">R$150</span>
+        <span class="preco" id="preco-perfume">R$150</span>
         <a href="quiz-corporal.html" class="btn">Fazer o quiz</a>
       </div>
       <a href="perfume-monte.html" class="alt-link">Já sabe o que quer? Monte seu perfume escolhendo as notas →</a>
@@ -300,7 +300,7 @@
         <div><span>3</span>Dê um nome ao seu aroma</div>
       </div>
       <div class="linha-preco">
-        <span class="preco" style="font-size:28px;">a partir de R$85</span>
+        <span class="preco" id="preco-casa" style="font-size:28px;">a partir de R$85</span>
         <a href="quiz-casa.html" class="btn">Fazer o quiz</a>
       </div>
     </div>
@@ -388,6 +388,7 @@
   <p class="contato"><a href="https://wa.me/5531999153132" target="_blank" rel="noopener">WhatsApp (31) 99915-3132</a><span>·</span><a href="mailto:sagradodemimm@gmail.com">sagradodemimm@gmail.com</a></p>
 </footer>
 
+<script src="blackfriday.js"></script>
 <script src="produtos.js"></script>
 <script>// ATENÇÃO: cole aqui a URL e a chave "anon public" do seu projeto Supabase (mesmas usadas nos outros arquivos)
 const SUPABASE_URL = "https://htkvfujactojdejahrun.supabase.co";
@@ -657,6 +658,12 @@ document.querySelectorAll(".foto[data-src]").forEach(el => {
   if (n > 0) { b.textContent = n; b.style.display = "flex"; }
 })();
 
+// Black Friday: preços dos quizzes com 30% off
+if (typeof BF_ATIVA !== "undefined" && BF_ATIVA) {
+  document.getElementById("preco-perfume").innerHTML = '<s style="opacity:.5; font-size:.6em;">R$150</s> R$' + bfQuiz(150).toFixed(2).replace(".", ",");
+  document.getElementById("preco-casa").innerHTML = 'a partir de <s style="opacity:.5; font-size:.7em;">R$85</s> R$' + bfQuiz(85).toFixed(2).replace(".", ",");
+}
+
 // Destaques da loja (puxa de produtos.js; para trocar, mude os ids abaixo)
 const DESTAQUES = ["difusor-250", "home-spray-250", "body-splash-250", "hidratante-moldura-300"];
 (function () {
@@ -671,7 +678,7 @@ const DESTAQUES = ["difusor-250", "home-spray-250", "body-splash-250", "hidratan
       return '<a class="produto" href="loja.html">' + foto +
         '<span class="nome">' + p.nome + '</span>' +
         '<span class="tam">' + (p.tamanho || "&nbsp;") + '</span>' +
-        '<span class="rodape"><span>' + brl(p.preco) + '</span><span class="ver">Ver na loja</span></span></a>';
+        '<span class="rodape"><span>' + bfPrecoHtml(p.precoOriginal, p.preco) + '</span><span class="ver">Ver na loja</span></span></a>';
     }).join("");
 })();
 
